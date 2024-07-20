@@ -1,0 +1,17 @@
+{% extends 'single_page/base.html' %}
+    {% block main_area %}
+    {% load static %}
+            <div class="slider">
+                <div class="slides">
+                    <div class="slide">
+                        <img src="{% static '/image/수거절차안내.png' %}" alt="캐릭터">
+                        <button class="next" onclick="moveSlides(1)">&#10095;</button>
+                    </div>
+                    <div class="slide">
+                        <img src="{% static '/image/수거품목안내.png' %}">
+                        <button class="next" onclick="moveSlides(1)">&#10095;</button>
+                    </div>
+                </div>
+            </div>
+
+    {% endblock %}

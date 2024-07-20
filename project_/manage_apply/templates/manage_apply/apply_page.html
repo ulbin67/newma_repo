@@ -1,0 +1,23 @@
+{% extends 'single_page/base.html' %}
+    {% block main_area %}
+    {% load static %}
+                <div style="text-align: center; margin: 50px 0;">
+                    <h3>수거 방법을 선택하세요.</h3>
+                </div>
+                <div class = "section1">
+                        <a href="warning.html">
+                            <div class="section2">
+                                    <img src="{% static '/image/delivery.png' %}" alt="아이콘 1" style="width: 90%; height: auto; ">
+                                    <p><strong>택배 수거 요청</strong></p>
+                                    <p>* 택배를 직접 보내셔도 됩니다.</p>
+                        </a>
+                    </div>
+                        <a href="boxes_main.html">
+                            <div class="section2">
+                                <img src="{% static '/image/box.png' %}" alt="아이콘 2" style="width: 90%; height: auto;">
+                                <p><strong>상자 먼저 받기</strong></p>
+                                <p>박스가 없을 때만 신청해주세요.</p>
+                        </a>
+                    </div>
+                </div>
+    {% endblock %}

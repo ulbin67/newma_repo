@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel = "stylesheet" href = "{%static 'single_page/main.css' %}">
+        <link rel = "stylesheet" href = "{%static 'single_page/pretendard.css' %}">
+        <script src="{%static 'single_page/script.JS' %}"></script>
+        <link rel = "stylesheet" href = "{%static 'manage_apply/boxes_main.css' %}">
+    <title>base</title>
+</head>
+<body>
+    {% include 'single_page/navbar.html' %}
+    <section>
+            {% block main_area %}
+
+            {% endblock %}
+    </section>
+    {% include 'single_page/footer.html' %}
+</body>
+</html>
