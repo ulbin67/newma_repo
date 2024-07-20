@@ -41,27 +41,6 @@ nav{
     background-color: #fff;
     margin:0px;
 }
-nav>ul{
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    flex: 1;
-    justify-content: space-around; /* 메뉴 항목들 간의 간격을 균등하게 설정 */
-}
-nav>ul>li {
-    list-style-type: none;
-    margin-left: 1.5rem;
-    background-color: #fff;
-}
-nav>ul>li>a{
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 5px 20px;
-    margin-left: 65px;
-    color: black;
-    white-space: nowrap;  /* 텍스트가 줄 바꿈되지 않도록 설정 */
-}
 .logo{
     margin-left: 20px;
     margin-top: 5px;
