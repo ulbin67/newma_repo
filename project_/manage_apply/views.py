@@ -35,6 +35,8 @@ def box_apply_create(request):
     address_info = request.GET.get('sample6_address')
     address_detail = request.GET.get('sample6_detailAddress')
     deli_request = request.GET.get('sample6_extraAddress')
+
+    box_num = request.GET.get('box_num')
     
     BOX_CREATE = apply(
         company=company,
@@ -44,7 +46,8 @@ def box_apply_create(request):
         address_num=address_num,
         address_info=address_info,
         address_detail=address_detail,
-        deli_request=deli_request
+        deli_request=deli_request,
+        box_num = box_num
     )
     BOX_CREATE.save()
     return redirect('/')
@@ -57,32 +60,32 @@ def manage_main(request):
 
 
 def box_req(request):
-    box_list = apply.objects.filter(progress=0),
+    apply_list = apply.objects.all(),
     return render(
         request,
         'manage_apply/manage_page.html',
         {
-            'box' : box_list,
+            'applys' : apply_list,
         }
     )
 
 def box_going(request):
-    box_list = apply.objects.filter(progress=0),
+    apply_list = apply.objects.filter(progress=0),
     return render(
         request,
         'manage_apply/manage_page.html',
         {
-            'box' : box_list,
+            'applys' : apply_list,
         }
     )
 
 def pic_req(request):
-    box_list = apply.objects.filter(progress=2),
+    apply_list = apply.objects.filter(progress=2),
     return render(
         request,
         'manage_apply/manage_page0.html',
         {
-            'box' : box_list,
+            'applys' : apply_list,
         }
     )
 
