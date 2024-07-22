@@ -1,10 +1,7 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
-        {%load static%}
-        <div class="w-auto p-3" style="background-color: #F5F6F8;">
-            <div class="row">
-                <img src="{% static '/image/intro_chara.png' %}" alt="이미지" id="main-image"  width="1000px">
-            </div>
-        </div>
-        
+    {%load static%}
+    <div class="text-center">
+        <img src="{% static '/image/intro_chara.png' %}" class="img-fluid" alt="메인이미지">
+    </div>
     {% endblock %}
