@@ -24,19 +24,17 @@ class box_apply(models.Model):
     address_detail = models.TextField(null=True,blank=False)
     deli_request = models.TextField(null=True,blank=False)
 
-    #박스 전송 여부
-    send_box = models.BooleanField(default=False, null=True)
+    PROGRESS_RATE = (
+    	('0', '박스 요청중'),
+        ('1', '박스 전송중'),
+        ('2', '박스 수거 요청중'),
+        ('3', '수거진행중'),
+        ('4', '수거완료'),
+    )
 
-    #수거 요청 여부
-    pickup_apply = models.BooleanField(default=False,null=True)
+    #진행사항
+    progress = models.CharField(max_length=2,choices=PROGRESS_RATE, default='0', null=True)
 
-    #수거 신청 완료 여부
-    pickup_ing = models.BooleanField(default=False,null=True)
-
-    #수거 완료 여부
-    finish = models.BooleanField(default=False,null=True)
 
     #송장 번호
-    invoice_numberaddress_num = models.IntegerField(null=True,blank=False)
-
-
+    invoice_numberaddress_num = models.TextField(null=True,blank=False)

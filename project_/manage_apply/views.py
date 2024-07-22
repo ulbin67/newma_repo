@@ -49,3 +49,6 @@ def box_apply_create(request):
     BOX_CREATE.save()
     return redirect('/')
 
+class BoxApplyList(ListView):
+    model = box_apply
+    template_name = 'manage_apply/manage_page.html'
