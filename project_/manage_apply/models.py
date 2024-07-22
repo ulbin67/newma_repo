@@ -19,7 +19,7 @@ class box_apply(models.Model):
     apcan_phone = models.CharField(max_length=11,null=True,blank=False)
 
     #주소 정보
-    address_num = models.IntegerField(max_length=5,null=True,blank=False)
+    address_num = models.CharField(max_length=5,null=True,blank=False)
     address_info = models.TextField(null=True,blank=False)
     address_detail = models.TextField(null=True,blank=False)
     deli_request = models.TextField(null=True,blank=False)

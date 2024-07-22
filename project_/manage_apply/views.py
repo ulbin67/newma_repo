@@ -18,6 +18,12 @@ def box_apply_call(request):
         "manage_apply/boxes_main.html"
     )
 
+def box_checkcall(request):
+    return render(
+        request,
+        "manage_apply/apply_check.html"
+    )
+
 def box_apply_create(request):
     company = request.GET.get('company')
     com_num = request.GET.get('com_num')
@@ -40,7 +46,6 @@ def box_apply_create(request):
         address_detail=address_detail,
         deli_request=deli_request
     )
-
     BOX_CREATE.save()
+    return redirect('/')
 
-    return redirect("manage_apply/apply_check.html")
