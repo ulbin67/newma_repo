@@ -33,7 +33,7 @@ class box_apply(models.Model):
     )
 
     #진행사항
-    progress = models.CharField(max_length=1, choices=PROGRESS_RATE)
+    progress = models.CharField(max_length=2,choices=PROGRESS_RATE, default='0', null=True)
 
 
     #송장 번호
