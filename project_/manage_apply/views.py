@@ -1,7 +1,7 @@
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import box_apply
+from .models import apply
 from django.views.generic import ListView,DetailView,UpdateView,CreateView
 
 # Create your views here.
@@ -36,7 +36,7 @@ def box_apply_create(request):
     address_detail = request.GET.get('sample6_detailAddress')
     deli_request = request.GET.get('sample6_extraAddress')
     
-    BOX_CREATE = box_apply(
+    BOX_CREATE = apply(
         company=company,
         com_num=com_num,
         applicant=applicant,
@@ -49,6 +49,40 @@ def box_apply_create(request):
     BOX_CREATE.save()
     return redirect('/')
 
-class BoxApplyList(ListView):
-    model = box_apply
-    template_name = 'manage_apply/manage_page.html'
+def manage_main(request):
+    return render(
+        request,
+        'manage_apply/manage_page.html',
+    )
+
+
+def box_req(request):
+    box_list = apply.objects.filter(progress=0),
+    return render(
+        request,
+        'manage_apply/manage_page.html',
+        {
+            'box' : box_list,
+        }
+    )
+
+def box_going(request):
+    box_list = apply.objects.filter(progress=0),
+    return render(
+        request,
+        'manage_apply/manage_page.html',
+        {
+            'box' : box_list,
+        }
+    )
+
+def pic_req(request):
+    box_list = apply.objects.filter(progress=2),
+    return render(
+        request,
+        'manage_apply/manage_page0.html',
+        {
+            'box' : box_list,
+        }
+    )
+
