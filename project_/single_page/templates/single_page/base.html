@@ -8,20 +8,23 @@
         <link href="{%static 'bootstrap/bootstrap.css' %}" rel="stylesheet" crossorigin="anonymous">
         <script src="{%static 'bootstrap/bootstrap.js' %}" crossorigin="anonymous"></script>
         <link rel = "stylesheet" href = "{%static 'single_page/pretendard.css' %}">
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <title>base</title>
 </head>
 <body style="overflow-x: hidden">
-    <div class="container-no-gutters">
-        {% include 'single_page/navbar.html' %}
-        <div class="row">
-            <div class="col">
-            {% block main_area %}
+    {% include 'single_page/navbar.html' %}
+    <div class="w-auto p-3" style="background-color: #F5F6F8;">
+        <div class="container-no-gutters">
+            <div class="row">
+                <div class="my-5">
+                {% block main_area %}
 
-            {% endblock %}
+                {% endblock %}
+                </div>
             </div>
         </div>
-        {% include 'single_page/footer.html' %}
     </div>
+    {% include 'single_page/footer.html' %}
     
 </body>
 </html>
