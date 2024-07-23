@@ -13,7 +13,7 @@ class apply(models.Model):
     apply_at = models.DateTimeField(auto_now_add=True,null=True)
 
     #회사 정보
-    company = models.CharField(max_length=10,null=True,blank=False, unique=True)
+    company = models.CharField(max_length=10,null=True,blank=False)
     com_num = models.CharField(max_length=11,null=True,blank=True)
 
     #주소

@@ -73,7 +73,7 @@ def box_going(request):
     apply_list = apply.objects.filter(progress=0),
     return render(
         request,
-        'manage_apply/manage_page.html',
+        'manage_apply/manage_box_reqing.html',
         {
             'applys' : apply_list,
         }
