@@ -3,6 +3,8 @@ from django.core.validators import RegexValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
+class get_num(models.Model):
+    got_num = models.CharField(max_length=11,null=True,blank=False)
 
 #박스 요청 및 수거 date 틀
 class apply(models.Model):
@@ -11,18 +13,19 @@ class apply(models.Model):
     apply_at = models.DateTimeField(auto_now_add=True,null=True)
 
     #회사 정보
-    company = models.CharField(max_length=10,null=True,blank=False)
+    company = models.CharField(max_length=10,null=True,blank=False, unique=True)
     com_num = models.CharField(max_length=11,null=True,blank=True)
 
-    #신청자 정보
-    applicant = models.CharField(max_length=10, null=True, blank=False)
-    apcan_phone = models.CharField(max_length=11,null=True,blank=False)
-
-    #주소 정보
+    #주소
     address_num = models.CharField(max_length=5,null=True,blank=False)
     address_info = models.TextField(null=True,blank=True)
     address_detail = models.TextField(null=True,blank=True)
     deli_request = models.TextField(null=True,blank=True)
+    
+    #신청자 정보
+    applicant = models.CharField(max_length=10, null=True, blank=False)
+    apcan_phone = models.CharField(max_length=11,null=True,blank=False)
+   
 
     PROGRESS_RATE = (
     	(0, '박스 요청중'),
@@ -40,3 +43,19 @@ class apply(models.Model):
 
     #송장 번호
     invoice_numberaddress_num = models.TextField(null=True,blank=False)
+
+    #박스 요청 없이 오는 경우의 연결
+    zir_block_kg = models.FloatField(null=True, blank=True)
+    zir_block_count = models.IntegerField(null=True, blank=True)
+
+    #지르코니아 분말
+    zir_powder_kg = models.FloatField(null=True, blank=True)
+    zir_powder_count = models.IntegerField(null=True, blank=True)
+
+    #환봉
+    round_bar_kg = models.FloatField(null=True, blank=True)
+    round_bar_count = models.IntegerField(null=True, blank=True)
+
+    #개인 요청에 따른 주소를 만드는 함수
+    def get_absolute_url(self):
+        return f'applymain/applycheck/{self.pk}'
