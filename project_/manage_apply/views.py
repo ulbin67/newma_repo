@@ -109,7 +109,7 @@ def sent_apply_create(request):
     tool_kg = request.GET.get("tool_kg")
     tool_count = request.GET.get("tool_num")
 
-    box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
+    box_num = int(zir_block_count) + int(zir_powder_count) + int(round_bar_count) + int(tool_count)
 
     progress = 3
 
