@@ -1,32 +1,27 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
     {% load static %}
-            <div class="container">
-                <div class="row-my-5">
-                    <div class="mx-auto p-2" style="width: auto;">
-                        <div class="d-flex justify-content-center">
-                            <h3>수거 방법을 선택하세요.</h3>
-                        </div>
+        <div class="container">
+                <div class="mx-auto p-2" style="width: auto;">
+                    <div class="d-flex justify-content-center">
+                        <h3>수거 방법을 선택하세요.</h3>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6">
-                        <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-outline-secondary">
-                                <img src="{% static '/image/delivery.png' %}" class="card-img-top" style="width: 200px; height: 220px;" alt="...">
-                                <h6 class="card-title">택배 수거 요청</h6>
-                                <p class="card-text">택배를 직접 보내셔도 됩니다.</p>
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary">
+                <div class="my-5">
+                    <div class="row">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a class="btn btn-outline-dark" href="/applymain/apply_box/" role="button">
                                 <img src="{% static '/image/box.png' %}" class="card-img-top" style="width: 200px; height: 220px;" alt="...">
                                 <h6 class="card-title">박스 배송 요청</h6>
                                 <p class="card-text">박스가 없을 때만 신청해주세요.</p>
-                            </button>
+                            </a>
+                            <a class="btn btn-outline-dark"  href="/applymain/sending_box/" role="button">
+                                <img src="{% static '/image/delivery.png' %}" class="card-img-top" style="width: 200px; height: 220px;" alt="...">
+                                <h6 class="card-title">택배 수거 요청</h6>
+                                <p class="card-text">택배를 직접 보내셔도 됩니다.</p>
+                            </a>
                         </div>
                     </div>
-                    <div class="col-3"></div>
                 </div>
-                <div class="row-my-5"></div>
-            </div>
+        </div>
     {% endblock %}
