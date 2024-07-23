@@ -31,7 +31,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for apply in applys %}
+                  {% for apply in applys %}
                       <tr>
                           <th scope="row">{{apply.apply_at}}</th>
                           <td>{{apply.company}}</td>
@@ -43,7 +43,7 @@
                           <td>{{apply.progress}}</td>
                           <td><a class="btn btn-primary" href="#" role="button">완료</a></td>
                       </tr>
-                {% endfor %}
+                  {% endfor %}
               </tbody>  
           </table>
       </div>
