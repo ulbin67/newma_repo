@@ -1,51 +1,51 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
-
     <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">박스 요청중</a>
+          <a class="nav-link active" aria-current="page" href="/applymain/box_requsting/">박스 요청중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="#">수거 요청중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="#">수거중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled">Disabled</a>
+          <a class="nav-link" href="#">수거완료</a>
         </li>
       </ul>
-    
-    <div class="my-3">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">신청시간</th>
-                <th scope="col">회사명</th>
-                <th scope="col">회사 연락처</th>
-                <th scope="col">신청자명</th>
-                <th scope="col">신청자 연락처</th>
-                <th scope="col">우편번호</th>
-                <th scope="col">주소/상세주소</th>
-                <th scope="col">배송요청사항</th>
-                <th scope="col">보내기</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for b in box_apply_list %}
-                    <tr>
-                        <th scope="row">{{b.apply_at}}</th>
-                        <td>{{b.company}}</td>
-                        <td>{{b.com_num}}</td>
-                        <td>{{b.applicant}}</td>
-                        <td>{{b.apcan_phone}}</td>
-                        <td>{{b.address_num}}</td>
-                        <td>{{b.address_info}} / {{b.address_detail}}</td>
-                        <td>{{b.deli_request}}</td>
-                        <td><a class="btn btn-primary" href="#" role="button">박스전송</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="container-fluid">
+      <div class="my-3">
+          <table class="table table-hover">
+              <thead>
+                <tr>
+                    <th scope="col">신청시간</th>
+                    <th scope="col">회사명</th>
+                    <th scope="col">신청자명</th>
+                    <th scope="col">연락처</th>
+                    <th scope="col">우편번호</th>
+                    <th scope="col">주소/상세주소</th>
+                    <th scope="col">배송요청사항</th>
+                    <th scope="col">진행상황</th>
+                    <th scope="col">전송완료</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for apply in applys %}
+                      <tr>
+                          <th scope="row">{{apply.apply_at}}</th>
+                          <td>{{apply.company}}</td>
+                          <td>{{apply.applicant}}</td>
+                          <td>{{apply.apcan_phone}}</td>
+                          <td>{{apply.address_num}}</td>
+                          <td>{{apply.address_info}} / {{apply.address_detail}}</td>
+                          <td>{{apply.deli_request}}</td>
+                          <td>{{apply.progress}}</td>
+                          <td><a class="btn btn-primary" href="#" role="button">완료</a></td>
+                      </tr>
+                  {% endfor %}
+              </tbody>  
+          </table>
+      </div>
     </div>
     {% endblock %}
