@@ -10,6 +10,8 @@ class get_num(models.Model):
 class apply(models.Model):
     #모델 생성 시 오류를 없애기 위해 null=True로 지정 (값이 null이어도 됨, 추후 추가된 칼럼의 경우 자동으로 null값이 생겨서 오류 발생..)
     #신청 시간
+    pk = True
+    
     apply_at = models.DateTimeField(auto_now_add=True,null=True)
 
     #회사 정보
@@ -17,7 +19,7 @@ class apply(models.Model):
     com_num = models.CharField(max_length=11,null=True,blank=True)
 
     #주소
-    address_num = models.CharField(max_length=5,null=True,blank=False)
+    address_num = models.CharField(max_length=5,null=True,blank=True)
     address_info = models.TextField(null=True,blank=True)
     address_detail = models.TextField(null=True,blank=True)
     deli_request = models.TextField(null=True,blank=True)
@@ -56,6 +58,13 @@ class apply(models.Model):
     round_bar_kg = models.FloatField(null=True, blank=True)
     round_bar_count = models.IntegerField(null=True, blank=True)
 
+    #밀링툴
+    tool_kg = models.FloatField(null=True, blank=True)
+    tool_count = models.IntegerField(null=True, blank=True)
+
     #개인 요청에 따른 주소를 만드는 함수
     def get_absolute_url(self):
         return f'applymain/applycheck/{self.pk}'
+    
+    def del_absolute_url(self):
+        return f'applymain/sending_box/{self.pk}'

@@ -50,7 +50,7 @@ def box_apply_create(request):
         box_num = box_num
     )
     BOX_CREATE.save()
-    return redirect('/')
+    return redirect('apply_check')
 
 def manage_main(request):
     return render(
@@ -89,3 +89,55 @@ def pic_req(request):
         }
     )
 
+def sent_page(request):
+    return render(
+        request,
+        'manage_apply/sent_box.html',
+    )
+
+def sent_apply_create(request):
+
+    zir_block_kg = request.GET.get("z_b_kg")
+    zir_block_count = request.GET.get("z_b_num")
+
+    zir_powder_kg = request.GET.get("z_p_kg")
+    zir_powder_count = request.GET.get("z_p_num")
+    
+    round_bar_kg = request.GET.get("r_b_kg")
+    round_bar_count = request.GET.get("r_b_num")
+
+    tool_kg = request.GET.get("tool_kg")
+    tool_count = request.GET.get("tool_num")
+
+    box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
+
+    progress = 3
+
+    company = request.GET.get('company')
+    com_num = request.GET.get('com_num')
+
+    applicant = request.GET.get('applicant')
+    apcan_phone = request.GET.get('apcan_phone')
+    invoice_numberaddress_num = request.GET.get('invoice_num')
+
+    SENT_CREATE = apply(
+        zir_block_kg = zir_block_kg,
+        zir_block_count = zir_block_count,
+        zir_powder_kg = zir_powder_kg,
+        zir_powder_count = zir_powder_count,
+        round_bar_kg = round_bar_kg,
+        round_bar_count = round_bar_count,
+        tool_kg = tool_kg,
+        tool_count = tool_count,
+        box_num = box_num,
+        progress = progress,
+        company = company,
+        com_num = com_num,
+        applicant = applicant,
+        apcan_phone = apcan_phone,
+        invoice_numberaddress_num = invoice_numberaddress_num,
+    )
+
+    SENT_CREATE.save()
+
+    return redirect('apply_check')

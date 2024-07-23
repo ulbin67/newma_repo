@@ -20,7 +20,7 @@
                 </div>
             </div>
             <form action="{% url 'box_apply_create' %}" method="GET">
-                
+                {% csrf_token %}
                 <div class="row">
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">1. 신청하시는 회사명을 입력해 주세요.</label>
