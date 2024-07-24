@@ -10,6 +10,7 @@
         <link rel = "stylesheet" href = "{%static 'single_page/pretendard.css' %}">
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <title>base</title>
+    {% block extra-style %}{% endblock %}
 </head>
 <body style="overflow-x: hidden">
     {% include 'single_page/navbar.html' %}
