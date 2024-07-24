@@ -1,5 +1,5 @@
 function checkNumber(value) {
-    return /^\d{3}-\d{3,4}-\d{4}$/.test(value);
+    return (/^\d{2,3}-\d{3,4}-\d{4}$/.test(value)) || (/^[0-9]{10,11}$/.test(value));
 }
 
 // 작성여부 확인
