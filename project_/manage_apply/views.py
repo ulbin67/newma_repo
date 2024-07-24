@@ -25,32 +25,39 @@ def box_checkcall(request):
     )
 
 def box_apply_create(request):
-    company = request.GET.get('company')
-    com_num = request.GET.get('com_num')
+    try:
+        # if request.method == 'POST':
+            company = request.GET.get('company')
+            com_num = request.GET.get('com_num')
 
-    applicant = request.GET.get('applicant')
-    apcan_phone = request.GET.get('apcan_phone')
+            applicant = request.GET.get('applicant')
+            apcan_phone = request.GET.get('apcan_phone')
 
-    address_num = request.GET.get('sample6_postcode')
-    address_info = request.GET.get('sample6_address')
-    address_detail = request.GET.get('sample6_detailAddress')
-    deli_request = request.GET.get('sample6_extraAddress')
+            address_num = request.GET.get('sample6_postcode')
+            address_info = request.GET.get('sample6_address')
+            address_detail = request.GET.get('sample6_detailAddress')
+            deli_request = request.GET.get('sample6_extraAddress')
 
-    box_num = request.GET.get('box_num')
-    
-    BOX_CREATE = apply(
-        company=company,
-        com_num=com_num,
-        applicant=applicant,
-        apcan_phone=apcan_phone,
-        address_num=address_num,
-        address_info=address_info,
-        address_detail=address_detail,
-        deli_request=deli_request,
-        box_num = box_num
-    )
-    BOX_CREATE.save()
-    return redirect('apply_check')
+            box_num = request.GET.get('box_num')
+        
+            BOX_CREATE = apply(
+                company=company,
+                com_num=com_num,
+                applicant=applicant,
+                apcan_phone=apcan_phone,
+                address_num=address_num,
+                address_info=address_info,
+                address_detail=address_detail,
+                deli_request=deli_request,
+                box_num = box_num
+            )
+            BOX_CREATE.save()
+            return redirect('apply_check')
+        # else:
+        #     return redirect('box_apply_main')
+    except:
+        return redirect('box_apply_main')
+
 
 def manage_main(request):
     return render(
