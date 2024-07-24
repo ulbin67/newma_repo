@@ -33,7 +33,7 @@
                 <h4>해당 아래의 내용을 작성하시면 택배박스와 비닐을 보내드립니다. </h4>
             </div>
         </div>
-        <form name="box_form" action="{% url 'box_apply_create' %}" method="GET">
+        <form name="box_form" action="{% url 'box_apply_create' %}" method="POST">
             {% csrf_token %}
             <div class="row">
                 <div class="mb-3">

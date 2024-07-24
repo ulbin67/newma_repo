@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 class get_num(models.Model):
@@ -15,18 +14,18 @@ class apply(models.Model):
     apply_at = models.DateTimeField(auto_now_add=True,null=True)
 
     #회사 정보
-    company = models.CharField(max_length=10,null=True,blank=False)
+    company = models.CharField(max_length=10,null=True,blank=False,unique=True)
     com_num = models.CharField(max_length=14,null=True,blank=True)
 
     #주소
-    address_num = models.CharField(max_length=5,null=True,blank=True)
+    address_num = models.CharField(max_length=5,null=True,blank=True,unique=True)
     address_info = models.TextField(null=True,blank=True)
     address_detail = models.TextField(null=True,blank=True)
     deli_request = models.TextField(null=True,blank=True)
     
     #신청자 정보
     applicant = models.CharField(max_length=10, null=True, blank=False)
-    apcan_phone = models.CharField(max_length=14,null=True,blank=False)
+    apcan_phone = models.CharField(max_length=14,null=True,blank=False,unique=True)
    
 
     PROGRESS_RATE = (
@@ -68,3 +67,18 @@ class apply(models.Model):
     
     def del_absolute_url(self):
         return f'applymain/sending_box/{self.pk}'
+    
+class company_info(models.Model):
+    #회사 정보
+    company = models.CharField(max_length=10,null=True,blank=False,unique=True)
+    com_num = models.CharField(max_length=14,null=True,blank=True)
+
+    #주소
+    address_num = models.CharField(max_length=5,null=True,blank=True,unique=True)
+    address_info = models.TextField(null=True,blank=True)
+    address_detail = models.TextField(null=True,blank=True)
+    deli_request = models.TextField(null=True,blank=True)
+
+    #회사 최근 거래자 & 거래 시각 파악
+    resent_apply = models.DateTimeField(auto_now = True,null=True)
+    resent_employee = models.CharField(max_length=10, null=True, blank=False)
