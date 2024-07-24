@@ -1,22 +1,25 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
+    {% if user.is_staff %}
     <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link" href="#">거래 회사정보</a>
+          <a class="nav-link" href="{% url 'ma_main' %}">거래 회사정보</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/applymain/box_requsting/">박스 요청중</a>
+          <a class="nav-link" href="{% url 'ma_boxreq' %}">박스 요청중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">수거 요청중</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'ma_picreq' %}">수거 요청중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">수거중</a>
+          <a class="nav-link" href="{% url 'ma_picing' %}">수거중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">수거완료</a>
+          <a class="nav-link" href="{% url 'ma_done' %}">수거완료</a>
         </li>
       </ul>
+    <form action="{% url 'ma_picreq_edit' %}" method="POST">
+    {% csrf_token %}
     <div class="container-fluid">
       <div class="my-3">
           <table class="table table-hover">
@@ -44,11 +47,24 @@
                           <td>{{apply.address_info}} / {{apply.address_detail}}</td>
                           <td>{{apply.deli_request}}</td>
                           <td>{{apply.progress}}</td>
-                          <td><a class="btn btn-primary" href="#" role="button">완료</a></td>
+                          <td>
+                            <div class="form-check">
+                              <input type="checkbox" name="apply_ids" value="{{ apply.pk }}">
+                            </div>
+                          </td>
                       </tr>
                   {% endfor %}
-              </tbody>  
+              </tbody>
           </table>
       </div>
+      <div class="mb-5">
+        <div class="mt-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button onclick= "return check_input()" class="btn btn-primary">확인</button>
+            </div>
+        </div>
     </div>
+    </div>
+  </form>
+    {% endif %}
     {% endblock %}

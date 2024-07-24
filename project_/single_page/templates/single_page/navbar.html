@@ -9,7 +9,11 @@
                 <li class="nav-item"><a class="nav-link" href="/information_newma/">이용안내</a></li>
                 <li class="nav-item"><a class="nav-link" href="/applymain/progess_research/">거래조회</a></li>
                 <li class="nav-item"><a class="nav-link" href="contact.html">문의</a></li>
+                {% if user.is_staff %}
+                <li class="nav-item"><a class="nav-link" href="/applymain/manager_page_main/"><h6><div class="badge rounded-pill text-bg-primary text-wrap" style="width: auto;">관리 페이지로</div></h6></a></li>
+                {% else %}
                 <li class="nav-item"><a class="nav-link" href="/applymain/"><h6><div class="badge rounded-pill text-bg-primary text-wrap" style="width: auto;">신청하기</div></h6></a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

@@ -3,7 +3,7 @@
     {% if user.is_staff %}
     <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'ma_main' %}">거래 회사정보</a>
+          <a class="nav-link" href="{% url 'ma_main' %}">거래 회사정보</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'ma_boxreq' %}">박스 요청중</a>
@@ -15,7 +15,7 @@
           <a class="nav-link" href="{% url 'ma_picing' %}">수거중</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'ma_done' %}">수거완료</a>
+          <a class="nav-linkactive" aria-current="page" href="{% url 'ma_done' %}">수거완료</a>
         </li>
       </ul>
     <div class="container-fluid">
@@ -23,26 +23,26 @@
           <table class="table table-hover">
               <thead>
                 <tr>
+                    <th scope="col">완료시간</th>
                     <th scope="col">회사명</th>
+                    <th scope="col">신청자명</th>
                     <th scope="col">연락처</th>
-                    <th scope="col">우편번호</th>
-                    <th scope="col">주소/상세주소</th>
-                    <th scope="col">거래횟수</th>
                 </tr>
               </thead>
               <tbody>
-                  {% for company in companys %}
+                  {% for done in dones %}
                       <tr>
-                          <td>{{company.company}}</td>
-                          <td>{{company.apcan_phone}}</td>
-                          <td>{{company.address_num}}</td>
-                          <td>{{company.address_info}} / {{company.address_detail}}</td>
-                          <td>{{company.count}}</td>
+                          <th scope="row">{{done.done_at}}</th>
+                          <td>{{done.company}}</td>
+                          <td>{{done.applicant}}</td>
+                          <td>{{done.apcan_phone}}</td>
                       </tr>
                   {% endfor %}
-              </tbody>  
+              </tbody>
           </table>
       </div>
+      <div class="mb-5">
+    </div>
     </div>
     {% endif %}
     {% endblock %}
