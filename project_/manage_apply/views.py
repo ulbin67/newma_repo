@@ -7,26 +7,31 @@ import re
 
 # Create your views here.
 
+#요청 페이지 메인 -> 상자 or 배달 선택 페이지를 부르는 함수
 def applycall(request):
     return render(
         request,
         'manage_apply/apply_page.html'
     )
 
+#박스 배송 요청 후 신청 페이지를 부르는 함수
 def box_apply_call(request):
     return render(
         request,
         "manage_apply/boxes_main.html"
     )
 
+#신청 완료 페이지를 부르는 함수
 def box_checkcall(request):
     return render(
         request,
         "manage_apply/apply_check.html"
     )
 
+#신청 내용을 model로 저장하는 함수
 def box_apply_create(request):
     try:
+        ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
         # 정규표현식으로 공백 제거
         company = re.sub(r'[\s]', '', request.POST.get('company', ''))
         # 숫자만 저장
@@ -43,10 +48,11 @@ def box_apply_create(request):
 
         box_num = request.POST.get('box_num', '')
 
-        # 회사 정보가 이미 존재하는지 확인
+        # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if company_info.objects.filter(company=company).exists():
             company_already = company_info.objects.get(company=company)
             company_already.recent_employee = applicant
+            company_already.count = company_already.count + 1
             if com_num == "":
                 company_already.com_num = apcan_phone
             else:
@@ -60,6 +66,7 @@ def box_apply_create(request):
             )
             COMPANY_NEW.save()
         
+        #모델 양식에 맞게 새로운 row 만들기
         BOX_CREATE = apply(
             company=company,
             com_num=com_num if com_num else apcan_phone,
@@ -71,58 +78,27 @@ def box_apply_create(request):
             deli_request=deli_request,
             box_num=box_num
         )
+        #만든 row를 table에 추가
         BOX_CREATE.save()
         return redirect('apply_check')
+    #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('failed')
 
-def manage_main(request):
-    return render(
-        request,
-        'manage_apply/manage_page.html',
-    )
 
-
-def box_req(request):
-    apply_list = apply.objects.all(),
-    return render(
-        request,
-        'manage_apply/manage_page.html',
-        {
-            'applys' : apply_list,
-        }
-    )
-
-def box_going(request):
-    apply_list = apply.objects.filter(progress=0),
-    return render(
-        request,
-        'manage_apply/manage_box_reqing.html',
-        {
-            'applys' : apply_list,
-        }
-    )
-
-def pic_req(request):
-    apply_list = apply.objects.filter(progress=2),
-    return render(
-        request,
-        'manage_apply/manage_page0.html',
-        {
-            'applys' : apply_list,
-        }
-    )
-
+#직접 택배로 보내는 신청페이지를 부르는 함수
 def sent_page(request):
     return render(
         request,
         'manage_apply/sent_box.html',
     )
 
+#택배로 보내는 신청페이지 내용을 model로 저장하는 함수
 def sent_apply_create(request):
     try:
+        ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
         zir_block_kg = request.POST.get("z_b_kg")
         zir_block_count = request.POST.get("z_b_num")
 
@@ -146,9 +122,12 @@ def sent_apply_create(request):
         apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
         invoice_numberaddress_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num'))
 
+
+        # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if company_info.objects.filter(company=company).exists():
             company_already = company_info.objects.get(company=company)
             company_already.recent_employee = applicant
+            company_already.count = company_already.count + 1
             if com_num == "":
                 company_already.com_num = apcan_phone
             else:
@@ -162,6 +141,7 @@ def sent_apply_create(request):
             )
             COMPANY_NEW.save()
 
+        #모델 양식에 맞게 새로운 row 만들기
         SENT_CREATE = apply(
             zir_block_kg = zir_block_kg,
             zir_block_count = zir_block_count,
@@ -179,55 +159,95 @@ def sent_apply_create(request):
             apcan_phone = apcan_phone,
             invoice_numberaddress_num = invoice_numberaddress_num,
         )
-
+        #만든 row를 table에 추가
         SENT_CREATE.save()
 
         return redirect('apply_check')
-    
+    #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('failed')
 
+#실패 페이지를 불러오는 함수
 def save_failed(request):
     return render(
         request,
         'manage_apply/apply_failed.html',
     )
 
+#상자 수거 요청시 조회 실패 페이지를 불러오는 함수
 def pick_failed(request):
     return render(
         request,
         'manage_apply/pickreq_failed.html',
     )
 
+#상자 수거 요청 페이지를 불러오는 함수
 def research_page_call(request):
     return render(
         request,
         'manage_apply/pick_req_main.html',
     )
 
+#상자 수거 요청 시, 요청한 전적이 있는 지 확인하고, 있으면 진행상황을 바꿔주는 함수
 def research_apply(request):
     try:
+        #html에 사용자가 입력한 값 불러오기
         company = re.sub(r'[\s]','',request.POST.get('company'))
         applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
         apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
 
+        #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 변경 후 성공페이지 연결
         if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False).exists():
             current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
             current_apply.process = 2
             current_apply.save()
             return redirect('request_sucess')
+        #불러온 값이 일치하지 않으면 실패페이지 연결
         else:
             return redirect('pick_failed')
-          
+    #불러오기 실패 시, 실패페이지 연결(사용자가 이상한 값을 입력하면 실패함)
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('pick_failed')
-    
+
+#상자 수거 요청 성공 페이지를 불러오는 함수
 def req_success_call(request):
     return render(
         request,
         'manage_apply/pickreq_success.html',
+    )
+
+#####----아래부터 관리 페이지----#####
+
+#관리자 페이지를 부르는 함수
+def manage_main(request):
+    return render(
+        request,
+        'manage_apply/manage_page.html',
+    )
+
+
+#상자 요청중인 거래만 표시하는 페이지를 부르는 함수
+def box_req(request):
+    apply_list = apply.objects.all(),
+    return render(
+        request,
+        'manage_apply/manage_page.html',
+        {
+            'applys' : apply_list,
+        }
+    )
+
+#배달 오는 중인 거래만 표시하는 페이지를 부르는 함수
+def box_going(request):
+    apply_list = apply.objects.filter(progress=0),
+    return render(
+        request,
+        'manage_apply/manage_box_reqing.html',
+        {
+            'applys' : apply_list,
+        }
     )

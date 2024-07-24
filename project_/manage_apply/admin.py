@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import apply,get_num
+from .models import apply,company_info
 
 # Register your models here.
 # admin.site.register(apply)
-admin.site.register(get_num)
+
+admin.site.register(company_info)
 
 @admin.register(apply)
 class ApplyAdmin(admin.ModelAdmin):
