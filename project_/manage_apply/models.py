@@ -66,7 +66,7 @@ class apply(models.Model):
 #회사 정보를 저장하기 위한 쿼리! 
 class company_info(models.Model):
     #회사 정보(회사명은 하나만 저장되도록 함.)
-    count = models.PositiveIntegerField(default=0,null=True,blank=False)
+    count = models.PositiveIntegerField(default=1,null=True,blank=False)
     company = models.CharField(max_length=10,null=True,blank=False,unique=True)
     com_num = models.CharField(max_length=14,null=True,blank=True)
 

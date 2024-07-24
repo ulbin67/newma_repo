@@ -201,8 +201,7 @@ def research_apply(request):
         #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 변경 후 성공페이지 연결
         if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False, progress=1).exists():
             current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
-            current_apply.process = 2
-            current_apply.save()
+            current_apply.update(progress=2)
             return redirect('request_sucess')
         #불러온 값이 일치하지 않으면 실패페이지 연결
         else:
@@ -237,9 +236,9 @@ def research_apply2(request):
 
         #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 보여주기
         if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone).exists():
-            current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
+            current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone).first()
             apply_id = current_apply.pk
-            return redirect('progress_check', apply_id)
+            return redirect('progress_check', apply_id=apply_id)
         #불러온 값이 일치하지 않으면 실패페이지 연결
         else:
             return redirect('pick_failed')
@@ -251,11 +250,14 @@ def research_apply2(request):
     
 #진행상황 페이지를 불러오는 함수
 def pro_check_call(request, apply_id):
-    req_apply = apply.objects.filter(pk=apply_id)
-    return render(
-        request,
-        'manage_apply/progress_check.html',
-        {'apply':req_apply}
-    )
+    try:
+        req_apply = apply.objects.get(pk=apply_id)
+        return render(
+            request,
+            'manage_apply/progress_check.html',
+            {'apply': req_apply}
+        )
+    except apply.DoesNotExist:
+        return redirect('pick_failed')
 
 #####----아래부터 관리 페이지----#####
