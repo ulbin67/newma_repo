@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "single_page",
     "manage_apply",
+    "qna",
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,7 @@ ROOT_URLCONF = "main_.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -81,7 +82,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": 'newmaDB',
         'USER': 'root',
-        'PASSWORD':'00701',
+        'PASSWORD':'0000',
         'HOST': '127.0.0.1',
         'PORT':'3306'                   # 머지할때 포트번호 -> 3306으로 바꿔야함
     }
