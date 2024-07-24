@@ -122,51 +122,72 @@ def sent_page(request):
     )
 
 def sent_apply_create(request):
+    try:
+        zir_block_kg = request.POST.get("z_b_kg")
+        zir_block_count = request.POST.get("z_b_num")
 
-    zir_block_kg = request.POST.get("z_b_kg")
-    zir_block_count = request.POST.get("z_b_num")
+        zir_powder_kg = request.POST.get("z_p_kg")
+        zir_powder_count = request.POST.get("z_p_num")
+        
+        round_bar_kg = request.POST.get("r_b_kg")
+        round_bar_count = request.POST.get("r_b_num")
 
-    zir_powder_kg = request.POST.get("z_p_kg")
-    zir_powder_count = request.POST.get("z_p_num")
+        tool_kg = request.POST.get("tool_kg")
+        tool_count = request.POST.get("tool_num")
+
+        box_num = int(zir_block_count) + int(zir_powder_count) + int(round_bar_count) + int(tool_count)
+
+        progress = 3
+
+        company = re.sub(r'[\s]','',request.POST.get('company'))
+        com_num = re.sub(r'[^0-9]','',request.POST.get('com_num'))
+
+        applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
+        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
+        invoice_numberaddress_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num'))
+
+        if company_info.objects.filter(company=company).exists():
+            company_already = company_info.objects.get(company=company)
+            company_already.recent_employee = applicant
+            if com_num == "":
+                company_already.com_num = apcan_phone
+            else:
+                company_already.com_num = com_num
+            company_already.save()
+        else:
+            COMPANY_NEW = company_info(
+                company=company,
+                com_num=com_num if com_num else apcan_phone,
+                recent_employee=applicant
+            )
+            COMPANY_NEW.save()
+
+        SENT_CREATE = apply(
+            zir_block_kg = zir_block_kg,
+            zir_block_count = zir_block_count,
+            zir_powder_kg = zir_powder_kg,
+            zir_powder_count = zir_powder_count,
+            round_bar_kg = round_bar_kg,
+            round_bar_count = round_bar_count,
+            tool_kg = tool_kg,
+            tool_count = tool_count,
+            box_num = box_num,
+            progress = progress,
+            company = company,
+            com_num = com_num,
+            applicant = applicant,
+            apcan_phone = apcan_phone,
+            invoice_numberaddress_num = invoice_numberaddress_num,
+        )
+
+        SENT_CREATE.save()
+
+        return redirect('apply_check')
     
-    round_bar_kg = request.POST.get("r_b_kg")
-    round_bar_count = request.POST.get("r_b_num")
-
-    tool_kg = request.POST.get("tool_kg")
-    tool_count = request.POST.get("tool_num")
-
-    box_num = int(zir_block_count) + int(zir_powder_count) + int(round_bar_count) + int(tool_count)
-
-    progress = 3
-
-    company = re.sub(r'[\s]','',request.POST.get('company'))
-    com_num = re.sub(r'[^0-9]','',request.POST.get('com_num'))
-
-    applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
-    apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
-    invoice_numberaddress_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num'))
-
-    SENT_CREATE = apply(
-        zir_block_kg = zir_block_kg,
-        zir_block_count = zir_block_count,
-        zir_powder_kg = zir_powder_kg,
-        zir_powder_count = zir_powder_count,
-        round_bar_kg = round_bar_kg,
-        round_bar_count = round_bar_count,
-        tool_kg = tool_kg,
-        tool_count = tool_count,
-        box_num = box_num,
-        progress = progress,
-        company = company,
-        com_num = com_num,
-        applicant = applicant,
-        apcan_phone = apcan_phone,
-        invoice_numberaddress_num = invoice_numberaddress_num,
-    )
-
-    SENT_CREATE.save()
-
-    return redirect('apply_check')
+    except Exception as e:
+        # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
+        print(f"Error: {e}")
+        return redirect('failed')
 
 def save_failed(request):
     return render(
