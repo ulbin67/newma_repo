@@ -199,7 +199,7 @@ def research_apply(request):
         apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
 
         #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 변경 후 성공페이지 연결
-        if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False, progress = 1).exists():
+        if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False, progress=1).exists():
             current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
             current_apply.process = 2
             current_apply.save()
@@ -220,34 +220,42 @@ def req_success_call(request):
         'manage_apply/pickreq_success.html',
     )
 
+#진행상황전 조회 페이지를 불러오는 함수
+def pro_research_call(request):
+    return render(
+        request,
+        'manage_apply/progress_research_main.html',
+    )
+
+#진행상황 확인 시, 요청한 전적이 있는 지 확인하는 함수
+def research_apply2(request):
+    try:
+        #html에 사용자가 입력한 값 불러오기
+        company = re.sub(r'[\s]','',request.POST.get('company'))
+        applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
+        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
+
+        #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 보여주기
+        if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone).exists():
+            current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
+            apply_id = current_apply.pk
+            return redirect('progress_check', apply_id)
+        #불러온 값이 일치하지 않으면 실패페이지 연결
+        else:
+            return redirect('pick_failed')
+    #불러오기 실패 시, 실패페이지 연결(사용자가 이상한 값을 입력하면 실패함)
+    except Exception as e:
+        # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
+        print(f"Error: {e}")
+        return redirect('pick_failed')
+    
+#진행상황 페이지를 불러오는 함수
+def pro_check_call(request, apply_id):
+    req_apply = apply.objects.filter(pk=apply_id)
+    return render(
+        request,
+        'manage_apply/progress_check.html',
+        {'apply':req_apply}
+    )
+
 #####----아래부터 관리 페이지----#####
-
-#관리자 페이지를 부르는 함수
-def manage_main(request):
-    return render(
-        request,
-        'manage_apply/manage_page.html',
-    )
-
-
-#상자 요청중인 거래만 표시하는 페이지를 부르는 함수
-def box_req(request):
-    apply_list = apply.objects.all(),
-    return render(
-        request,
-        'manage_apply/manage_page.html',
-        {
-            'applys' : apply_list,
-        }
-    )
-
-#배달 오는 중인 거래만 표시하는 페이지를 부르는 함수
-def box_going(request):
-    apply_list = apply.objects.filter(progress=0),
-    return render(
-        request,
-        'manage_apply/manage_box_reqing.html',
-        {
-            'applys' : apply_list,
-        }
-    )
