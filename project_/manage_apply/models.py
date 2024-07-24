@@ -16,7 +16,7 @@ class apply(models.Model):
 
     #회사 정보
     company = models.CharField(max_length=10,null=True,blank=False)
-    com_num = models.CharField(max_length=11,null=True,blank=True)
+    com_num = models.CharField(max_length=14,null=True,blank=True)
 
     #주소
     address_num = models.CharField(max_length=5,null=True,blank=True)
@@ -26,7 +26,7 @@ class apply(models.Model):
     
     #신청자 정보
     applicant = models.CharField(max_length=10, null=True, blank=False)
-    apcan_phone = models.CharField(max_length=11,null=True,blank=False)
+    apcan_phone = models.CharField(max_length=14,null=True,blank=False)
    
 
     PROGRESS_RATE = (
