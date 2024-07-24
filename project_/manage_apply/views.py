@@ -199,7 +199,7 @@ def research_apply(request):
         apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
 
         #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 변경 후 성공페이지 연결
-        if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False).exists():
+        if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False, progress = 1).exists():
             current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
             current_apply.process = 2
             current_apply.save()
