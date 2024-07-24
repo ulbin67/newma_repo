@@ -24,24 +24,24 @@
                 <div class="row">
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">1. 신청하시는 회사명을 입력해 주세요.</label>
-                        <input class="form-control" type="text" placeholder="기공소명을 입력해주세요" aria-label="company" id="company" name="company">
+                        <input class="form-control" type="text" placeholder="기공소명을 입력해주세요" aria-label="company" id="company" name="company" required>
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label">2. 회사 연락처를 입력해 주세요. (*선택)</label>
                         <input class="form-control" type="text" placeholder="(ex: 010-1234-1234)" aria-label="com_num" id="com_num" name="com_num">
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label">3. 담당자 성함을 입력해 주세요.</label>
-                        <input class="form-control" type="text" placeholder="신청자명을 입력해주세요" aria-label="applicant" id="applicant" name="applicant">
+                        <input class="form-control" type="text" placeholder="신청자명을 입력해주세요" aria-label="applicant" id="applicant" name="applicant" required>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label">4. 담당자 연락처를 입력해 주세요.</label>
-                        <input class="form-control" type="text" placeholder="(ex: 010-1234-1234)" aria-label="aplcan_num" id="apcan_phone" name="apcan_phone">
+                        <input class="form-control" type="text" placeholder="(ex: 010-1234-1234)" aria-label="aplcan_num" id="apcan_phone" name="apcan_phone" required>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label">5. 박스를 보낼 주소를 입력해 주세요.</label>
                             <div class="mb-3">
                                 <div class="col">
-                                    <input type="text" id="sample6_postcode" placeholder="우편번호" name="sample6_postcode">
+                                    <input type="text" id="sample6_postcode" placeholder="우편번호" name="sample6_postcode" required>
                                     <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                         <input class="form-control" type="text" id="sample6_address" placeholder="주소" name="sample6_address">
                                     </div>
                                     <div class="col-4">
-                                        <input class="form-control" type="text" id="sample6_detailAddress" placeholder="상세주소" name="sample6_detailAddress">
+                                        <input class="form-control" type="text" id="sample6_detailAddress" placeholder="상세주소" name="sample6_detailAddress" required>
                                     </div>
                                 </div>
                         </div>
