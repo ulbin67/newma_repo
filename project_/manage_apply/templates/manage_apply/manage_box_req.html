@@ -32,7 +32,6 @@
                     <th scope="col">우편번호</th>
                     <th scope="col">주소/상세주소</th>
                     <th scope="col">배송요청사항</th>
-                    <th scope="col">진행상황</th>
                     <th scope="col">전송완료</th>
                 </tr>
               </thead>
@@ -46,7 +45,6 @@
                           <td>{{apply.address_num}}</td>
                           <td>{{apply.address_info}} / {{apply.address_detail}}</td>
                           <td>{{apply.deli_request}}</td>
-                          <td>{{apply.progress}}</td>
                           <td>
                             <div class="form-check">
                               <input type="checkbox" name="apply_ids" value="{{ apply.pk }}">

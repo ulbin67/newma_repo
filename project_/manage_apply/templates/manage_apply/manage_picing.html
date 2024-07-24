@@ -30,8 +30,7 @@
                     <th scope="col">신청자명</th>
                     <th scope="col">연락처</th>
                     <th scope="col">송장번호</th>
-                    <th scope="col">진행상황</th>
-                    <th scope="col">전송완료</th>
+                    <th scope="col">수거완료</th>
                 </tr>
               </thead>
               <tbody>
@@ -42,7 +41,6 @@
                           <td>{{apply.applicant}}</td>
                           <td>{{apply.apcan_phone}}</td>
                           <td>{{apply.invoice_num}}</td>
-                          <td>{{apply.progress}}</td>
                           <td>
                             <div class="form-check">
                               <input type="checkbox" name="apply_ids" value="{{ apply.pk }}">
