@@ -1,25 +1,45 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
-    {%load static%}
-        
-       
-            <div style="text-align: center;">
-                <h3>FAQ</h3>
-            </div>
-            <table style="width:50%; margin:40px auto;" bgcolor="black" cellspacing="1" cellpadding="2">
-                <tr bgcolor="lightgray" align="center">
-                    <td>순번</td>
-                    <td>제목</td>
-                </tr>
-                {% for faq in faqs %}
-                <tr bgcolor="white" align="center">
-                    <td>{{ forloop.counter }}</td>
-                    <td><a href="{% url 'faq_detail' faq.id %}">{{ faq.title }}</a></td>
-                </tr>
-                {% empty %}
-                <tr bgcolor="white" align="center">
-                    <td colspan="2">No FAQs available.</td>
-                </tr>
-                {% endfor %}
-            </table>
+        {% load static %}
+
+        <div style="text-align: center;">
+            <h3>FAQ</h3>
+        </div>
+
+        <style>
+            .faq-table {
+                width: 50%;
+                margin: 40px auto;
+                border-collapse: collapse;
+                background-color: black;
+            }
+            .faq-table th, .faq-table td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            .faq-table th {
+                background-color: lightgray;
+            }
+            .faq-table td {
+                background-color: white;
+            }
+        </style>
+
+        <table class="faq-table">
+            <tr>
+                <th>순번</th>
+                <th>제목</th>
+            </tr>
+            {% for faq in faqs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'faq_detail' faq.id %}">{{ faq.title }}</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">FAQ가 없습니다.</td>
+            </tr>
+            {% endfor %}
+        </table>
 {% endblock %}
