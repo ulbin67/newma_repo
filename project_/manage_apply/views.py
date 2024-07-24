@@ -1,7 +1,7 @@
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import apply,company_info,get_num
+from .models import apply,company_info
 from django.views.generic import ListView,DetailView,UpdateView,CreateView
 import re
 
