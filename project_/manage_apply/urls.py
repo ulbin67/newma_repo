@@ -10,4 +10,5 @@ urlpatterns = [
     path("box_requsting/", views.box_going, name='manage'),
     path("sending_box/", views.sent_page),
     path("sending_box_create/", views.sent_apply_create, name='sent_apply_create'),
+    path("save_failed_error", views.save_failed, name='failed')
 ]
