@@ -194,3 +194,40 @@ def save_failed(request):
         request,
         'manage_apply/apply_failed.html',
     )
+
+def pick_failed(request):
+    return render(
+        request,
+        'manage_apply/pickreq_failed.html',
+    )
+
+def research_page_call(request):
+    return render(
+        request,
+        'manage_apply/pick_req_main.html',
+    )
+
+def research_apply(request):
+    try:
+        company = re.sub(r'[\s]','',request.POST.get('company'))
+        applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
+        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
+
+        if apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False).exists():
+            current_apply = apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
+            current_apply.process = 2
+            current_apply.save()
+            return redirect('request_sucess')
+        else:
+            return redirect('pick_failed')
+          
+    except Exception as e:
+        # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
+        print(f"Error: {e}")
+        return redirect('pick_failed')
+    
+def req_success_call(request):
+    return render(
+        request,
+        'manage_apply/pickreq_success.html',
+    )
