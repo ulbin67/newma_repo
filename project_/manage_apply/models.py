@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -54,6 +55,9 @@ class Apply(models.Model):
     #밀링툴
     tool_count = models.IntegerField(null=True, blank=True)
 
+    #유저 정보
+    user = models.ForeignKey(User, null=True, on_delete= models.CASCADE)
+
     #개인 요청에 따른 주소를 만드는 함수(관리 페이지를 위해 사용)
     def get_absolute_url(self):
         return f'applymain/manager_box_req/{self.pk}'
@@ -85,3 +89,4 @@ class DoneApply(models.Model):
     apcan_phone = models.CharField(max_length=14,null=True,blank=False)
 
     done_at = models.DateTimeField(auto_now_add=True,null=True)
+
