@@ -104,16 +104,12 @@ def sent_page(request):
 def sent_apply_create(request):
     try:
         ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
-        zir_block_kg = request.POST.get("z_b_kg")
         zir_block_count = request.POST.get("z_b_num")
 
-        zir_powder_kg = request.POST.get("z_p_kg")
         zir_powder_count = request.POST.get("z_p_num")
 
-        round_bar_kg = request.POST.get("r_b_kg")
         round_bar_count = request.POST.get("r_b_num")
 
-        tool_kg = request.POST.get("tool_kg")
         tool_count = request.POST.get("tool_num")
 
         box_num = int(zir_block_count) + int(zir_powder_count) + int(round_bar_count) + int(tool_count)
@@ -148,13 +144,8 @@ def sent_apply_create(request):
 
         #모델 양식에 맞게 새로운 row 만들기
         SENT_CREATE = Apply(
-            zir_block_kg = zir_block_kg,
             zir_block_count = zir_block_count,
-            zir_powder_kg = zir_powder_kg,
-            zir_powder_count = zir_powder_count,
-            round_bar_kg = round_bar_kg,
             round_bar_count = round_bar_count,
-            tool_kg = tool_kg,
             tool_count = tool_count,
             box_num = box_num,
             progress = progress,

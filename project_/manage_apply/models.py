@@ -43,19 +43,15 @@ class Apply(models.Model):
 
     ##박스 요청 없이 오는 경우의 연결
     #지르코니아 블록
-    zir_block_kg = models.FloatField(null=True, blank=True)
     zir_block_count = models.IntegerField(null=True, blank=True)
 
     #지르코니아 분말
-    zir_powder_kg = models.FloatField(null=True, blank=True)
     zir_powder_count = models.IntegerField(null=True, blank=True)
 
     #환봉
-    round_bar_kg = models.FloatField(null=True, blank=True)
     round_bar_count = models.IntegerField(null=True, blank=True)
 
     #밀링툴
-    tool_kg = models.FloatField(null=True, blank=True)
     tool_count = models.IntegerField(null=True, blank=True)
 
     #개인 요청에 따른 주소를 만드는 함수(관리 페이지를 위해 사용)
