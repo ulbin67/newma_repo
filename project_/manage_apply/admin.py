@@ -1,11 +1,13 @@
 from django.contrib import admin
-from .models import Apply,DoneApply,CompanyInfo
+from .models import Apply,DoneApply,CompanyInfo,User
 
 # Register your models here.
 # admin.site.register(apply)
 
 admin.site.register(CompanyInfo)
 admin.site.register(DoneApply)
+
+admin.site.register(User)
 
 @admin.register(Apply)
 class ApplyAdmin(admin.ModelAdmin):
