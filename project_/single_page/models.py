@@ -11,12 +11,11 @@ class User(AbstractUser):
 
     name = models.CharField(max_length=10, null=True)
 
-    recent_address_num = models.CharField(max_length=5,null=True,blank=True)
-    recent_address_info = models.TextField(null=True,blank=True)
-    recent_address_detail = models.TextField(null=True,blank=True)
-    recent_deli_request = models.TextField(null=True,blank=True)
-    
-    recent_company = models.CharField(max_length=10,null=True,blank=False)
-    recent_num = models.CharField(max_length=14,null=True,blank=False,unique=True)
+    address_num = models.CharField(max_length=5,null=True,blank=True)
+    address_info = models.TextField(null=True,blank=True)
+    address_detail = models.TextField(null=True,blank=True)
+    deli_request = models.TextField(null=True,blank=True)
+   
+    phone_num = models.CharField(max_length=14,null=True,blank=False)
 
 

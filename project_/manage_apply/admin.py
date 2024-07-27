@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Apply,DoneApply,CompanyInfo,User
+from .models import Apply,DoneApply,CompanyInfo
 
 # Register your models here.
 # admin.site.register(apply)
@@ -7,7 +7,6 @@ from .models import Apply,DoneApply,CompanyInfo,User
 admin.site.register(CompanyInfo)
 admin.site.register(DoneApply)
 
-admin.site.register(User)
 
 @admin.register(Apply)
 class ApplyAdmin(admin.ModelAdmin):

@@ -32,7 +32,7 @@ class Apply(models.Model):
     )
 
     #진행상황
-    progress = models.CharField(max_length=2,choices=PROGRESS_RATE, default=0, null=True)
+    progress = models.IntegerField(max_length=2,choices=PROGRESS_RATE, default=0, null=True)
 
     #박스 수(보내야할 박스수 혹은 받을 박스 수)
     box_num = models.IntegerField(null=True,blank=False)
@@ -58,7 +58,7 @@ class Apply(models.Model):
 
     #개인 요청에 따른 주소를 만드는 함수(관리 페이지를 위해 사용)
     def get_absolute_url(self):
-        return f'applymain/manager_box_req/{self.pk}'
+        return f'applymain/{self.pk}/progress_check/'
 
 #회사 정보를 저장하기 위한 쿼리! 
 class CompanyInfo(models.Model):
