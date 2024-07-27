@@ -21,7 +21,7 @@ class Apply(models.Model):
     
     #신청자 정보(unique=True로 해서 이미 신청한 사람은 다시 신청 불가하도록 지정, 모든 거래 완료시 제거하여 충돌 제거할 필요가 있음)
     applicant = models.CharField(max_length=10, null=True, blank=False)
-    apcan_phone = models.CharField(max_length=14,null=True,blank=False,unique=True)
+    apcan_phone = models.CharField(max_length=14,null=True,blank=False)
    
     #진행상황을 딕셔너리 형태로 저장
     PROGRESS_RATE = (
@@ -54,7 +54,7 @@ class Apply(models.Model):
     tool_count = models.IntegerField(null=True, blank=True)
 
     #유저 정보
-    user = models.ForeignKey(User, null=True, on_delete= models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete= models.CASCADE, blank=True)
 
     #개인 요청에 따른 주소를 만드는 함수(관리 페이지를 위해 사용)
     def get_absolute_url(self):

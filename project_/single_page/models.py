@@ -18,3 +18,5 @@ class User(AbstractUser):
     
     recent_company = models.CharField(max_length=10,null=True,blank=False)
     recent_num = models.CharField(max_length=14,null=True,blank=False,unique=True)
+
+

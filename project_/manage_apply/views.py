@@ -104,24 +104,23 @@ def sent_page(request):
 def sent_apply_create(request):
     try:
         ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
-        zir_block_count = request.POST.get("z_b_num")
+        zir_block_count = int(request.POST.get("z_b_num",''))
 
-        zir_powder_count = request.POST.get("z_p_num")
+        zir_powder_count = int(request.POST.get("z_p_num",''))
 
-        round_bar_count = request.POST.get("r_b_num")
+        round_bar_count = int(request.POST.get("r_b_num",''))
 
-        tool_count = request.POST.get("tool_num")
+        tool_count = int(request.POST.get("tool_num",''))
 
-        box_num = int(zir_block_count) + int(zir_powder_count) + int(round_bar_count) + int(tool_count)
+        box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
 
-        progress = 3
+        progress = 2
 
-        company = re.sub(r'[\s]','',request.POST.get('company'))
-        com_num = re.sub(r'[^0-9]','',request.POST.get('com_num'))
+        company = re.sub(r'[\s]','',request.POST.get('company',''))
+        com_num = re.sub(r'[^0-9]','',request.POST.get('com_num',''))
 
-        applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
-        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
-        invoice_numberaddress_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num'))
+        applicant =re.sub(r'[\s]','',request.POST.get('applicant',''))
+        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone',''))
 
 
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
@@ -153,7 +152,6 @@ def sent_apply_create(request):
             com_num = com_num,
             applicant = applicant,
             apcan_phone = apcan_phone,
-            invoice_numberaddress_num = invoice_numberaddress_num,
         )
         #만든 row를 table에 추가
         SENT_CREATE.save()
