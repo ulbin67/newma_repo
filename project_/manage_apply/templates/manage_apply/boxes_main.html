@@ -17,7 +17,12 @@
     <div class="container">
         <div class="row">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                {% if user.is_authenticated %}
+                <!-- 로그인 시, 요청 선택페이지로 넘어가야함 -->
                 <a class="btn btn-outline-btn btn-outline-danger" href="{% url 'research_call' %}" role="button">상자는 이미 받았고, 다시 수거해주세요</a>
+                {% else %}
+                <a class="btn btn-outline-btn btn-outline-danger" href="{% url 'research_call' %}" role="button">상자는 이미 받았고, 다시 수거해주세요</a>
+                {% endif %}
             </div>
             <h3>상자 신청 </h3>
             <div class="mb-3">
