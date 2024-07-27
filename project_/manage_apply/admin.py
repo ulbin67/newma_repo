@@ -1,6 +1,16 @@
 from django.contrib import admin
-from .models import apply,get_num
+from .models import Apply,DoneApply,CompanyInfo,User
 
 # Register your models here.
-admin.site.register(apply)
-admin.site.register(get_num)
+# admin.site.register(apply)
+
+admin.site.register(CompanyInfo)
+admin.site.register(DoneApply)
+
+admin.site.register(User)
+
+@admin.register(Apply)
+class ApplyAdmin(admin.ModelAdmin):
+    field_names = tuple([f.name for f in Apply._meta.get_fields()])
+    list_display = field_names
+    list_filter = ('apply_at',)

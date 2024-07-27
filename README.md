@@ -11,10 +11,10 @@ mysql 연결 하셔야합니다!
 터미널 창에 python manage.py makemigrations
 python manage.py migrate 쳐보시면 정상작동합니다!
 
-*** DB 문제 발생시 해결 방법 ***
+*** DB 문제 발생시 해결 방법(수정) ***
 
-1. 전체 파일 삭제 후 다시 fetch (저장 후에 해주세요.)
-2. 파일 안에 있는 migrations 이름의 모든 폴더에서 __init__.py와 __pycache__ 빼고 싹 삭제!
+1. 파일 안에 있는 오류 제거용 파일을 하나 복사하기
+2. 실제 project_안에 있는 앱들의 파일을 오류 제거용 파일 안의 project_ 앱들의 파일로 바꿔치기 하기.(같은 이름만 바꿔치기 해주세요!)
 3. mysql 스키마 삭제
 4. mysql 커멘드 창에 create database newmaDB character set utf8mb4 collate utf8mb4_general_ci; 다시 입력
 5. 터미널에서 project_로 들어가서 python manage.py makemigrations 터미널에 치고 문제 없는지 확인

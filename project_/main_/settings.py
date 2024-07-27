@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "single_page",
     "manage_apply",
-    "phonenumber_field",
+    "qna",
 ]
+
+AUTH_USER_MODEL = 'single_page.User'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,7 +86,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD':'00701',
         'HOST': '127.0.0.1',
-        'PORT':'3306'
+        'PORT':'3306'                   # 머지할때 포트번호 -> 3306으로 바꿔야함
     }
 }
 

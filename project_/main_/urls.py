@@ -7,5 +7,7 @@ from django.conf import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("single_page.urls")),
-    path("applymain/", include("manage_apply.urls"), name='manage_apply'),
+    path("applymain/", include("manage_apply.urls")),
+    path('', include('qna.urls')),
 ]
+

@@ -10,12 +10,12 @@
                 <div class="my-5">
                     <div class="row">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <a class="btn btn-outline-dark" href="/applymain/apply_box/" role="button">
+                            <a class="btn btn-outline-dark" href="{%url 'box_apply_main'%}" role="button">
                                 <img src="{% static '/image/box.png' %}" class="card-img-top" style="width: 200px; height: 220px;" alt="...">
                                 <h6 class="card-title">박스 배송 요청</h6>
                                 <p class="card-text">박스가 없을 때만 신청해주세요.</p>
                             </a>
-                            <a class="btn btn-outline-dark"  href="/applymain/sending_box/" role="button">
+                            <a class="btn btn-outline-dark"  href="{%url 'sent_page'%}" role="button">
                                 <img src="{% static '/image/delivery.png' %}" class="card-img-top" style="width: 200px; height: 220px;" alt="...">
                                 <h6 class="card-title">택배 수거 요청</h6>
                                 <p class="card-text">택배를 직접 보내셔도 됩니다.</p>

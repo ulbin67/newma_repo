@@ -5,12 +5,61 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-                <li class="nav-item"><a class="nav-link" href="/introduce_newma/">사업소개</a></li>
-                <li class="nav-item"><a class="nav-link" href="/information_newma/">이용안내</a></li>
-                <li class="nav-item"><a class="nav-link" href="projects.html">거래조회</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">문의</a></li>
+                <div class="d-flex justify-content-center">
+                    <li class="nav-item"><a class="nav-link" href="/introduce_newma/">사업소개</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/information_newma/">이용안내</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/applymain/progess_research/">거래조회</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/qna/">문의</a></li>
+                </div>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#LoginModal">로그인</a></li>
+                {% if user.is_staff %}
+                <li class="nav-item"><a class="nav-link" href="/applymain/manager_page_main/"><h6><div class="badge rounded-pill text-bg-primary text-wrap" style="width: auto;">관리 페이지로</div></h6></a></li>
+                {% else %}
                 <li class="nav-item"><a class="nav-link" href="/applymain/"><h6><div class="badge rounded-pill text-bg-primary text-wrap" style="width: auto;">신청하기</div></h6></a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
+
+
+  
+<div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="LoginModal">로그인/회원가입</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <label for="exampleFormControlInput1" class="form-label">아이디</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="아이디를 입력해주세요">
+                </div>
+                <div class="row">
+                    <label for="exampleFormControlInput1" class="form-label">비밀번호</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="비밀번호를 입력해주세요.">
+                </div>
+                <div class="my-2">
+                    <div class="row">
+                        <div class="mt-4">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <button onclick= "return check_input()" class="btn btn-secondary btn-sm">로그인</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-2">
+                    <div class="d-flex justify-content-center">
+                        <div class="mx-1"><a href="#" class="link-secondary">회원가입</a></div>
+                        <div class="mx-1"><a href="#" class="link-secondary">아이디 찾기</a></div>
+                        <div class="mx-1"><a href="#" class="link-secondary">비밀번호 찾기</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+        <div class="modal-footer"></div>
+      </div>
+    </div>
+</div>
