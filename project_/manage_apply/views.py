@@ -129,15 +129,16 @@ def sent_apply_create(request):
 
         invoice_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num',''))
 
-
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
             company_already.recent_employee = applicant
-            company_already.address_num = address_num
-            company_already.address_info = address_info
-            company_already.address_detail = address_detail
-            company_already.count = int(company_already.count) + 1
+            #우편번호가 있으면 주소 저장
+            if address_num:
+                company_already.address_num = address_num
+                company_already.address_info = address_info
+                company_already.address_detail = address_detail
+                company_already.count = int(company_already.count) + 1
             if com_num == "":
                 company_already.com_num = apcan_phone
             else:
