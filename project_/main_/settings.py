@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "qna",
 ]
 
+AUTH_USER_MODEL = 'manage_apply.User'
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

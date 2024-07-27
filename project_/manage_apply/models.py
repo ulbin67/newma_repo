@@ -1,8 +1,24 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+# Create your models here.\
+
+#기본 유저 정의
+class User(AbstractUser):
+    id = models.AutoField(primary_key=True, db_column='user_id')
+    username = models.CharField(max_length=20, unique=True) #이게 아이디
+    password = models.CharField(max_length=300, null=False)
+
+    name = models.CharField(max_length=10, null=True)
+
+    recent_address_num = models.CharField(max_length=5,null=True,blank=True)
+    recent_address_info = models.TextField(null=True,blank=True)
+    recent_address_detail = models.TextField(null=True,blank=True)
+    recent_deli_request = models.TextField(null=True,blank=True)
+    
+    recent_company = models.CharField(max_length=10,null=True,blank=False)
+    recent_num = models.CharField(max_length=14,min_length=11,null=True,blank=False,unique=True)
 
 #박스 요청 및 수거 date 틀
 class Apply(models.Model):
@@ -13,7 +29,7 @@ class Apply(models.Model):
 
     #회사 정보
     company = models.CharField(max_length=10,null=True,blank=False)
-    com_num = models.CharField(max_length=14,null=True,blank=True)
+    com_num = models.CharField(max_length=14,min_length=10,null=True,blank=True)
 
     #주소
     address_num = models.CharField(max_length=5,null=True,blank=True)
@@ -23,7 +39,7 @@ class Apply(models.Model):
     
     #신청자 정보(unique=True로 해서 이미 신청한 사람은 다시 신청 불가하도록 지정, 모든 거래 완료시 제거하여 충돌 제거할 필요가 있음)
     applicant = models.CharField(max_length=10, null=True, blank=False)
-    apcan_phone = models.CharField(max_length=14,null=True,blank=False,unique=True)
+    apcan_phone = models.CharField(max_length=14,min_length=11,null=True,blank=False,unique=True)
    
     #진행상황을 딕셔너리 형태로 저장
     PROGRESS_RATE = (
