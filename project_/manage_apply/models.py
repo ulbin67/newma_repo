@@ -38,7 +38,7 @@ class Apply(models.Model):
     box_num = models.IntegerField(null=True,blank=False)
 
     #송장 번호
-    invoice_numberaddress_num = models.TextField(null=True,blank=False)
+    invoice_num = models.TextField(null=True,blank=False)
 
     ##박스 요청 없이 오는 경우의 연결
     #지르코니아 블록

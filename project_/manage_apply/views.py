@@ -122,11 +122,21 @@ def sent_apply_create(request):
         applicant =re.sub(r'[\s]','',request.POST.get('applicant',''))
         apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone',''))
 
+        address_num = request.POST.get('sample6_postcode', '')
+        address_info = request.POST.get('sample6_address', '')
+        address_detail = request.POST.get('sample6_detailAddress', '')
+        deli_request = request.POST.get('sample6_extraAddress', '')
+
+        invoice_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num',''))
+
 
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
             company_already.recent_employee = applicant
+            company_already.address_num = address_num
+            company_already.address_info = address_info
+            company_already.address_detail = address_detail
             company_already.count = int(company_already.count) + 1
             if com_num == "":
                 company_already.com_num = apcan_phone
@@ -136,8 +146,11 @@ def sent_apply_create(request):
         else:
             COMPANY_NEW = CompanyInfo(
                 company=company,
-                com_num=com_num if com_num else apcan_phone,
-                recent_employee=applicant
+                recent_employee=applicant,
+                address_num=address_num,
+                address_info=address_info,
+                address_detail=address_detail,
+                com_num=com_num if com_num else apcan_phone
             )
             COMPANY_NEW.save()
 
@@ -152,6 +165,11 @@ def sent_apply_create(request):
             com_num = com_num,
             applicant = applicant,
             apcan_phone = apcan_phone,
+            address_num=address_num,
+            address_info=address_info,
+            address_detail=address_detail,
+            deli_request=deli_request,
+            invoice_num=invoice_num,
         )
         #만든 row를 table에 추가
         SENT_CREATE.save()
