@@ -25,7 +25,11 @@
         </style>
     </head>
     <body>
-        <h1>게시판 페이지입니다</h1>
+        <div class="mx-auto p-2" style="width: auto;">
+            <div class="d-flex justify-content-center">
+                <h3>게시판</h3>
+            </div>
+        </div>
         <form action="{% url 'qna:blog' %}" method="POST">
         {% csrf_token %}
         <div class="container">

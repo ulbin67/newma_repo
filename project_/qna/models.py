@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 
@@ -13,6 +14,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     answer = models.TextField(null=True,blank=True)
     password = models.PositiveBigIntegerField()
+
+    
 
     # 게시글의 제목
     def __str__(self):
