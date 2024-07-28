@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "widget_tweaks",  # 회원가입 form에서 사용
     "single_page",
     "manage_apply",
     "qna",
@@ -134,3 +135,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# 세션 데이터를 데이터베이스에 저장
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
