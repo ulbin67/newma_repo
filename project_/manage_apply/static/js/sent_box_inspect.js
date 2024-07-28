@@ -1,5 +1,3 @@
-// 기존의 유효성 검사 함수들
-
 // 전화번호 형식 확인 (xxx-xxx(x)-xxxx)
 function checkNumber(value) {
     return /^\d{3}-\d{3,4}-\d{4}$/.test(value) || /^\d{10,11}$/.test(value);
@@ -15,8 +13,7 @@ function checkLen(value) {
     return value.length > 10;
 }
 
-// 송장번호 형식 확인 (xxx-xxxx-xxxx)
-// 수정 필요
+// 송장번호 형식 확인
 function checkInvoiceNumber(value) {
     return /^\d{12}$/.test(value);
 }
@@ -86,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 송장번호 입력 시 유효성 검사
     elInput_delivery_num.onkeyup = function () {
         if (elInput_delivery_num.value.length !== 0) {
-            if (!checkInvoiceNumber(elInput_delivery_num.value)) {
+            if (!checkInvoiceNumber(elInput_delivery_num.value)|| !checkInvoiceNumber(elInput_delivery_num.value)) {
                 document.querySelector('.warning.delivery_num').style.display = 'block';
             } else {
                 document.querySelector('.warning.delivery_num').style.display = 'none';
