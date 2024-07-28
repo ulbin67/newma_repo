@@ -2,7 +2,7 @@
 
 // 전화번호 형식 확인 (xxx-xxx(x)-xxxx)
 function checkNumber(value) {
-    return /^\d{3}-\d{3,4}-\d{4}$/.test(value);
+    return /^\d{3}-\d{3,4}-\d{4}$/.test(value) || /^\d{10,11}$/.test(value);
 }
 
 // 값이 비어있는지 확인
@@ -16,27 +16,9 @@ function checkLen(value) {
 }
 
 // 송장번호 형식 확인 (xxx-xxxx-xxxx)
+// 수정 필요
 function checkInvoiceNumber(value) {
-    return /^\d{3}-\d{4}-\d{4}$/.test(value);
-}
-
-// 폐기물 종류 검사 함수
-function checkWaste() {
-    // 각 폐기물의 무게와 개수 가져오기
-    let z_b_kg = parseFloat(document.getElementById('z_b_kg').value);
-    let z_b_num = parseInt(document.getElementById('z_b_num').value);
-    let z_p_kg = parseFloat(document.getElementById('z_p_kg').value);
-    let z_p_num = parseInt(document.getElementById('z_p_num').value);
-    let r_b_kg = parseFloat(document.getElementById('r_b_kg').value);
-    let r_b_num = parseInt(document.getElementById('r_b_num').value);
-    let tool_kg = parseFloat(document.getElementById('tool_kg').value);
-    let tool_num = parseInt(document.getElementById('tool_num').value);
-
-    // 적어도 하나의 폐기물이 0.1kg 이상이고 개수가 1개 이상인지 확인
-    return (z_b_kg >= 0.1 && z_b_num >= 1) ||
-           (z_p_kg >= 0.1 && z_p_num >= 1) ||
-           (r_b_kg >= 0.1 && r_b_num >= 1) ||
-           (tool_kg >= 0.1 && tool_num >= 1);
+    return /^\d{12}$/.test(value);
 }
 
 // 문서 로드가 완료되었을 때 실행되는 함수
@@ -128,6 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
 function check_input() {
     const reg_phone = /^\d{3}-\d{3,4}-\d{4}$/;
 
+    // 폐기물 종류 유효성 검사
+    if (!checkWaste()) {
+        alert("적어도 한 종류의 폐기물의 개수가 1개 이상이어야 합니다.");
+        return false;
+    }
+
     // 회사명 유효성 검사
     if (checkNormal(document.box_form['company'].value) || checkLen(document.box_form['company'].value)) {
         document.box_form.company.focus();
@@ -172,11 +160,7 @@ function check_input() {
         return false;
     }
 
-    // 폐기물 종류 유효성 검사
-    if (!checkWaste()) {
-        alert("적어도 한 종류의 폐기물 무게가 0.1kg 이상이고 개수가 1개 이상이어야 합니다.");
-        return false;
-    }
-
+    // 폼 제출
+    document.box_form.submit();
     return true;
 }

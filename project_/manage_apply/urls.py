@@ -25,4 +25,5 @@ urlpatterns = [
     path("manager_pic_ing/", views.manage_pic_ing, name='ma_picing'),
     path("manager_pic_edit/",views.manage_pic_ing_edit, name='ma_picing_edit'),
     path("manager_done/",views.manage_done, name='ma_done'),
+    path('already_sending/', views.already_sending, name='already_sending'),
 ]

@@ -182,6 +182,10 @@ def sent_apply_create(request):
         print(f"Error: {e}")
         return redirect('failed')
 
+#착불 시 선택하는 페이지를 불러오는 함수
+def already_sending(request):
+    return render(request, 'manage_apply/already_sending.html')
+
 #실패 페이지를 불러오는 함수
 def save_failed(request):
     return render(
