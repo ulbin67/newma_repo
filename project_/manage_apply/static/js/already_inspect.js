@@ -25,8 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let elInput_Com_num = document.querySelector('#com_num');
     let elInput_applicant = document.querySelector('#applicant');
     let elInput_apcan_phone = document.querySelector('#apcan_phone');
-    let elInput_address_detail = document.querySelector('#sample6_detailAddress');
-    let elInput_deli_request = document.querySelector('#sample6_extraAddress');
+    let elInput_delivery_num = document.querySelector('#delivery_num');
     let elCheckbox = document.querySelector('#flexCheckDefault');
 
     // 회사명 입력 시 유효성 검사
@@ -81,16 +80,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    elInput_address_detail.onkeyup = function () {
-        // 값을 입력한 경우
-        if (elInput_address_detail.value.length !== 0) {
-            if (checkNormal(elInput_address_detail.value)) {
-                document.querySelector('.warning.sample6_detailAddress').style.display = 'block'; // 실패 메시지가 보여야 함
+    // 송장번호 입력 시 유효성 검사
+    elInput_delivery_num.onkeyup = function () {
+        if (elInput_delivery_num.value.length !== 0) {
+            if (!checkInvoiceNumber(elInput_delivery_num.value)|| !checkInvoiceNumber(elInput_delivery_num.value)) {
+                document.querySelector('.warning.delivery_num').style.display = 'block';
             } else {
-                document.querySelector('.warning.sample6_detailAddress').style.display = 'none'; // 실패 메시지가 가려져야 함
+                document.querySelector('.warning.delivery_num').style.display = 'none';
             }
         } else {
-            document.querySelector('.warning.sample6_detailAddress').style.display = 'block';
+            document.querySelector('.warning.delivery_num').style.display = 'block';
         }
     };
 
@@ -136,15 +135,11 @@ function check_input() {
         return false;
     }
 
-    if (checkNormal(document.box_form['sample6_detailAddress'].value)) {
-        document.box_form.sample6_detailAddress.focus();
-        alert("상세주소를 입력해주세요");
-        return false;
-    }
-
-    if (checkNormal(document.box_form['sample6_extraAddress'].value)) {
-        document.box_form.sample6_extraAddress.focus();
-        alert("세부사항 및 요청사항을 입력해주세요");
+    // 송장번호 유효성 검사
+    if (!checkInvoiceNumber(document.box_form['delivery_num'].value)) {
+        document.box_form.delivery_num.focus();
+        document.querySelector('.warning.delivery_num').style.display = 'block';
+        alert("송장번호를 정확히 작성해 주세요");
         return false;
     }
 
