@@ -1,0 +1,41 @@
+{% extends 'single_page/base.html' %}
+    {% block main_area %}
+    {%load static%}
+<body>
+    <h1>글쓰기 페이지</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">제목</label>
+                <input class="form-control" type="text" aria-label="aplcan_num" name="postname">
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">비밀번호</label>
+                <input class="form-control" type="text" aria-label="aplcan_num" name="password">
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">내용</label><br>
+                <input type="file" name="mainphoto" label for="exampleFormControlTextarea1" class="form-label"><br>
+                <textarea class="form-control" type="text" aria-label="aplcan_num" name="contents" rows="10" ></textarea>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="등록"  label for="exampleFormControlTextarea1" class="form-label" >
+            </div>
+            
+        </div>
+        {% if user.is_staff %}
+        <div class="container">
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">댓글</label>
+                <input class="form-control" type="text" aria-label="aplcan_num" name="answer">
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="등록"  label for="exampleFormControlTextarea1" class="form-label" >
+            </div>
+        {% endif %}
+            
+        </div>
+    </form>
+</body>
+{% endblock %}
