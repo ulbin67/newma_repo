@@ -32,7 +32,7 @@ class Apply(models.Model):
     )
 
     #진행상황
-    progress = models.IntegerField(max_length=2,choices=PROGRESS_RATE, default=0, null=True)
+    progress = models.IntegerField(choices=PROGRESS_RATE, default=0, null=True)
 
     #박스 수(보내야할 박스수 혹은 받을 박스 수)
     box_num = models.IntegerField(null=True,blank=False)

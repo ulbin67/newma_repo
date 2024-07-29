@@ -1,4 +1,5 @@
 {% load static %}
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container-xxl">
         <a class="navbar-brand" href="/"><img src="{% static '/image/logo.png' %}" alt="로고" width="120px"></a>
@@ -9,7 +10,26 @@
                     <li class="nav-item"><a class="nav-link" href="/information_newma/">이용안내</a></li>
                     <li class="nav-item"><a class="nav-link" href="/applymain/progess_research/">거래조회</a></li>
                     <li class="nav-item"><a class="nav-link" href="/qna/">문의</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#LoginModal">로그인</a></li>
+
+                <!--로그인시 메뉴바-->
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class ="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>&ensp;{% firstof user.get_short_name user.get_username %}&ensp;
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+                        <a class="dropdown-item" href="#">비밀번호 변경</a>
+                        <a class="dropdown-item" href="#">마이페이지</a>
+                    </div>
+                </li>
+                <!--비 로그인시 메뉴바-->
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#LoginModal" href="#">로그인/회원가입</a>
+                </li>
+                {% endif %}
+
                 {% if user.is_staff %}
                 <li class="nav-item"><a class="nav-link" href="/applymain/manager_page_main/"><h6><div class="badge rounded-pill text-bg-primary text-wrap" style="width: auto;">관리 페이지로</div></h6></a></li>
                 {% else %}
@@ -19,8 +39,6 @@
         </div>
     </div>
 </nav>
-
-
   
 <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -31,26 +49,29 @@
         </div>
         <div class="modal-body">
             <div class="container">
-                <div class="row">
-                    <label for="exampleFormControlInput1" class="form-label">아이디</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="아이디를 입력해주세요">
-                </div>
-                <div class="row">
-                    <label for="exampleFormControlInput1" class="form-label">비밀번호</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="비밀번호를 입력해주세요.">
-                </div>
-                <div class="my-2">
+                <form action="." method="post">
+                    {% csrf_token %}
                     <div class="row">
-                        <div class="mt-4">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                                <button onclick= "return check_input()" class="btn btn-secondary btn-sm">로그인</button>
+                        <label class="form-label">아이디</label>
+                        <input type="text" class="form-control" name="username" placeholder="아이디를 입력해주세요">
+                    </div>
+                    <div class="row">
+                        <label class="form-label">비밀번호</label>
+                        <input type="password" class="form-control" name="password" placeholder="비밀번호를 입력해주세요.">
+                    </div>
+                    <div class="my-2">
+                        <div class="row">
+                            <div class="mt-4">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                    <input type="submit" class="btn btn-secondary btn-sm" value="로그인">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
                 <div class="my-2">
                     <div class="d-flex justify-content-center">
-                        <div class="mx-1"><a href="#" class="link-secondary">회원가입</a></div>
+                        <div class="mx-1"><a href="{% url 'register' %}" class="link-secondary">회원가입</a></div>
                         <div class="mx-1"><a href="#" class="link-secondary">아이디 찾기</a></div>
                         <div class="mx-1"><a href="#" class="link-secondary">비밀번호 찾기</a></div>
                     </div>
