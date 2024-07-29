@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from django.core.exceptions import ValidationError
 import re
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -90,8 +91,11 @@ def new_post(request):
 
 def remove_post(request, pk):
     post = Post.objects.get(pk=pk)
-    post.delete()
-    return redirect('/qna/')
+    if request.method == 'POST':
+        post.delete()
+        return redirect('/qna/')
+    return render(request, 'qna/remove_post.html',{'Post':post})
+
 
 
 
