@@ -9,8 +9,14 @@ from django.core.paginator import Paginator
 
 def blog(request):
     # 모든 post를 가져와 postlist에 저장
-    postlist = Post.objects.all()
-    return render(request, 'qna/blog.html', {'postlist':postlist})
+    page = request.GET.get("page","1") #페이지 번호
+    postlist = Post.objects.order_by('-created_at')
+    paginator = Paginator(postlist, 10) #페이지당 10개
+    page_obj = paginator.get_page(page)  # 전체 데이터에서 요청한 페이지에 관한 게시글만 추출
+    
+
+    # postlist = Post.objects.all()
+    return render(request, 'qna/blog.html', {'postlist':page_obj})
 
 def password(request, pk):
     post = get_object_or_404(Post, pk=pk)
