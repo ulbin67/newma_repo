@@ -30,7 +30,7 @@
                 </div>
             </div>
             
-        <form name="picreq_form" action="{% url 'sent_apply_create' %}" method="POST">
+        <form name="box_form" action="{% url 'sent_apply_create' %}" method="POST" onsubmit="return check_input();">
         {% csrf_token %}
 
             <div class="my-3">
@@ -100,9 +100,9 @@
                                 <input class="form-control form-control-sm" type="number" aria-label=".form-control-sm example" value="0" id="tool_num" name="tool_num" min="0">
                             </div>
                         </div>
-                        <div class="warning waste" style="display: none;">적어도 한 종류의 폐기물 무게가 0.1kg 이상이고 개수가 1개 이상이어야 합니다.</div>
                     </div>
                 </div>
+                <div class="warning waste" style="display: block;">적어도 한 종류의 폐기물의 개수가 1개 이상이어야 합니다.</div>
             </div>
             <div class="mt-5">
                 <h4> 기본 정보를 입력하세요. </h4>

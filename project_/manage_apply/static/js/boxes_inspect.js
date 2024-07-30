@@ -136,11 +136,7 @@ function check_input() {
         return false;
     }
 
-    if (checkNormal(document.box_form['sample6_extraAddress'].value)) {
-        document.box_form.sample6_extraAddress.focus();
-        alert("세부사항 및 요청사항을 입력해주세요");
-        return false;
-    }
+    // 세부사항은 유효성 검사를 할 필요가 없어 제외했습니다.
 
     if (document.box_form['box_num'].value==="0") {
         document.box_form.box_num.focus();
