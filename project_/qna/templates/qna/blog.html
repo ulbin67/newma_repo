@@ -40,13 +40,33 @@
                 <table class="table table-hover">
                     <thead>
                       <tr>
-                          <th scope="col">순번</th>
+                          <th scope="col"></th>
                           <th scope="col">제목</th>
                           <th scope="col">답변</th>
                           <th scope="col">날짜</th>
                       </tr>
                     </thead>
                     <tbody>
+                        <!-- 자주묻는질문 -->
+                        {% for list in faqlist %}
+                            <tr>
+                                <td>📌</td>
+                                <td>
+                                
+                                    <a href="password/{{list.pk}}/">{{list.postname}}</a>
+                                    
+                                </td>
+                                <td>
+                                    {%if list.answer %}
+                                    답변완료
+                                    {%else%}
+                                    답변미완료
+                                    {%endif%}
+                                </td>
+                                <td>{{ list.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- 일반질문 -->
                         {% for list in postlist %}
                             <tr>
                                 <td>{{list.pk}}</td>

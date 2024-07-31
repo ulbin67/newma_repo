@@ -14,6 +14,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     answer = models.TextField(null=True,blank=True)
     password = models.PositiveBigIntegerField()
+    is_faq = models.BooleanField(default=False) #자주 묻는 질문 여부
 
     
 
