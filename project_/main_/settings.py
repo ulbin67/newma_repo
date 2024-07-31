@@ -38,10 +38,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "widget_tweaks",  # 회원가입 form에서 사용
     "single_page",
     "manage_apply",
     "qna",
 ]
+
+AUTH_USER_MODEL = 'single_page.User'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
