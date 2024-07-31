@@ -1,10 +1,6 @@
 from django.contrib import admin
-from .models import FAQ
+from.models import Post
 # Register your models here.
 
-
-
-@admin.register(FAQ)
-class FAQAdmin(admin.ModelAdmin):
-    list_display = ('title', 'content', 'answer')
-    search_fields = ('title', 'content', 'answer')
+# 관리자가 게시글 접근 가능
+admin.site.register(Post)
