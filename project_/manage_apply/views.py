@@ -27,6 +27,7 @@ def box_checkcall(request):
         "manage_apply/apply_check.html"
     )
 
+
 #신청 내용을 model로 저장하는 함수
 def box_apply_create(request):
     try:
