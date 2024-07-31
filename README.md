@@ -31,6 +31,7 @@ mysql 연결 하셔야합니다!
     pip install django
     pip install mysqlclient
     pip install django-widget-tweaks
+    pip install Pillow
 ]
 
 * 이외의 문제 발생 시, 제발!!! 오류 코드(웹 화면에서 뜬 오류와 터미널 or CMD, 프롬프트 창에서 뜬 오류) 함께! 보내주세요!

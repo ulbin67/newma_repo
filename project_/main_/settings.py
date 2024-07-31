@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'ko-kr'
+LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Asia/Seoul"
 
@@ -136,5 +136,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 세션 데이터를 데이터베이스에 저장
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
