@@ -53,18 +53,14 @@
                         <!-- 자주묻는질문 -->
                         {% for list in faqlist %}
                             <tr>
-                                <td>📌</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📌&nbsp;</td>
                                 <td>
                                 
                                     <a href="password/{{list.pk}}/">{{list.postname}}</a>
                                     
                                 </td>
                                 <td>
-                                    {%if list.answer %}
-                                    답변완료
-                                    {%else%}
-                                    답변미완료
-                                    {%endif%}
+                                    자주묻는질문
                                 </td>
                                 <td>{{ list.created_at }}</td>
                             </tr>
@@ -72,7 +68,7 @@
                         <!-- 일반질문 -->
                         {% for list in postlist %}
                             <tr>
-                                <td></td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔒&nbsp;</td>
                                 <td>
                                 
                                     <a href="password/{{list.pk}}/">{{list.postname}}</a>
