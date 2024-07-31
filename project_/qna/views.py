@@ -18,9 +18,13 @@ def blog(request):
     paginator = Paginator(postlist, 10) #페이지당 10개
     page_obj = paginator.get_page(page)  # 전체 데이터에서 요청한 페이지에 관한 게시글만 추출
 
-    # postlist = Post.objects.all()
-    return render(request, 'qna/blog.html', {'postlist':page_obj})
+   
+    context = {
+        'faqlist': faqlist,
+        'postlist': page_obj
+    }
 
+    return render(request, 'qna/blog.html', context)
 def password(request, pk):
     post = get_object_or_404(Post, pk=pk)
     
