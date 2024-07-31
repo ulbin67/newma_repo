@@ -38,13 +38,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "widget_tweaks",  # 회원가입 form에서 사용
     "single_page",
     "manage_apply",
     "qna",
 ]
-
-AUTH_USER_MODEL = 'single_page.User'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -85,7 +82,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": 'newmaDB',
         'USER': 'root',
-        'PASSWORD':'00701',
+        'PASSWORD':'0000',
         'HOST': '127.0.0.1',
         'PORT':'3306'                   # 머지할때 포트번호 -> 3306으로 바꿔야함
     }
@@ -115,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'ko-kr'
+LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Asia/Seoul"
 
@@ -136,5 +133,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 세션 데이터를 데이터베이스에 저장
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
