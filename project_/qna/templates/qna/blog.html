@@ -46,7 +46,9 @@
                           <th scope="col"></th>
                           <th scope="col">제목</th>
                           <th scope="col">답변</th>
+                          <th scope="col">회원아이디</th>
                           <th scope="col">날짜</th>
+                          
                       </tr>
                     </thead>
                     <tbody>
@@ -62,6 +64,7 @@
                                 <td>
                                     자주묻는질문
                                 </td>
+                                <td>관리자</td>
                                 <td>{{ list.created_at }}</td>
                             </tr>
                         {% endfor %}
@@ -81,6 +84,11 @@
                                     답변미완료
                                     {%endif%}
                                 </td>
+                                {%if user.is_aurhenticated%}
+                                    <td>{{ user.username }}</td>
+                                {%else%}
+                                    <td>비회원</td>
+                                {%endif%}
                                 <td scope="row">{{list.created_at}}</td>
                             </tr>
                         {% endfor %}
