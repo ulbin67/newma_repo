@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let elInput_applicant = document.querySelector('#applicant');
     let elInput_apcan_phone = document.querySelector('#apcan_phone');
     let elInput_address_detail = document.querySelector('#sample6_detailAddress');
-    let elInput_deli_request = document.querySelector('#sample6_extraAddress');
     let elCheckbox = document.querySelector('#flexCheckDefault');
 
     // 회사명 입력 시 유효성 검사
@@ -105,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // 폼 제출 시 입력 값 유효성 검사 함수
-function check_input() {
+function check_input2() {
     const reg_phone = /^\d{3}-\d{3,4}-\d{4}$/;
 
     // 회사명 유효성 검사
