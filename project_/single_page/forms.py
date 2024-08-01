@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
 
-
 # 기본 사용자 생성 폼을 확장한 커스텀 사용자 생성 폼
 class CustomUserCreationForm(UserCreationForm):
     # 전화번호 부분을 위한 추가 필드 정의
@@ -41,3 +40,16 @@ class CustomUserCreationForm(UserCreationForm):
 # 중복 사용자 ID 확인 폼
 class CheckForm(forms.Form):
     check_id = forms.CharField(label='아이디 확인')
+
+
+class SearchIdForm(forms.Form):
+    search_name = forms.CharField(required=True)
+    search_phone = forms.CharField(required=True)
+    certification_num = forms.CharField(required=False)
+
+class SearchPswForm(forms.Form):
+    search_name = forms.CharField(required=True)
+    search_username = forms.CharField(required=True)
+    search_phone = forms.CharField(required=True)
+    certification_num = forms.CharField(required=False)
+

@@ -52,7 +52,10 @@
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">3. 담당자 성함을 입력해 주세요.</label>
-                    <input class="form-control" type="text" aria-label="applicant" id="applicant" name="applicant">
+
+                    <input class="form-control" type="text" aria-label="applicant" id="applicant" name="applicant"
+                           value="{% if user.is_authenticated %}{{request.user.name}}{% endif %}">
+
                     <div class="warning applicant" style="display: block;">신청자명을 확인해 주세요</div>
                 </div>
                 <div class="mb-3">

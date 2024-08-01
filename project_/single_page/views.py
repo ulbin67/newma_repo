@@ -1,32 +1,14 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, TemplateView, FormView
-from .forms import CustomUserCreationForm, CheckForm                    #
+from django.views.generic import ListView, CreateView, TemplateView, FormView, UpdateView, DeleteView
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from .forms import CustomUserCreationForm, CheckForm, SearchIdForm, SearchPswForm
 from django.urls import reverse_lazy
 from .models import User
-from django.contrib import auth
-from django.contrib.auth import logout
 
 # 메인 화면 및 로그인을 수행하는 View
 def maincall(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(request, username=username, password=password)
-        # 로그인 성공
-        if user is not None:
-            auth.login(request, user)
-            return redirect('home')
+    return render(request, 'single_page/main.html')
 
-        # 로그인 실패
-        else:
-            return redirect('register')
-    else:
-        return render(request, 'single_page/main.html')
-
-# 로그아웃을 수행하는 View
-def logout_view(request):
-    logout(request)
-    return redirect('home')
 
 def introcall(request):
     return render(
@@ -75,6 +57,70 @@ class UserIdCheckView(FormView):                    # 폼 검색 처리를 위�
     def form_valid(self, form):
         username = form.cleaned_data['check_id']
         return self.get(self.request, username)
+
+class SearchIdView(FormView):
+    template_name = 'registration/search_id.html'
+    form_class = SearchIdForm
+
+    def form_valid(self, form):
+        user_name = form.cleaned_data['search_name']
+        user_phone = form.cleaned_data['search_phone']
+        # cer_num = form.cleaned_data['certification_num']  : 인증번호 확인 추후 추가예정
+
+        user_info = User.objects.filter(name=user_name, phone_num=user_phone)
+
+        if user_info.exists():
+            return render(self.request, 'registration/search_id_done.html', {'user_info': user_info})
+        else:
+            form.add_error(None, '일치하는 정보가 없습니다. 입력을 다시 확인해 주세요.')
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+class SearchIdDoneTV(TemplateView):
+    template_name = 'registration/search_id_done.html'
+
+class SearchPswView(FormView):
+    template_name = 'registration/search_psw.html'
+    form_class = SearchPswForm
+
+    def form_valid(self, form):
+        user_name = form.cleaned_data['search_name']
+        user_id = form.cleaned_data['search_username']
+        user_phone = form.cleaned_data['search_phone']
+        # cer_num = form.cleaned_data['certification_num']  : 인증번호 확인 추후 추가예정
+
+        user_info = User.objects.filter(name=user_name, username=user_id, phone_num=user_phone)
+
+        if user_info.exists():
+            return render(self.request, 'registration/update_passwd.html', {'user_info': user_info})
+        else:
+            form.add_error(None, '일치하는 정보가 없습니다. 입력을 다시 확인해 주세요.')
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+class UpdatePswView(PasswordChangeView):
+    model = User
+    template_name = 'registration/update_psw.html'
+    fields = ['']
+
+class UpdatePswDoneTV(PasswordChangeDoneView):
+    template_name = 'registration/update_psw_done.html'
+
+class MyPageView(ListView):
+    template_name = 'my_page/my_page.html'
+
+class ConfirmInfoView(FormView):
+    template_name = 'my_page/confirm_info.html'
+
+class UpdateMyInfoView(UpdateView):
+    template_name = 'my_page/update_info.html'
+
+class DeleteMyInfoView(DeleteView):
+    template_name = 'my_page/delete_info.html'
 
 
 

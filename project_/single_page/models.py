@@ -5,9 +5,6 @@ from django.contrib.auth.models import AbstractUser
 
 #기본 유저 정의
 class User(AbstractUser):
-    id = models.AutoField(primary_key=True, db_column='user_id')
-    username = models.CharField(max_length=20, unique=True)                 # 아이디
-    password = models.CharField(max_length=300, null=False)
     name = models.CharField(max_length=10, null=True)
     address_num = models.CharField(max_length=5,null=True,blank=True)
     address_info = models.TextField(null=True,blank=True)
