@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView, TemplateView, FormView, UpdateView, DeleteView
+from django.views.generic import CreateView, TemplateView, FormView, UpdateView, DeleteView
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
-from .forms import CustomUserCreationForm, CheckForm, SearchIdForm, SearchPswForm
+from .forms import CustomUserCreationForm, CheckForm, SearchIdForm, SearchPswForm, Confirm_infoForm
 from django.urls import reverse_lazy
 from .models import User
+from django.contrib.auth.mixins import LoginRequiredMixin   # 로그인된 사용자만 접근 가능
 
 # 메인 화면 및 로그인을 수행하는 View
 def maincall(request):
@@ -110,17 +111,55 @@ class UpdatePswView(PasswordChangeView):
 class UpdatePswDoneTV(PasswordChangeDoneView):
     template_name = 'registration/update_psw_done.html'
 
-class MyPageView(ListView):
+class MyPageView(LoginRequiredMixin, FormView):
     template_name = 'my_page/my_page.html'
+    form_class = Confirm_infoForm
 
-class ConfirmInfoView(FormView):
-    template_name = 'my_page/confirm_info.html'
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
-class UpdateMyInfoView(UpdateView):
+    def form_valid(self, form):
+        form_name = self.request.POST.get('form_name', '')
+        if form_name == 'info':
+            return redirect(reverse_lazy('update_info', kwargs={'pk': self.request.user.pk}))
+        elif form_name == 'psw':
+            return redirect(reverse_lazy('change_psw'))
+        return super().form_valid(form)
+
+
+class UpdateMyInfoView(LoginRequiredMixin, UpdateView):
     template_name = 'my_page/update_info.html'
+    model = User
+    fields = ['username', 'company_name', 'name', 'email', 'address_num', 'address_info', 'address_detail', 'deli_request', 'phone_num']
 
-class DeleteMyInfoView(DeleteView):
+    def get_success_url(self):
+        return reverse_lazy('my_page')
+
+class ChangePswView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'my_page/change_psw.html'
+    success_url = reverse_lazy('my_page')
+
+
+class DeleteBefore(LoginRequiredMixin, FormView):
+    template_name = 'my_page/delete_before.html'
+    form_class = Confirm_infoForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        return redirect(reverse_lazy('delete_info', kwargs={'pk': self.request.user.pk}))
+
+
+class DeleteMyInfoView(LoginRequiredMixin, DeleteView):
     template_name = 'my_page/delete_info.html'
+    model = User
+    success_url = reverse_lazy('login')
+
 
 
 

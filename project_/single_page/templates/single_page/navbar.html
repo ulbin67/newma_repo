@@ -19,8 +19,7 @@
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">로그아웃</a>
-                        <a class="dropdown-item" href="#">비밀번호 변경</a>
-                        <a class="dropdown-item" href="#">마이페이지</a>
+                        <a class="dropdown-item" href="{% url 'my_page'%}">마이페이지</a>
                     </div>
                     <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
                       {% csrf_token %}

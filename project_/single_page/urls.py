@@ -39,13 +39,15 @@ urlpatterns = [
     # localhost/accounts/my_page/   : 마이페이지
     path("accounts/my_page/", views.MyPageView.as_view(), name='my_page'),
 
-    # localhost/accounts/my_page/confirm/  : 내 정보 수정 전 회원 확인
-    path("accounts/my_page/confirm/", views.ConfirmInfoView.as_view(), name='confirm_my_info'),
-
     # localhost/accounts/my_page/info/   : 내 정보 수정
-    path("accounts/my_page/info/", views.UpdateMyInfoView.as_view(), name='update_info'),
+    path("accounts/my_page/info/<int:pk>/", views.UpdateMyInfoView.as_view(), name='update_info'),
+
+    # localhost/accounts/my_page/change_psw/   : 비밀번호 변경
+    path("accounts/my_page/change_psw/", views.ChangePswView.as_view(), name='change_psw'),
+
+    # localhost/accounts/delete_before/    : 삭제전 인증
+    path("accounts/delete_before/", views.DeleteBefore.as_view(), name='delete_before'),
 
     # localhost/accounts/my_page/info/delete   : 회원 탈퇴 기능
-    path("accounts/my_page/info/delete", views.DeleteMyInfoView.as_view(), name='delete_info'),
-
+    path("accounts/delete_info/<int:pk>", views.DeleteMyInfoView.as_view(), name='delete_info'),
 ]
