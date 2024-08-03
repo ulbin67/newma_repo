@@ -1,0 +1,18 @@
+{% extends 'single_page/base.html' %}
+
+{% block extra-style %}{% endblock %}
+
+{% block main_area %}
+<h1>로그아웃 완료</h1>
+    <br>
+
+    <div>
+        <i class="fas fa-quote-left"></i>
+        <span class="h6">&ensp;저희 사이트를 방문해주셔서 감사합니다&ensp;</span>
+        <i class="fas fa-quote-right"></i>
+    </div>
+
+    <p class="font-italic"><a href="{% url 'login' %}">다시 로그인하기</a></p>
+{% endblock %}
+
+

@@ -1,0 +1,16 @@
+{% load widget_tweaks %}
+{% if form.errors %}
+    <script>
+        alert('비밀번호를 확인해주세요')
+    </script>
+{% endif %}
+
+<div class="container">
+    <h2>회원 탈퇴</h2>
+    <p>계정 삭제 전에 비밀번호를 입력해주세요</p>
+    <form method="post">
+        {% csrf_token %}
+        {{form.confirm_password|add_class:"form-control"}}
+        <button type="submit" class="btn btn-danger">확인</button>
+    </form>
+</div>
