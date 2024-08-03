@@ -24,8 +24,8 @@ urlpatterns = [
     path("manager_box_req/", views.manage_box_req, name='ma_boxreq'),
     path("manager_box_edit/", views.manage_box_req_edit, name='ma_boxreq_edit'),
     path("manager_pic_req/", views.manage_pic_req, name='ma_picreq'),
-    path("manager_pic_edit/", views.manage_pic_req_edit, name='ma_picreq_edit'),
+    path("manager_picreq_edit/", views.manage_pic_req_edit, name='ma_picreq_edit'),
     path("manager_pic_ing/", views.manage_pic_ing, name='ma_picing'),
-    path("manager_pic_edit/", views.manage_pic_ing_edit, name='ma_picing_edit'),
+    path("manager_picing_edit/", views.manage_pic_ing_edit, name='ma_picing_edit'),
     path("manager_done/", views.manage_done, name='ma_done'),
 ]

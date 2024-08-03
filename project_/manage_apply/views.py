@@ -436,7 +436,7 @@ def manage_pic_ing(request):
                 }
             )
         except Apply.DoesNotExist:
-            return redirect("ma_picing")
+            return redirect('ma_picing')
     else:
         return redirect('/')
 
@@ -452,15 +452,14 @@ def manage_pic_ing_edit(request):
                 
                 # 각 apply 객체의 정보를 DoneApply 모델로 저장합니다.
                 for apply in selected_applies:
-                    DoneApply.objects.create(
+                    Done = DoneApply(
                         company=apply.company,
                         applicant=apply.applicant,
                         apcan_phone=apply.apcan_phone
                     )
-                
-                # 선택된 apply 객체들을 삭제합니다.
-                selected_applies.delete()
-            return redirect("ma_picing")
+                    Done.save()
+                    apply.delete()
+            return redirect('ma_picing')
         except Exception as e:
             # 예외 처리 및 디버깅 메시지
             print(f"Error: {e}")
