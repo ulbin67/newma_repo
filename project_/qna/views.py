@@ -27,6 +27,8 @@ def blog(request):
     return render(request, 'qna/blog.html', context)
 def password(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    if post.is_faq:
+        return render(request, 'qna/posting.html', {'post':post})
     
     if request.method == 'POST':
          input_password = re.sub(r'[^0-9]','',request.POST.get('password',''))
@@ -34,6 +36,7 @@ def password(request, pk):
              return render(request, 'qna/posting.html', {'post': post})
          else:
              return render(request, 'qna/password_form.html', {'error': 'Incorrect password', 'post': post})
+    
     return render(request, 'qna/password_form.html', {'post': post})
 
 # 게시글 부르기
