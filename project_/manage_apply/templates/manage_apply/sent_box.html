@@ -35,10 +35,9 @@
                     </div>
                 </div>
             </div>
-            
-        <form name="box_form" action="{% url 'sent_apply_create' %}" method="POST" onsubmit="return check_input2();">
-        {% csrf_token %}
-
+        </div>   
+        <form name="box_form" action="{% url 'box_apply_create' %}" method="POST">
+            {% csrf_token %}
             <div class="my-3">
                 <h4> 폐기물 종류를 체크해주세요. </h4>
             </div>
@@ -229,7 +228,7 @@
                     <div class="mb-5">
                         <div class="mt-4">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                                <button type="submit" class="btn btn-primary">신청하기</button>
+                                <button onclick= "return check_input2()" class="btn btn-primary">신청하기</button>
                             </div>
                         </div>
                     </div>

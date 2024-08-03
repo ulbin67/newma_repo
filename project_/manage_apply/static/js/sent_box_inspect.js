@@ -142,7 +142,7 @@ function check_input2() {
         return false;
     }
 
-   // 세부사항 유효성 검사 삭제
+    // 세부사항 유효성 검사 삭제
 
     // 개인정보 수집 및 이용 동의 체크 여부 검사
     if (!document.getElementById('flexCheckDefault').checked) {
