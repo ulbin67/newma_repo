@@ -9,7 +9,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=20, unique=True)                 # 아이디
     password = models.CharField(max_length=300, null=False)
     name = models.CharField(max_length=10, null=True)
-    company = models.CharField(max_length=10,null=True,blank=True)
+    company_name = models.CharField(max_length=10,null=True,blank=True)
     address_num = models.CharField(max_length=5,null=True,blank=True)
     address_info = models.TextField(null=True,blank=True)
     address_detail = models.TextField(null=True,blank=True)
