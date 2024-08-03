@@ -17,7 +17,12 @@
     <div class="container">
         <div class="row">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                {% if user.is_authenticated %}
+                <!-- 로그인 시, 요청 선택페이지로 넘어가야함 -->
                 <a class="btn btn-outline-btn btn-outline-danger" href="{% url 'research_call' %}" role="button">상자는 이미 받았고, 다시 수거해주세요</a>
+                {% else %}
+                <a class="btn btn-outline-btn btn-outline-danger" href="{% url 'research_call' %}" role="button">상자는 이미 받았고, 다시 수거해주세요</a>
+                {% endif %}
             </div>
             <h3>상자 신청 </h3>
             <div class="mb-3">
@@ -38,7 +43,7 @@
             <div class="row">
                 <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">1. 신청하시는 회사명을 입력해 주세요.</label>
-                    <input class="form-control" type="text" aria-label="company" id="company" name="company">
+                    <input class="form-control" type="text" aria-label="company" id="company" name="company" value="{% if user.is_authenticated %}{{request.user.company_name}}{% endif %}">
                     <div class="warning company" style="display: block;">회사명을 확인해 주세요</div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">2. 회사 연락처를 입력해 주세요. (*선택)</label>
@@ -47,33 +52,36 @@
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">3. 담당자 성함을 입력해 주세요.</label>
-                    <input class="form-control" type="text" aria-label="applicant" id="applicant" name="applicant">
+
+                    <input class="form-control" type="text" aria-label="applicant" id="applicant" name="applicant"
+                           value="{% if user.is_authenticated %}{{request.user.name}}{% endif %}">
+
                     <div class="warning applicant" style="display: block;">신청자명을 확인해 주세요</div>
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">4. 담당자 연락처를 입력해 주세요.</label>
-                    <input class="form-control" type="text" aria-label="aplcan_num" id="apcan_phone" name="apcan_phone">
+                    <input class="form-control" type="text" aria-label="aplcan_num" id="apcan_phone" name="apcan_phone" value="{% if user.is_authenticated %}{{request.user.phone_num}}{% endif %}">
                     <div class="warning apcan_phone" style="display: block;">적절한 연락처 형식이 아닙니다.(형식예시: 010-0000-0000)</div>
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">5. 박스를 보낼 주소를 입력해 주세요.</label>
                         <div class="mb-3">
                             <div class="col">
-                                <input type="text" id="sample6_postcode" placeholder="우편번호" name="sample6_postcode" readonly="readonly">
+                                <input type="text" id="sample6_postcode" placeholder="우편번호" name="sample6_postcode" readonly="readonly" value="{% if user.is_authenticated %}{{request.user.address_num}}{% endif %}">
                                 <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="row">
                                 <div class="col-4">
-                                    <input class="form-control" type="text" id="sample6_address" placeholder="주소" name="sample6_address" readonly="readonly">
+                                    <input class="form-control" type="text" id="sample6_address" placeholder="주소" name="sample6_address" readonly="readonly" value="{% if user.is_authenticated %}{{request.user.address_info}}{% endif %}">
                                 </div>
                                 <div class="col-4">
-                                    <input class="form-control" type="text" id="sample6_detailAddress" placeholder="상세주소" name="sample6_detailAddress">
+                                    <input class="form-control" type="text" id="sample6_detailAddress" placeholder="상세주소" name="sample6_detailAddress" value="{% if user.is_authenticated %}{{request.user.address_detail}}{% endif %}">
                                     <div class="warning sample6_detailAddress" style="display: block;">상세주소를 확인해 주세요</div>
                                 </div>
                             </div>
-                    </div>
+                        </div>
                     <div class="mb-3">
                             <textarea class="form-control" id="sample6_extraAddress" placeholder="세부사항 및 요청사항" rows="3" name="sample6_extraAddress"></textarea>
                     </div>

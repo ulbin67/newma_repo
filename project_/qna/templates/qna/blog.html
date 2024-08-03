@@ -1,0 +1,146 @@
+{% extends 'single_page/base.html' %}
+    {% block main_area %}
+    {% load static %}
+  
+    <link rel = "stylesheet" href = "{%static 'single_page/pretendard.css' %}">
+        <style>
+            .faq-detail-table {
+                width: 50%;
+                margin: 40px auto;
+                border-collapse: collapse;
+                background-color: black;
+            }
+            .faq-detail-table th, .faq-detail-table td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            .faq-detail-table th {
+                background-color: lightgray;
+            }
+            .faq-detail-table td {
+                background-color: white;
+            }
+            h3{
+                font-weight: 700;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mx-auto p-2" style="width: auto;">
+            <div class="d-flex justify-content-center">
+                <h3>문의사항</h3>
+            </div>
+        </div>
+        <form action="{% url 'qna:blog' %}" method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <div class="my-3">
+                <div class="float-end">
+                    <a button type="button" class="btn btn-primary"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: 1rem; margin-bottom: 2rem; " href="new_post/">작성</a>
+                    </div>
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                          <th scope="col"></th>
+                          <th scope="col">제목</th>
+                          <th scope="col">답변</th>
+                          <th scope="col">회원아이디</th>
+                          <th scope="col">날짜</th>
+                          
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 자주묻는질문 -->
+                        {% for list in faqlist %}
+                            <tr>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📌&nbsp;</td>
+                                <td>
+                                
+                                    <a href="password/{{list.pk}}/">{{list.postname}}</a>
+                                    
+                                </td>
+                                <td>
+                                    자주묻는질문
+                                </td>
+                                <td>관리자</td>
+                                <td>{{ list.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- 일반질문 -->
+                        {% for list in postlist %}
+                            <tr>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔒&nbsp;</td>
+                                <td>
+                                
+                                    <a href="password/{{list.pk}}/">{{list.postname}}</a>
+                                    
+                                </td>
+                                <td>
+                                    {%if list.answer %}
+                                    답변완료
+                                    {%else%}
+                                    답변미완료
+                                    {%endif%}
+                                </td>
+                                {%if user.is_aurhenticated%}
+                                    <td>{{ user.username }}</td>
+                                {%else%}
+                                    <td>비회원</td>
+                                {%endif%}
+                                <td scope="row">{{list.created_at}}</td>
+                            </tr>
+                        {% endfor %}
+                </tbody>
+                
+            </table>
+            <div class="d-flex justify-content-center">
+                <ul class="pagination">
+                    <!-- 이전페이지 -->
+                    {% if postlist.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ postlist.previous_page_number }}">이전</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- 페이지 번호 -->
+                    {% for page_number in postlist.paginator.page_range %}
+                        {% if page_number >= postlist.number|add:-5 and page_number <= postlist.number|add:5 %}
+                            {% if page_number == postlist.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                            </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- 다음페이지 -->
+                    {% if postlist.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ postlist.next_page_number }}">다음</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <!-- 페이징처리 끝 -->
+            </div>
+ 
+
+            
+                
+        </div>
+      </div>
+    </form>
+      {% endblock %}

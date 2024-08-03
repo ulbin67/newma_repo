@@ -27,6 +27,7 @@ def box_checkcall(request):
         "manage_apply/apply_check.html"
     )
 
+
 #신청 내용을 model로 저장하는 함수
 def box_apply_create(request):
     try:
@@ -203,27 +204,59 @@ def research_page_call(request):
         'manage_apply/pick_req_main.html',
     )
 
-#상자 수거 요청 시, 요청한 전적이 있는 지 확인하고, 있으면 진행상황을 바꿔주는 함수
 def research_apply(request):
     try:
-        #html에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]','',request.POST.get('company'))
-        applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
-        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
+        # HTML에 사용자가 입력한 값 불러오기
+        company = re.sub(r'[\s]', '', request.POST.get('company', ''))
+        applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
+        apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
-        #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 변경 후 성공페이지 연결
-        if Apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone, address_num__isnull = False, progress=1).exists():
-            current_apply = Apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone)
-            current_apply.update(progress=2)
-            return redirect('request_sucess')
-        #불러온 값이 일치하지 않으면 실패페이지 연결
+        # 불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 변경 후 성공 페이지 연결
+        current_apply = Apply.objects.filter(
+            company=company,
+            applicant=applicant,
+            apcan_phone=apcan_phone,
+            address_num__isnull=False,
+            progress=1
+        )
+
+        if current_apply.exists():
+            if current_apply.count() == 1:
+                apply_instance = current_apply.first()
+                apply_instance.progress = 2
+                apply_instance.save()
+                return redirect('request_success')
+            else:
+                apply_ids = list(current_apply.values_list('pk', flat=True))
+                apply_ids_str = ','.join(map(str, apply_ids))
+                return redirect(f'/applymain/picreq_call/?apply_ids={apply_ids_str}')
         else:
             return redirect('pick_failed')
-    #불러오기 실패 시, 실패페이지 연결(사용자가 이상한 값을 입력하면 실패함)
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
-        print(f"Error: {e}")
+        print(f"Error in research_apply: {e}")
         return redirect('pick_failed')
+
+def picreq_call(request):
+    try:
+        apply_ids_str = request.GET.get('apply_ids', '')
+        apply_ids = apply_ids_str.split(',')
+        applys = Apply.objects.filter(pk__in=apply_ids)
+        return render(request, 'manage_apply/pic_req_list.html', {'applys': applys})
+    except Exception as e:
+        print(f"Error in picreq_call: {e}")
+        return redirect('pick_failed')
+
+def picreq_call_select(request):
+    try:
+        ids = request.POST.getlist('apply_ids')
+        if ids:
+            Apply.objects.filter(pk__in=ids).update(progress=2)
+        return redirect('request_success')
+    except Exception as e:
+        print(f"Error in picreq_call_select: {e}")
+        return redirect('pick_failed')
+
 
 #상자 수거 요청 성공 페이지를 불러오는 함수
 def req_success_call(request):
@@ -248,26 +281,46 @@ def pro_done_call(request):
 #진행상황 확인 시, 요청한 전적이 있는 지 확인하는 함수
 def research_apply2(request):
     try:
-        #html에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]','',request.POST.get('company'))
-        applicant =re.sub(r'[\s]','',request.POST.get('applicant'))
-        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone'))
+        # HTML에 사용자가 입력한 값 불러오기
+        company = re.sub(r'[\s]', '', request.POST.get('company', ''))
+        applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
+        apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
-        #불러온 값이 일치하고, 박스 배송 요청을 한 상태면 진행상황 보여주기
-        if Apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone).exists():
-            current_apply = Apply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone).first()
-            apply_id = current_apply.pk
-            return redirect('progress_check', apply_id=apply_id)
-        elif DoneApply.objects.filter(company=company, applicant=applicant, apcan_phone=apcan_phone).exists():
-            return redirect('done')
-        #불러온 값이 일치하지 않으면 실패페이지 연결
+        # 불러온 값이 일치하는 신청내역 조회
+        current_apply = Apply.objects.filter(
+            company=company,
+            applicant=applicant,
+            apcan_phone=apcan_phone
+        )
+
+        if current_apply.exists():
+            if current_apply.count() == 1:
+                apply_id = current_apply.first().pk
+                return redirect('progress_check', apply_id=apply_id)
+            else:
+                apply_ids = list(current_apply.values_list('pk', flat=True))
+                apply_ids_str = ','.join(map(str, apply_ids))
+                return redirect(f'/applymain/progress_list/?apply_ids={apply_ids_str}')
         else:
             return redirect('pick_failed')
-    #불러오기 실패 시, 실패페이지 연결(사용자가 이상한 값을 입력하면 실패함)
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('pick_failed')
+    
+def pro_check_list(request):
+    try:
+        apply_ids_str = request.GET.get('apply_ids', '')
+        if not apply_ids_str:
+            return redirect('pick_failed')
+            
+        apply_ids = apply_ids_str.split(',')
+        applys = Apply.objects.filter(pk__in=apply_ids)
+        return render(request, 'manage_apply/progress_list.html', {'applys': applys})
+    except Exception as e:
+        print(f"Error in pro_check_list: {e}")
+        return redirect('pick_failed')
+
 
 #진행상황 페이지를 불러오는 함수
 def pro_check_call(request, apply_id):
@@ -280,6 +333,7 @@ def pro_check_call(request, apply_id):
         )
     except Apply.DoesNotExist:
         return redirect('pick_failed')
+
 
 #####----아래부터 관리 페이지----#####
 def manager_page_main(request):
@@ -382,7 +436,7 @@ def manage_pic_ing(request):
                 }
             )
         except Apply.DoesNotExist:
-            return redirect("ma_picing")
+            return redirect('ma_picing')
     else:
         return redirect('/')
 
@@ -398,15 +452,14 @@ def manage_pic_ing_edit(request):
                 
                 # 각 apply 객체의 정보를 DoneApply 모델로 저장합니다.
                 for apply in selected_applies:
-                    DoneApply.objects.create(
+                    Done = DoneApply(
                         company=apply.company,
                         applicant=apply.applicant,
                         apcan_phone=apply.apcan_phone
                     )
-                
-                # 선택된 apply 객체들을 삭제합니다.
-                selected_applies.delete()
-            return redirect("ma_picing")
+                    Done.save()
+                    apply.delete()
+            return redirect('ma_picing')
         except Exception as e:
             # 예외 처리 및 디버깅 메시지
             print(f"Error: {e}")

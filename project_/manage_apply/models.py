@@ -32,7 +32,7 @@ class Apply(models.Model):
     )
 
     #진행상황
-    progress = models.CharField(max_length=2,choices=PROGRESS_RATE, default=0, null=True)
+    progress = models.IntegerField(choices=PROGRESS_RATE, default=0, null=True)
 
     #박스 수(보내야할 박스수 혹은 받을 박스 수)
     box_num = models.IntegerField(null=True,blank=False)
@@ -53,12 +53,17 @@ class Apply(models.Model):
     #밀링툴
     tool_count = models.IntegerField(null=True, blank=True)
 
-    #유저 정보
-    user = models.ForeignKey(User, null=True, on_delete= models.CASCADE, blank=True)
-
     #개인 요청에 따른 주소를 만드는 함수(관리 페이지를 위해 사용)
     def get_absolute_url(self):
-        return f'applymain/manager_box_req/{self.pk}'
+        return f'applymain/{self.pk}/progress_check/'
+    
+    #삭제 메소드
+    def delete(self, *args, **kwargs):
+        # 삭제 전 수행할 작업
+        print(f"Deleting Apply object: {self.pk}")
+        
+        # 슈퍼클래스의 delete 메소드를 호출하여 실제 삭제를 수행
+        super(Apply, self).delete(*args, **kwargs)
 
 #회사 정보를 저장하기 위한 쿼리! 
 class CompanyInfo(models.Model):
