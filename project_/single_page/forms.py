@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import User
-
+from django.core.exceptions import ValidationError
 
 # 기본 사용자 생성 폼을 확장한 커스텀 사용자 생성 폼
 class CustomUserCreationForm(UserCreationForm):
@@ -16,7 +16,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         # 폼에 포함할 필드들
         fields = ('username', 'password1', 'password2', 'name', 'address_num',
-                  'address_info', 'address_detail', 'deli_request')
+                  'address_info', 'address_detail', 'deli_request', 'company_name', 'email')
 
         # 특정 필드의 외관을 커스터마이징하기 위해 위젯 정의
         widgets = {
@@ -37,7 +37,42 @@ class CustomUserCreationForm(UserCreationForm):
             user.save()
         return user
 
-
 # 중복 사용자 ID 확인 폼
 class CheckForm(forms.Form):
     check_id = forms.CharField(label='아이디 확인')
+
+
+class SearchIdForm(forms.Form):
+    search_name = forms.CharField(required=True)
+    search_phone = forms.CharField(required=True)
+    certification_num = forms.CharField(required=False)
+
+class SearchPswForm(forms.Form):
+    search_name = forms.CharField(required=True)
+    search_username = forms.CharField(required=True)
+    search_phone = forms.CharField(required=True)
+    certification_num = forms.CharField(required=False)
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="비밀번호 확인")
+
+    def clean_confirm_password(self):
+        confirm_password = self.cleaned_data.get('confirm_password')
+        if not self.user.check_password(confirm_password):
+            raise ValidationError("현재 비밀번호가 맞지 않습니다.")
+        return confirm_password
+
+class Confirm_infoForm(forms.Form):
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="비밀번호")
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+    def clean(self):
+        cleaned_data = super().clean()
+        current_password = cleaned_data.get("confirm_password")
+
+        if not self.user.check_password(current_password):
+            raise ValidationError("현재 비밀번호가 맞지 않습니다.")
+
+        return cleaned_data
