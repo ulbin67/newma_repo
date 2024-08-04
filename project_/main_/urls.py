@@ -9,5 +9,5 @@ urlpatterns = [
     path("", include("single_page.urls")),
     path("applymain/", include("manage_apply.urls")),
     path('qna/', include('qna.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
