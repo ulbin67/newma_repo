@@ -32,6 +32,7 @@
                     <th scope="col">회사명</th>
                     <th scope="col">신청자명</th>
                     <th scope="col">연락처</th>
+                    <th scope="col">박스수</th>
                     <th scope="col">우편번호</th>
                     <th scope="col">주소/상세주소</th>
                     <th scope="col">배송요청사항</th>
@@ -45,6 +46,17 @@
                           <td>{{apply.company}}</td>
                           <td>{{apply.applicant}}</td>
                           <td>{{apply.apcan_phone}}</td>
+                          <td>
+                            {% if apply.box_num is not none and apply.sent_box_num is not none %}
+                              {{ box_num|add:sent_box_num }}
+                            {% elif apply.box_num is not none %}
+                              {{ apply.box_num }}
+                            {% elif apply.sent_box_num is not none %}
+                              {{ apply.sent_box_num }}
+                            {% else %}
+                              0  <!-- 두 값이 모두 없을 경우 출력할 기본값 -->
+                            {% endif %}
+                          </td>
                           <td>{{apply.address_num}}</td>
                           <td>{{apply.address_info}} / {{apply.address_detail}}</td>
                           <td>{{apply.deli_request}}</td>

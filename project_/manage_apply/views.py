@@ -113,7 +113,7 @@ def sent_apply_create(request):
 
         tool_count = int(request.POST.get("tool_num",''))
 
-        box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
+        sent_box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
 
         progress = 2
 
@@ -161,7 +161,7 @@ def sent_apply_create(request):
             zir_block_count = zir_block_count,
             round_bar_count = round_bar_count,
             tool_count = tool_count,
-            box_num = box_num,
+            sent_box_num = sent_box_num,
             progress = progress,
             company = company,
             com_num = com_num,
@@ -506,5 +506,9 @@ def 정보페이지_call(request):
             )
         except Apply.DoesNotExist:
             return redirect('info_call')
+        except DoneApply.DoesNotExist:
+            return redirect('info_call')
+        except CompanyInfo.DoesNotExist:
+            return redirect('info_call')
     else:
-        return redirect("ma_main")
+        return redirect("/")
