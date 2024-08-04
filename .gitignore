@@ -524,4 +524,7 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+#시크릿 키 설정
+secrets.json
+
 # End of https://www.toptal.com/developers/gitignore/api/django,vs
