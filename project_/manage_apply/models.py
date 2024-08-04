@@ -37,6 +37,8 @@ class Apply(models.Model):
     #박스 수(보내야할 박스수 혹은 받을 박스 수)
     box_num = models.IntegerField(null=True,blank=False)
 
+    sent_box_num = models.IntegerField(null=True,blank=False)
+
     #송장 번호
     invoice_num = models.TextField(null=True,blank=False)
 

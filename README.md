@@ -32,6 +32,7 @@ mysql 연결 하셔야합니다!
     pip install mysqlclient
     pip install django-widget-tweaks
     pip install Pillow
+    pip install Jinja2
     pip install numpy
     pip install pandas
     pip install tensorflow
