@@ -484,3 +484,25 @@ def manage_done(request):
             return redirect('/')
     else:
         return redirect('/')
+    
+##정보 페이지 띄우기!
+
+def 정보페이지_call(request):
+    if request.user.is_staff:
+        try:
+            applys = Apply.objects.all()
+            dones = DoneApply.objects.all()
+            companys = CompanyInfo.objects.all()
+            return render(
+                request,
+                'manage_apply/정보페이지.html',
+                {
+                    'applys': applys,
+                    'dones' : dones,
+                    'companys' : companys,
+                }
+            )
+        except Apply.DoesNotExist:
+            return redirect('info_call')
+    else:
+        return redirect("ma_main")

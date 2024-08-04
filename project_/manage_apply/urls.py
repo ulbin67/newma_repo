@@ -28,4 +28,5 @@ urlpatterns = [
     path("manager_pic_ing/", views.manage_pic_ing, name='ma_picing'),
     path("manager_picing_edit/", views.manage_pic_ing_edit, name='ma_picing_edit'),
     path("manager_done/", views.manage_done, name='ma_done'),
+    path("manager_infopage/", views.정보페이지_call, name = 'info_call')
 ]

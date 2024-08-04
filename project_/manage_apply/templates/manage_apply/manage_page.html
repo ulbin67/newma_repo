@@ -1,6 +1,9 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
     {% if user.is_staff %}
+    <div class="container">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end"><h5><a class="badge rounded-pill text-bg-danger text-wrap"  href="{% url 'info_call' %}" style="width: auto;">거래 정보 보기</a></h5></div>
+    </div>
     <ul class="nav nav-tabs">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'ma_main' %}">거래 회사정보</a>

@@ -1,0 +1,154 @@
+{% extends 'single_page/base.html' %}
+    {% block main_area %}
+    {% if user.is_staff %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <div id="list-example" class="list-group">
+                    <a class="list-group-item list-group-item-action" href="#list-item-1">지역별 거래 확인</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-2">회사별 거래 확인</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-3">박스 수 정보</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-4">박스 수 예측</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+                            <h4 id="list-item-1">지역별 거래 확인</h4>
+                            <div class="container">
+                                <canvas id="BarChart"></canvas>
+                              </div>
+                            <script>
+                                var ctx = document.getElementById('BarChart');
+                                var myChart = new Chart(ctx, {
+                                  type: 'bar',
+                                  data: {
+                                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                    datasets: [{
+                                      label: '# of Votes',
+                                      data: [12, 19, 3, 5, 2, 3],
+                                      backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)'
+                                      ],
+                                      borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                      ],
+                                      borderWidth: 1
+                                    }]
+                                  },
+                                  options: {
+                                    scales: {
+                                      yAxes: [{
+                                        ticks: {
+                                          beginAtZero: true
+                                        }
+                                      }]
+                                    }
+                                  }
+                                });
+                            
+                              </script>
+                            <hr>
+                            <h4 id="list-item-2">회사별 거래 확인</h4>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <canvas id="PieChart1"></canvas>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <canvas id="PieChart2"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                data = {
+                                      datasets: [{
+                                          backgroundColor: ['red','yellow','blue'],
+                                          data: [10, 20, 30]
+                                      }],       
+                                      // 라벨의 이름이 툴팁처럼 마우스가 근처에 오면 나타남
+                                      labels: ['red','yellow','blue'] 
+                                  };
+                              
+                                // 가운데 구멍이 없는 파이형 차트
+                                var ctx1 = document.getElementById("PieChart1");
+                                var myPieChart = new Chart(ctx1, {
+                                    type: 'pie',
+                                    data: data,
+                                    options: {}
+                                });
+                                // 도넛형 차트
+                                var ctx2 = document.getElementById("PieChart2");
+                                var myDoughnutChart = new Chart(ctx2, {
+                                    type: 'doughnut',
+                                    data: data,
+                                    options: {}
+                                });
+                            </script>
+                            <hr>
+                            <h4 id="list-item-3">박스 수 정보</h4>
+                                <div class="container">
+                                    <canvas id="LineChart"></canvas>
+                                </div>
+                                <script>
+                                    var ctx = document.getElementById("LineChart").getContext('2d');
+                                    var chart = new Chart(ctx, {
+                                    // 차트 종류
+                                    type: 'line',
+                                
+                                    // 차트를 그릴 데이터
+                                    data: {
+                                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                                        datasets: [{
+                                        label: 'My First dataset',
+                                        backgroundColor: 'transparent',
+                                        borderColor: 'red',
+                                        data: [0, 10, 5, 2, 20, 30, 45]
+                                        }]
+                                    },
+                                    // 옵션
+                                    options: {}
+                                    });
+                                </script>
+                            <hr>
+                            <h4 id="list-item-4">박스 수 예측</h4>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">index</th>
+                                    <th scope="col">예시</th>
+                                    <th scope="col">표</th>
+                                    <th scope="col">입니다</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <th scope="row">1</th>
+                                    <td>10,000</td>
+                                    <td>2,000</td>
+                                    <td>30,000</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    
