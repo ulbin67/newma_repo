@@ -93,3 +93,6 @@ class DoneApply(models.Model):
 
     done_at = models.DateTimeField(auto_now_add=True,null=True)
 
+    box_num = models.IntegerField(null=True,blank=False)
+
+

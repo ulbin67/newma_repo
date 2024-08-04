@@ -455,7 +455,8 @@ def manage_pic_ing_edit(request):
                     Done = DoneApply(
                         company=apply.company,
                         applicant=apply.applicant,
-                        apcan_phone=apply.apcan_phone
+                        apcan_phone=apply.apcan_phone,
+                        box_num=apply.box_num
                     )
                     Done.save()
                     apply.delete()
@@ -484,7 +485,8 @@ def manage_done(request):
             return redirect('/')
     else:
         return redirect('/')
-    
+
+
 ##정보 페이지 띄우기!
 
 def 정보페이지_call(request):
