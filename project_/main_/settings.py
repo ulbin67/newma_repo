@@ -157,9 +157,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'manage_apply/static'),
-    os.path.join(BASE_DIR, 'qna/static'),
-    os.path.join(BASE_DIR, 'single_page/static'),
 )
 
 # Default primary key field type
