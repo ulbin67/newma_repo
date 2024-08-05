@@ -2,11 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
-<<<<<<< Updated upstream
-from .query import get_current_year_monthly_done_box_count
-=======
-from .query import 이번년도_달별박스수계산
->>>>>>> Stashed changes
+from .query import process_monthly_done_box_count
 
 # Create your views here.
 
@@ -503,18 +499,8 @@ def 정보페이지_call(request):
             dones = DoneApply.objects.all()
             companys = CompanyInfo.objects.all()
 
-            monthly_done_box_count = get_current_year_monthly_done_box_count()
-            box_labels = []
-            box_data = []
-            #쿼리에서 불러온 값을 리스트에 저장
-            for count in monthly_done_box_count:
-                box_labels.append(count['month'].strftime("%B"))
-                box_data.append(count['total_box'])
-            
-            #예외처리
-            if not box_labels or not box_data:
-                box_labels = [""] 
-                box_data = [0]
+            labels, box_nums = process_monthly_done_box_count()
+            month_box_data = [{'label': label, 'box_num': box_num} for label, box_num in zip(labels, box_nums)]
 
             return render(
                 request,
@@ -524,8 +510,7 @@ def 정보페이지_call(request):
                     'dones' : dones,
                     'companys' : companys,
 
-                    'box_labels': box_labels,
-                    'box_data' : box_data,
+                    'month_box_data': month_box_data,
                 }
             )
         except Apply.DoesNotExist:

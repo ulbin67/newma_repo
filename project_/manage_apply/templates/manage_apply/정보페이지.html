@@ -98,50 +98,25 @@
                                 });
                             </script>
                             <hr>
-                            <h4 id="list-item-3">박스 수 정보</h4>
+                            <h4 id="list-item-3">이번년도 요청 박스 수 정보</h4>
                                 <div class="container">
-                                    <canvas id="LineChart"></canvas>
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">날짜(이번년도)</th>
+                                        <th scope="col">박스 수</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for item in month_box_data %}
+                                      <tr>
+                                          <th scope="row">{{ item.label }}</th>
+                                          <td>{{ item.box_num }}</td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
                                 </div>
-                                <script>
-                                    var ctx = document.getElementById("LineChart").getContext('2d');
-
-                                    var boxLabels = JSON.parse('{{ box_labels|safe|escapejs }}');
-                                    var boxData = JSON.parse('{{ box_data|safe|escapejs }}');
-
-                                    var chart = new Chart(ctx, {
-                                    // 차트 종류
-                                    type: 'line',
-                                
-                                    // 차트를 그릴 데이터
-                                    data: {
-                                        labels: box_labels,
-                                        datasets: [{
-                                          label: '월별 박스 수',
-                                          backgroundColor: 'transparent',
-                                          borderColor: 'red',
-                                          data: box_data
-                                          }]
-                                    },
-                                    // 옵션
-                                    options: {
-                                          responsive: true,
-                                          scales: {
-                                              x: {
-                                                  beginAtZero: true
-                                              },
-                                              y: {
-                                                  beginAtZero: true
-                                              }
-                                          },
-                                          plugins: {
-                                              legend: {
-                                                  display: true,
-                                                  position: 'top'
-                                              }
-                                          }
-                                      }
-                                    });
-                                </script>
                             <hr>
                             <h4 id="list-item-4">박스 수 예측</h4>
                             <table class="table">
