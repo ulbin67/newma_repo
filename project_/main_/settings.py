@@ -15,14 +15,14 @@ import os
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+#디렉토리 경로 설정
+#서버 열 때 static 폴더를 잘 불러오기 위해 이 경로가 필요
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+#보안 키를 숨기기 위해 json에 저장
+#깃허브에 업로드 시, 깃 이그노어에 secrets.json 추가 후 푸쉬
+#배포할 때, project_ 폴더 안에 secrets.json 을 만들어야 접근 가능
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
 
 with open(secret_file) as f:
@@ -37,15 +37,18 @@ def get_secret(setting, secrets=secrets):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+#디버그 비허용시 static 자동 연결 해제됨
+#서버 설정으로 다시 연결 필요
 DEBUG = False
 
 ALLOWED_HOSTS = [
+    # 사용 DNS 설정
     ".ap-northeast-2.compute.amazonaws.com"
 ]
 
 
-# Application definition
+# 사용 앱, 위 django.~은 기본 앱으로 삭제 X
+# 앱 추가할 때마다 아래에 추가 필요
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -93,16 +96,20 @@ TEMPLATES = [
 WSGI_APPLICATION = "main_.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-
+# 데이터 베이스 설정
+# sqlite 사용 시, DB에 저장이 올바르게 되고 있는지 잘 알아볼 수 없기 때문에
+# MySQL 사용 했었지만, 실제 배포 시에는 저장이 쉬운 sqlite를 사용
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+## MySQL 사용하는 데이터 베이스 코드
+## MySQL 및 기타 다른 DB 사용을 원한다면 주석 풀고 코드 변경
+## PostgreSQL, MySQL 사용 시 env에 라이브러리 설치 필요!
 
 # DATABASES = {
 #     "default": {
@@ -116,9 +123,6 @@ DATABASES = {
 # }
 
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -136,8 +140,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
+#시간존과 장고 기본 언어 설정
+#장고 모델이 사용하는 시간존과 SQL이 사용하는 시간존이 다를 경우, 불러오기 오류 발생할 수 있음
+#다른 방식으로 해결하는 것을 추천....
 
 LANGUAGE_CODE = 'ko-KR'
 
@@ -145,23 +150,29 @@ TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
+#시간존 사용을 허용할 것인지 설정 SQL과 장고 시간존이 일치 하지 않아 생긴 오류의 경우
+#아래 코드를 False로 바꿔보면 잘 돌아감
+#배포시 False 하지 않도록 주의!
+
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+##static 파일들의 경로 설정
+#static을 읽어들일 경우, URL -> static 파일에 접근 시, 자동으로 붙는 URL
+#ex: http://example/static/이미지.jpg
+#root는 읽어들일 때의 경로... (중요함..)
 STATIC_URL = "/static/"
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+##media 파일들의 경로 설정
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
+
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
