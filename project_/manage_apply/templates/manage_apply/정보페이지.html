@@ -1,7 +1,7 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
     {% if user.is_staff %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <div class="container-fluid">
         <div class="row">
             <div class="col-3">
@@ -98,30 +98,25 @@
                                 });
                             </script>
                             <hr>
-                            <h4 id="list-item-3">박스 수 정보</h4>
+                            <h4 id="list-item-3">이번년도 요청 박스 수 정보</h4>
                                 <div class="container">
-                                    <canvas id="LineChart"></canvas>
+                                  <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">날짜(이번년도)</th>
+                                        <th scope="col">박스 수</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for item in month_box_data %}
+                                      <tr>
+                                          <th scope="row">{{ item.label }}</th>
+                                          <td>{{ item.box_num }}</td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
                                 </div>
-                                <script>
-                                    var ctx = document.getElementById("LineChart").getContext('2d');
-                                    var chart = new Chart(ctx, {
-                                    // 차트 종류
-                                    type: 'line',
-                                
-                                    // 차트를 그릴 데이터
-                                    data: {
-                                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                                        datasets: [{
-                                        label: 'My First dataset',
-                                        backgroundColor: 'transparent',
-                                        borderColor: 'red',
-                                        data: [0, 10, 5, 2, 20, 30, 45]
-                                        }]
-                                    },
-                                    // 옵션
-                                    options: {}
-                                    });
-                                </script>
                             <hr>
                             <h4 id="list-item-4">박스 수 예측</h4>
                             <table class="table">

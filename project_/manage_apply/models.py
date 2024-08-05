@@ -1,6 +1,4 @@
 from django.db import models
-from django.core.validators import RegexValidator
-from single_page.models import User
 
 #박스 요청 및 수거 date 틀
 class Apply(models.Model):
@@ -96,5 +94,3 @@ class DoneApply(models.Model):
     done_at = models.DateTimeField(auto_now_add=True,null=True)
 
     box_num = models.IntegerField(null=True,blank=False)
-
-
