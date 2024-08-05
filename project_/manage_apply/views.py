@@ -2,7 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
+<<<<<<< Updated upstream
 from .query import get_current_year_monthly_done_box_count
+=======
+from .query import 이번년도_달별박스수계산
+>>>>>>> Stashed changes
 
 # Create your views here.
 
