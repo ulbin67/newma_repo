@@ -88,10 +88,6 @@ DATABASES = {
         'PASSWORD':'00701',
         'HOST': '127.0.0.1',
         'PORT':'3306',                   # 머지할때 포트번호 -> 3306으로 바꿔야함
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'sql_mode': 'STRICT_TRANS_TABLES',
-        },
     }
 }
 
