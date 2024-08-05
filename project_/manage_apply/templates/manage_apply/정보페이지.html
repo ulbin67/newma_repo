@@ -1,7 +1,7 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
     {% if user.is_staff %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <div class="container-fluid">
         <div class="row">
             <div class="col-3">
@@ -104,22 +104,42 @@
                                 </div>
                                 <script>
                                     var ctx = document.getElementById("LineChart").getContext('2d');
+
+                                    var boxLabels = JSON.parse('{{ box_labels|safe|escapejs }}');
+                                    var boxData = JSON.parse('{{ box_data|safe|escapejs }}');
+
                                     var chart = new Chart(ctx, {
                                     // 차트 종류
                                     type: 'line',
                                 
                                     // 차트를 그릴 데이터
                                     data: {
-                                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                                        labels: box_labels,
                                         datasets: [{
-                                        label: 'My First dataset',
-                                        backgroundColor: 'transparent',
-                                        borderColor: 'red',
-                                        data: [0, 10, 5, 2, 20, 30, 45]
-                                        }]
+                                          label: '월별 박스 수',
+                                          backgroundColor: 'transparent',
+                                          borderColor: 'red',
+                                          data: box_data
+                                          }]
                                     },
                                     // 옵션
-                                    options: {}
+                                    options: {
+                                          responsive: true,
+                                          scales: {
+                                              x: {
+                                                  beginAtZero: true
+                                              },
+                                              y: {
+                                                  beginAtZero: true
+                                              }
+                                          },
+                                          plugins: {
+                                              legend: {
+                                                  display: true,
+                                                  position: 'top'
+                                              }
+                                          }
+                                      }
                                     });
                                 </script>
                             <hr>

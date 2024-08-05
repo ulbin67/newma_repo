@@ -1,8 +1,8 @@
-from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
+from .query import get_current_year_monthly_done_box_count
 
 # Create your views here.
 
@@ -492,9 +492,26 @@ def manage_done(request):
 def 정보페이지_call(request):
     if request.user.is_staff:
         try:
+            #DB 불러오기
+            #만약 특정 DB만 불러오고 싶다면 Apply.objects.filter(조건)으로 불러오기
+            #DB를 특정 조건으로 합쳐서 불러오고 싶다면 query.py에서 함수로 합쳐서 불러오기
             applys = Apply.objects.all()
             dones = DoneApply.objects.all()
             companys = CompanyInfo.objects.all()
+
+            monthly_done_box_count = get_current_year_monthly_done_box_count()
+            box_labels = []
+            box_data = []
+            #쿼리에서 불러온 값을 리스트에 저장
+            for count in monthly_done_box_count:
+                box_labels.append(count['month'].strftime("%B"))
+                box_data.append(count['total_box'])
+            
+            #예외처리
+            if not box_labels or not box_data:
+                box_labels = [""] 
+                box_data = [0]
+
             return render(
                 request,
                 'manage_apply/정보페이지.html',
@@ -502,6 +519,9 @@ def 정보페이지_call(request):
                     'applys': applys,
                     'dones' : dones,
                     'companys' : companys,
+
+                    'box_labels': box_labels,
+                    'box_data' : box_data,
                 }
             )
         except Apply.DoesNotExist:
