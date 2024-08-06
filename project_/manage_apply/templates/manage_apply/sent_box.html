@@ -51,7 +51,7 @@
                 <h4> 폐기물 종류를 체크해주세요. </h4>
             </div>
         </div>
-        <form action="{% url 'sent_apply_create' %}" method="POST">
+        <form name="box_form" action="{% url 'sent_apply_create' %}" method="POST" onsubmit="return check_input();">
             {% csrf_token %}
             <div class="my-3">
                 <div class="row">

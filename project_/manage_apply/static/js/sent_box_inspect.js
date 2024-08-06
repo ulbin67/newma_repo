@@ -105,9 +105,19 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // 폼 제출 시 입력 값 유효성 검사 함수
-function check_input2() {
-    const reg_phone = /^\d{3}-\d{3,4}-\d{4}$/;
+function check_input() {
 
+    // 최소 한 종류의 폐기물이 1개 이상인지 확인
+    if (
+        parseInt(document.box_form['z_b_num'].value) === 0 &&
+        parseInt(document.box_form['z_p_num'].value) === 0 &&
+        parseInt(document.box_form['r_b_num'].value) === 0 &&
+        parseInt(document.box_form['tool_num'].value) === 0
+    ) {
+        alert("적어도 한 종류의 폐기물 개수가 1개 이상이어야 합니다.");
+        return false;
+    }
+    
     // 회사명 유효성 검사
     if (checkNormal(document.box_form['company'].value) || checkLen(document.box_form['company'].value)) {
         document.box_form.company.focus();
@@ -151,7 +161,6 @@ function check_input2() {
         return false;
     }
 
-    // 폼 제출
-    document.box_form.submit();
+    // 모든 유효성 검사를 통과하면 폼 제출
     return true;
 }
