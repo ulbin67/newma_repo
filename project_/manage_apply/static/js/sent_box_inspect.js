@@ -28,6 +28,28 @@ document.addEventListener("DOMContentLoaded", function () {
     let elInput_address_detail = document.querySelector('#sample6_detailAddress');
     let elCheckbox = document.querySelector('#flexCheckDefault');
 
+    // 폐기물 개수 입력 요소 가져오기
+    const elInput_z_b_num = document.querySelector('#z_b_num');
+    const elInput_z_p_num = document.querySelector('#z_p_num');
+    const elInput_r_b_num = document.querySelector('#r_b_num');
+    const elInput_tool_num = document.querySelector('#tool_num');
+    const warningWaste = document.querySelector('.warning.waste');
+
+    // 폐기물 개수 검증 함수
+    function checkWasteCount() {
+        const z_b_num = parseInt(elInput_z_b_num.value) || 0;
+        const z_p_num = parseInt(elInput_z_p_num.value) || 0;
+        const r_b_num = parseInt(elInput_r_b_num.value) || 0;
+        const tool_num = parseInt(elInput_tool_num.value) || 0;
+        
+        // 최소 한 종류의 폐기물이 1개 이상인지 확인
+        if (z_b_num > 0 || z_p_num > 0 || r_b_num > 0 || tool_num > 0) {
+            warningWaste.style.display = 'none'; // 조건을 충족하면 경고 메시지 숨김
+        } else {
+            warningWaste.style.display = 'block'; // 조건을 충족하지 않으면 경고 메시지 표시
+        }
+    }
+
     // 회사명 입력 시 유효성 검사
     elInput_Comapany.onkeyup = function () {
         if (elInput_Comapany.value.length !== 0) {
@@ -102,6 +124,15 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector('.warning.flexCheckDefault').style.display = 'none';
         }
     };
+
+    // 각 입력 필드에 이벤트 리스너 추가
+    elInput_z_b_num.addEventListener('input', checkWasteCount);
+    elInput_z_p_num.addEventListener('input', checkWasteCount);
+    elInput_r_b_num.addEventListener('input', checkWasteCount);
+    elInput_tool_num.addEventListener('input', checkWasteCount);
+
+    // 초기 확인
+    checkWasteCount();
 });
 
 // 폼 제출 시 입력 값 유효성 검사 함수
