@@ -2,7 +2,7 @@ import folium
 from django.shortcuts import render
 from .models import ManageApplyCompanyInfo
 from geopy.geocoders import Nominatim
-from folium.plugins import MarkerCluster
+
 
 def dashboard_home(request):
     # 지도 생성: 대한민국 중심 좌표
@@ -14,8 +14,6 @@ def dashboard_home(request):
     # 모든 회사 정보 가져오기
     companies = ManageApplyCompanyInfo.objects.all()
 
-    # MarkerCluster 생성
-    marker_cluster = MarkerCluster().add_to(m)
 
     # 각 회사 위치에 마커 추가
     for company in companies:
@@ -32,7 +30,7 @@ def dashboard_home(request):
                     [location.latitude, location.longitude],
                     popup=f"{company.company}",
                     tooltip=company.company
-                ).add_to(marker_cluster)
+                ).add_to(m)
                 print(f"Marker added: {company.company} at {location.latitude}, {location.longitude}")
             else: #위도, 경도 변환 실패한 주소가 있을시, 해당 주소 로그로 나타내줌
                 print(f"Geocode failed for {address}")
