@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "single_page",
     "manage_apply",
     "qna",
+    "dashboard", #정보요약추가 -240805
 ]
 
 AUTH_USER_MODEL = 'single_page.User'
