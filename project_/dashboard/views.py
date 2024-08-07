@@ -2,6 +2,7 @@ import folium
 from django.shortcuts import render
 from .models import ManageApplyCompanyInfo
 from geopy.geocoders import Nominatim
+#from folium.plugins import MarkerCluster
 
 
 def dashboard_home(request):
@@ -13,6 +14,9 @@ def dashboard_home(request):
 
     # 모든 회사 정보 가져오기
     companies = ManageApplyCompanyInfo.objects.all()
+
+    # MarkerCluster 생성
+    #marker_cluster = MarkerCluster().add_to(m)
 
 
     # 각 회사 위치에 마커 추가
@@ -27,10 +31,10 @@ def dashboard_home(request):
             location = geolocator.geocode(address, timeout=10) #자꾸 오류나서 timeout 추가 ㅜㅜ, 유료로 바꿔야할듯
             if location:
                 folium.Marker(
-                    [location.latitude, location.longitude],
-                    popup=f"{company.company}",
-                    tooltip=company.company
-                ).add_to(m)
+                    [location.latitude, location.longitude], #마커 위치
+                    #popup=f"{company.company}", #필요없는 popup 제거
+                    tooltip=company.company #마커 위 마우스 올릴때 나타나는 툴팁
+                ).add_to(m) #지오코딩 넣으면 m -> marker_cluster
                 print(f"Marker added: {company.company} at {location.latitude}, {location.longitude}")
             else: #위도, 경도 변환 실패한 주소가 있을시, 해당 주소 로그로 나타내줌
                 print(f"Geocode failed for {address}")
