@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
-from .query import 이번년도_달별박스수계산, 상자_개수_학습,상자_개수_예측
+from .query import 이번년도_달별박스수계산, 상자_개수_추가_학습,상자_개수_예측
 
 # Create your views here.
 
@@ -499,7 +499,7 @@ def 정보페이지_call(request):
             dones = DoneApply.objects.all()
             companys = CompanyInfo.objects.all()
 
-            상자_개수_학습()
+            상자_개수_추가_학습()
             labels, box_nums = 이번년도_달별박스수계산()
             month_box_data = [{'label': label, 'box_num': box_num} for label, box_num in zip(labels, box_nums)]
 
@@ -526,14 +526,17 @@ def 정보페이지_call(request):
 
 def 상자예측_call(request):
     if request.user.is_staff:
-        YM, predict =상자_개수_예측()
+        ym, predict = 상자_개수_예측()
+
+        if ym is None or predict is None:
+            return HttpResponse("예측 오류 발생", status=500)
 
         return render(
             request,
             'manage_apply/상자예측.html',
             {
-                'YM' : YM,
-                'predict' : predict,
+                'YM': ym,
+                'predict': predict,
             }
         )
     else:
