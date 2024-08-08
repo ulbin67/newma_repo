@@ -1,6 +1,35 @@
 {% extends 'single_page/base.html' %}
     {% block main_area %}
     {% load static %}
+    <script>
+        document.getElementById("chatbot-send").onclick = async function() {
+            let userInput = document.getElementById("chatbot-input").value.trim();
+            if (userInput === "") return;
+    
+            // 메시지 표시
+            let messageContainer = document.getElementById("chatbot-messages");
+            messageContainer.innerHTML += `<div><strong>You:</strong> ${userInput}</div>`;
+    
+            // Django 백엔드에 메시지 전송
+            let response = await fetch("/chatbot/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ "message": userInput })
+            });
+    
+            let result = await response.json();
+            let botResponse = result.message;
+    
+            // 봇 응답 표시
+            messageContainer.innerHTML += `<div><strong>Bot:</strong> ${botResponse}</div>`;
+            document.getElementById("chatbot-input").value = "";
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+    </script>
+    
   
     <link rel = "stylesheet" href = "{%static 'single_page/pretendard.css' %}">
         <style>
@@ -27,120 +56,211 @@
         </style>
     </head>
     <body>
-        <div class="mx-auto p-2" style="width: auto;">
-            <div class="d-flex justify-content-center">
-                <h3>문의사항</h3>
+        <body>
+            <div class="mx-auto p-2" style="width: auto;">
+                <div class="d-flex justify-content-center">
+                    <h3>문의사항</h3>
+                </div>
             </div>
-        </div>
-        <form action="{% url 'qna:blog' %}" method="POST">
-        {% csrf_token %}
-        <div class="container">
-            <div class="my-3">
-                <div class="float-end">
-                    <a button type="button" class="btn btn-primary"
-                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: 1rem; margin-bottom: 2rem; " href="new_post/">작성</a>
-                    </div>
-                <table class="table table-hover">
-                    <thead>
-                      <tr>
-                          <th scope="col"></th>
-                          <th scope="col">제목</th>
-                          <th scope="col">답변</th>
-                          <th scope="col">회원아이디</th>
-                          <th scope="col">날짜</th>
-                          
-                      </tr>
-                    </thead>
-                    <tbody>
-                        <!-- 자주묻는질문 -->
-                        {% for list in faqlist %}
-                            <tr>
-                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📌&nbsp;</td>
-                                <td>
-                                
-                                    <a href="password/{{list.pk}}/">{{list.postname}}</a>
+            <form action="{% url 'qna:blog' %}" method="POST">
+            {% csrf_token %}
+            <div class="container">
+                <div class="my-3">
+                    <div class="float-end">
+                        <a button type="button" class="btn btn-primary"
+                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: 1rem; margin-bottom: 2rem; " href="new_post/">작성</a>
+                        </div>
+                    <table class="table table-hover">
+                        <thead>
+                          <tr>
+                              <th scope="col"></th>
+                              <th scope="col">제목</th>
+                              <th scope="col">답변</th>
+                              <!-- <th scope="col">회원아이디</th> -->
+                              <th scope="col">날짜</th>
+                              
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 자주묻는질문 -->
+                            {% for list in faqlist %}
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📌&nbsp;</td>
+                                    <td>
                                     
-                                </td>
-                                <td>
-                                    자주묻는질문
-                                </td>
-                                <td>관리자</td>
-                                <td>{{ list.created_at }}</td>
-                            </tr>
-                        {% endfor %}
-                        <!-- 일반질문 -->
-                        {% for list in postlist %}
-                            <tr>
-                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔒&nbsp;</td>
-                                <td>
-                                
-                                    <a href="password/{{list.pk}}/">{{list.postname}}</a>
+                                        <a href="password/{{list.pk}}/">{{list.postname}}</a>
+                                        
+                                    </td>
+                                    <td>
+                                        자주묻는질문
+                                    </td>
+                                    <!-- <td>관리자</td> -->
+                                    <td>{{ list.created_at }}</td>
+                                </tr>
+                            {% endfor %}
+                            <!-- 일반질문 -->
+                            {% for list in postlist %}
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔒&nbsp;</td>
+                                    <td>
                                     
-                                </td>
-                                <td>
-                                    {%if list.answer %}
-                                    답변완료
+                                        <a href="password/{{list.pk}}/">{{list.postname}}</a>
+                                        
+                                    </td>
+                                    <td>
+                                        {%if list.answer %}
+                                        답변완료
+                                        {%else%}
+                                        답변미완료
+                                        {%endif%}
+                                    </td>
+                                    <!-- {%if user.is_authenticated%}
+                                        <td>{{ user.username }}</td>
                                     {%else%}
-                                    답변미완료
-                                    {%endif%}
-                                </td>
-                                {%if user.is_aurhenticated%}
-                                    <td>{{ user.username }}</td>
-                                {%else%}
-                                    <td>비회원</td>
-                                {%endif%}
-                                <td scope="row">{{list.created_at}}</td>
-                            </tr>
-                        {% endfor %}
-                </tbody>
-                
-            </table>
-            <div class="d-flex justify-content-center">
-                <ul class="pagination">
-                    <!-- 이전페이지 -->
-                    {% if postlist.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ postlist.previous_page_number }}">이전</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
-                    </li>
-                    {% endif %}
+                                        <td>비회원</td>
+                                    {%endif%} -->
+                                    <td scope="row">{{list.created_at}}</td>
+                                </tr>
+                            {% endfor %}
+                    </tbody>
                     
-                    <!-- 페이지 번호 -->
-                    {% for page_number in postlist.paginator.page_range %}
-                        {% if page_number >= postlist.number|add:-5 and page_number <= postlist.number|add:5 %}
-                            {% if page_number == postlist.number %}
-                            <li class="page-item active" aria-current="page">
-                                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-                            </li>
-                            {% else %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-                            </li>
-                            {% endif %}
+                </table>
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination">
+                        <!-- 이전페이지 -->
+                        {% if postlist.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ postlist.previous_page_number }}">이전</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                        </li>
                         {% endif %}
-                    {% endfor %}
-
-                    <!-- 다음페이지 -->
-                    {% if postlist.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ postlist.next_page_number }}">다음</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <!-- 페이징처리 끝 -->
-            </div>
- 
-
-            
+                        
+                        <!-- 페이지 번호 -->
+                        {% for page_number in postlist.paginator.page_range %}
+                            {% if page_number >= postlist.number|add:-5 and page_number <= postlist.number|add:5 %}
+                                {% if page_number == postlist.number %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                                </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+        
+                        <!-- 다음페이지 -->
+                        {% if postlist.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ postlist.next_page_number }}">다음</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <!-- 페이징처리 끝 -->
+                </div>
+        
                 
+                    
+            </div>
+          </div>
+        </form>
+        
+        <!-- 챗봇 팝업 추가 -->
+        <div id="chatbot-container">
+            <div id="chatbot">
+                <div id="chatbot-header">Chat with us!</div>
+                <div id="chatbot-body">
+                    <div id="chatbot-messages"></div>
+                    <input type="text" id="chatbot-input" placeholder="Ask me something..." />
+                    <button id="chatbot-send">Send</button>
+                </div>
+            </div>
         </div>
-      </div>
-    </form>
-      {% endblock %}
+        
+        <style>
+            #chatbot-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 300px;
+            }
+        
+            #chatbot {
+                background-color: #f8f9fa;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+        
+            #chatbot-header {
+                background-color: #007bff;
+                color: white;
+                padding: 10px;
+                border-radius: 10px 10px 0 0;
+                text-align: center;
+            }
+        
+            #chatbot-body {
+                padding: 10px;
+                height: 200px;
+                overflow-y: auto;
+            }
+        
+            #chatbot-messages {
+                margin-bottom: 10px;
+            }
+        
+            #chatbot-input {
+                width: 80%;
+                padding: 5px;
+            }
+        
+            #chatbot-send {
+                width: 18%;
+                padding: 5px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        </style>
+        
+        <script>
+            document.getElementById("chatbot-send").onclick = async function() {
+                let userInput = document.getElementById("chatbot-input").value.trim();
+                if (userInput === "") return;
+        
+                // 메시지 표시
+                let messageContainer = document.getElementById("chatbot-messages");
+                messageContainer.innerHTML += `<div><strong>You:</strong> ${userInput}</div>`;
+        
+                // Django 백엔드에 메시지 전송
+                let response = await fetch("/chatbot/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ "message": userInput })
+                });
+        
+                let result = await response.json();
+                let botResponse = result.message;
+        
+                // 봇 응답 표시
+                messageContainer.innerHTML += `<div><strong>Bot:</strong> ${botResponse}</div>`;
+                document.getElementById("chatbot-input").value = "";
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+        </script>
+        
+        {% endblock %}
