@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-+&4-u7z-s(ctpn+98m8nxmv2a$w#3ab4u6^ss12@f&!ilj2ax#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -95,7 +95,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD':'00701',
         'HOST': '127.0.0.1',
-        'PORT':'3306',                   # 머지할때 포트번호 -> 3306으로 바꿔야함
+        'PORT':'3333',                   # 머지할때 포트번호 -> 3306으로 바꿔야함
     }
 }
 
@@ -147,5 +147,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#로그인 성공시 리다이랙트 주소
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
+
+#로그아웃 성공시 리다이랙트 주소
+LOGOUT_REDIRECT_URL = '/'
+
+# 비밀번호 찾기(초기화)에 사용
+
+# 메일을 호스트하는 서버
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'                                      # gmail과의 통신하는 포트
+EMAIL_HOST_USER = 'lka111617@gmail.com'                 # 발신할 이메일
+EMAIL_HOST_PASSWORD = 'zruk ydku fdsy fsrs'                      # 발신할 메일의 비밀번호
+EMAIL_USE_TLS = True                                    # TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER                    # 사이트와 관련한 자동응답을 받을 이메일 주소
