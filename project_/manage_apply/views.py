@@ -1,8 +1,8 @@
-from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
+from .query import 이번년도_달별박스수계산, 상자_개수_추가_학습,상자_개수_예측
 
 # Create your views here.
 
@@ -492,9 +492,17 @@ def manage_done(request):
 def 정보페이지_call(request):
     if request.user.is_staff:
         try:
+            #DB 불러오기
+            #만약 특정 DB만 불러오고 싶다면 Apply.objects.filter(조건)으로 불러오기
+            #DB를 특정 조건으로 합쳐서 불러오고 싶다면 query.py에서 함수로 합쳐서 불러오기
             applys = Apply.objects.all()
             dones = DoneApply.objects.all()
             companys = CompanyInfo.objects.all()
+
+            상자_개수_추가_학습()
+            labels, box_nums = 이번년도_달별박스수계산()
+            month_box_data = [{'label': label, 'box_num': box_num} for label, box_num in zip(labels, box_nums)]
+
             return render(
                 request,
                 'manage_apply/정보페이지.html',
@@ -502,6 +510,9 @@ def 정보페이지_call(request):
                     'applys': applys,
                     'dones' : dones,
                     'companys' : companys,
+
+                    'month_box_data': month_box_data,
+
                 }
             )
         except Apply.DoesNotExist:
@@ -510,5 +521,23 @@ def 정보페이지_call(request):
             return redirect('info_call')
         except CompanyInfo.DoesNotExist:
             return redirect('info_call')
+    else:
+        return redirect("/")
+
+def 상자예측_call(request):
+    if request.user.is_staff:
+        ym, predict = 상자_개수_예측()
+
+        if ym is None or predict is None:
+            return HttpResponse("예측 오류 발생", status=500)
+
+        return render(
+            request,
+            'manage_apply/상자예측.html',
+            {
+                'YM': ym,
+                'predict': predict,
+            }
+        )
     else:
         return redirect("/")

@@ -1,0 +1,30 @@
+{% extends 'single_page/base.html' %}
+    {% block main_area %}
+    <div class="container">
+        <div class="mb-3">
+            <div class="mx-5">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="my-2">
+                            <p class="text-center">데이터가 없어 가상 데이터를 1년 치 제작하여 학습시켰습니다.</p> 
+                            <p class="text-center">정확한 예측값을 얻을 때까지 1년 이상의 데이터가 필요할 수 있습니다.</p>
+                            <p class="text-center">시작년월 : 2024-08</p>
+                            {% if YM and predict %}
+                            <h3 class="text-center">{{YM}}의 상자 개수 예측값은 {{ predict|floatformat:2 }}입니다.</h3>
+                            {% else %}
+                            <p>예측 결과를 가져오는 데 실패했습니다.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div class="mt-4">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a class="btn btn-primary" type="button" href="{% url 'info_call' %}" >돌아가기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
