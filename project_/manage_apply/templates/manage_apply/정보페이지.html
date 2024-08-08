@@ -9,7 +9,6 @@
                     <a class="list-group-item list-group-item-action" href="#list-item-1">지역별 거래 확인</a>
                     <a class="list-group-item list-group-item-action" href="#list-item-2">회사별 거래 확인</a>
                     <a class="list-group-item list-group-item-action" href="#list-item-3">박스 수 정보</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-4">박스 수 예측</a>
                 </div>
             </div>
             <div class="col-9">
@@ -98,12 +97,13 @@
                                 });
                             </script>
                             <hr>
-                            <h4 id="list-item-3">이번년도 요청 박스 수 정보</h4>
+                            <h4 id="list-item-3">요청 박스 수 정보</h4>
                                 <div class="container">
+                                  <h5>이번년도만 포함됩니다.</h5>
                                   <table class="table">
                                     <thead>
                                       <tr>
-                                        <th scope="col">날짜(이번년도)</th>
+                                        <th scope="col">날짜</th>
                                         <th scope="col">박스 수</th>
                                       </tr>
                                     </thead>
@@ -116,27 +116,10 @@
                                       {% endfor %}
                                     </tbody>
                                   </table>
+                                  <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                    <a class="btn btn-primary" type="button" href="{% url 'predict_call' %}" >다음달 상자개수 예측</a>
                                 </div>
-                            <hr>
-                            <h4 id="list-item-4">박스 수 예측</h4>
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">index</th>
-                                    <th scope="col">예시</th>
-                                    <th scope="col">표</th>
-                                    <th scope="col">입니다</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td>10,000</td>
-                                    <td>2,000</td>
-                                    <td>30,000</td>
-                                  </tr>
-                                </tbody>
-                              </table>
+                                </div>
                         </div>
                     </div>
                 </div>

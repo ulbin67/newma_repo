@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
-from .query import process_monthly_done_box_count
+from .query import 이번년도_달별박스수계산, 상자_개수_학습,상자_개수_예측
 
 # Create your views here.
 
@@ -499,7 +499,8 @@ def 정보페이지_call(request):
             dones = DoneApply.objects.all()
             companys = CompanyInfo.objects.all()
 
-            labels, box_nums = process_monthly_done_box_count()
+            상자_개수_학습()
+            labels, box_nums = 이번년도_달별박스수계산()
             month_box_data = [{'label': label, 'box_num': box_num} for label, box_num in zip(labels, box_nums)]
 
             return render(
@@ -511,6 +512,7 @@ def 정보페이지_call(request):
                     'companys' : companys,
 
                     'month_box_data': month_box_data,
+
                 }
             )
         except Apply.DoesNotExist:
@@ -519,5 +521,20 @@ def 정보페이지_call(request):
             return redirect('info_call')
         except CompanyInfo.DoesNotExist:
             return redirect('info_call')
+    else:
+        return redirect("/")
+
+def 상자예측_call(request):
+    if request.user.is_staff:
+        YM, predict =상자_개수_예측()
+
+        return render(
+            request,
+            'manage_apply/상자예측.html',
+            {
+                'YM' : YM,
+                'predict' : predict,
+            }
+        )
     else:
         return redirect("/")
