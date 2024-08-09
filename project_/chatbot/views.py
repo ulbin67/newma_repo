@@ -11,7 +11,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
-    api_key = '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'
+    api_key = ''
 
     # PDF 로딩 및 임베딩 준비 (초기화 시 한 번만 실행)
     loader = PyPDFLoader('C:/Users/Hong_i/Desktop/Kaggle/newma_repo/project_/chatbot.pdf')
