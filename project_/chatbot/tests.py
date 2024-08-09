@@ -3,7 +3,7 @@
 import json
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import PyPDFLoader
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -11,10 +11,10 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
-    api_key = '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'  # 여기에 직접 API 키를 입력합니다
+    api_key = ''  # 여기에 직접 API 키를 입력합니다
 
     # PDF 로딩 및 임베딩 준비 (초기화 시 한 번만 실행)
-    loader = PyPDFLoader('C:/Users/Hong_i/Desktop/Kaggle/newma_repo/project_/chatbot.pdf')
+    loader = PyPDFLoader('C:/Users/Hong_i/Desktop/Kaggle/newma_repo/project_chatbot.pdf')
     documents = loader.load_and_split() # pdf 파일에서 문서 내용을 로딩하고 분할
 
     # OpenAIEmbeddings 객체 생성
