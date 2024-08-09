@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
+import pandas as pd
 from .query import 이번년도_달별박스수계산, 상자_개수_추가_학습,상자_개수_예측
 
 # Create your views here.
@@ -41,12 +42,13 @@ def box_apply_create(request):
         # 숫자만 저장
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
+
         address_num = request.POST.get('sample6_postcode', '')
         address_info = request.POST.get('sample6_address', '')
         address_detail = request.POST.get('sample6_detailAddress', '')
         deli_request = request.POST.get('sample6_extraAddress', '')
 
-        box_num = request.POST.get('box_num', '')
+        box_num = int(request.POST.get('box_num', ''))
 
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if CompanyInfo.objects.filter(company=company).exists():
@@ -56,7 +58,7 @@ def box_apply_create(request):
             company_already.address_info = address_info
             company_already.address_detail = address_detail
             company_already.count = int(company_already.count) + 1
-            if com_num == "":
+            if com_num:
                 company_already.com_num = apcan_phone
             else:
                 company_already.com_num = com_num
@@ -72,21 +74,22 @@ def box_apply_create(request):
             )
             COMPANY_NEW.save()
 
-        #모델 양식에 맞게 새로운 row 만들기
-        BOX_CREATE = Apply(
-            company=company,
-            com_num=com_num if com_num else apcan_phone,
-            applicant=applicant,
-            apcan_phone=apcan_phone,
-            address_num=address_num,
-            address_info=address_info,
-            address_detail=address_detail,
-            deli_request=deli_request,
-            box_num=box_num
-        )
-        #만든 row를 table에 추가
-        BOX_CREATE.save()
-        return redirect('apply_check')
+        for i in range(box_num):
+            #모델 양식에 맞게 새로운 row 만들기
+            BOX_CREATE = Apply(
+                company=company,
+                com_num=com_num if com_num else apcan_phone,
+                applicant=applicant,
+                apcan_phone=apcan_phone,
+                address_num=address_num,
+                address_info=address_info,
+                address_detail=address_detail,
+                deli_request=deli_request,
+                box_num=1
+            )
+            #만든 row를 table에 추가
+            BOX_CREATE.save()
+            return redirect('apply_check')
     #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
@@ -111,11 +114,9 @@ def sent_apply_create(request):
 
         round_bar_count = int(request.POST.get("r_b_num",''))
 
-        tool_count = int(request.POST.get("tool_num",''))
+        tool_count = int(request.POST.get("tool_num",''))   
 
-        sent_box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
-
-        progress = 2
+        invoice_num = re.sub(r'[^0-9]', '', request.POST.get('invoice_num', ''))
 
         company = re.sub(r'[\s]','',request.POST.get('company',''))
         com_num = re.sub(r'[^0-9]','',request.POST.get('com_num',''))
@@ -128,8 +129,6 @@ def sent_apply_create(request):
         address_detail = request.POST.get('sample6_detailAddress', '')
         deli_request = request.POST.get('sample6_extraAddress', '')
 
-        invoice_num = re.sub(r'[^0-9]','',request.POST.get('invoice_num',''))
-
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
@@ -140,7 +139,7 @@ def sent_apply_create(request):
                 company_already.address_info = address_info
                 company_already.address_detail = address_detail
                 company_already.count = int(company_already.count) + 1
-            if com_num == "":
+            if com_num:
                 company_already.com_num = apcan_phone
             else:
                 company_already.com_num = com_num
@@ -155,26 +154,106 @@ def sent_apply_create(request):
                 com_num=com_num if com_num else apcan_phone
             )
             COMPANY_NEW.save()
+        
+        if invoice_num:
+            sent_box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
+            SENT_CREATE = Apply(
+                zir_block_count = zir_block_count,
+                zir_powder_count = zir_powder_count,
+                round_bar_count = round_bar_count,
+                tool_count = tool_count,
+                sent_box_num = sent_box_num,
+                box_num = 0,
+                progress = 3,
+                company = company,
+                com_num = com_num,
+                applicant = applicant,
+                apcan_phone = apcan_phone,
+                address_num=address_num,
+                address_info=address_info,
+                address_detail=address_detail,
+                deli_request=deli_request,
+                invoice_num=invoice_num,
+            )
+            SENT_CREATE.save()
+        else:
+            box_num = 1
+            progress = 2
+            for i in range(zir_block_count):
+                SENT_CREATE = Apply(
+                    zir_block_count = 1,
+                    zir_powder_count = 0,
+                    round_bar_count = 0,
+                    tool_count = 0,
+                    box_num = box_num,
+                    progress = progress,
+                    company = company,
+                    com_num = com_num,
+                    applicant = applicant,
+                    apcan_phone = apcan_phone,
+                    address_num=address_num,
+                    address_info=address_info,
+                    address_detail=address_detail,
+                    deli_request=deli_request,
+                )
+                SENT_CREATE.save()
 
-        #모델 양식에 맞게 새로운 row 만들기
-        SENT_CREATE = Apply(
-            zir_block_count = zir_block_count,
-            round_bar_count = round_bar_count,
-            tool_count = tool_count,
-            sent_box_num = sent_box_num,
-            progress = progress,
-            company = company,
-            com_num = com_num,
-            applicant = applicant,
-            apcan_phone = apcan_phone,
-            address_num=address_num,
-            address_info=address_info,
-            address_detail=address_detail,
-            deli_request=deli_request,
-            invoice_num=invoice_num,
-        )
-        #만든 row를 table에 추가
-        SENT_CREATE.save()
+            for i in range(zir_powder_count):
+                SENT_CREATE = Apply(
+                    zir_block_count = 0,
+                    zir_powder_count = 1,
+                    round_bar_count = 0,
+                    tool_count = 0,
+                    box_num = box_num,
+                    progress = progress,
+                    company = company,
+                    com_num = com_num,
+                    applicant = applicant,
+                    apcan_phone = apcan_phone,
+                    address_num=address_num,
+                    address_info=address_info,
+                    address_detail=address_detail,
+                    deli_request=deli_request,
+                )
+                SENT_CREATE.save()
+
+            for  i in range(round_bar_count):
+                SENT_CREATE = Apply(
+                    zir_block_count = 0,
+                    zir_powder_count = 0,
+                    round_bar_count = 1,
+                    tool_count = 0,
+                    box_num = box_num,
+                    progress = progress,
+                    company = company,
+                    com_num = com_num,
+                    applicant = applicant,
+                    apcan_phone = apcan_phone,
+                    address_num=address_num,
+                    address_info=address_info,
+                    address_detail=address_detail,
+                    deli_request=deli_request,
+                )
+                SENT_CREATE.save()
+
+            for i in range(tool_count):
+                SENT_CREATE = Apply(
+                    zir_block_count = 0,
+                    zir_powder_count = 0,
+                    round_bar_count = 0,
+                    tool_count = 1,
+                    box_num = box_num,
+                    progress = progress,
+                    company = company,
+                    com_num = com_num,
+                    applicant = applicant,
+                    apcan_phone = apcan_phone,
+                    address_num=address_num,
+                    address_info=address_info,
+                    address_detail=address_detail,
+                    deli_request=deli_request,
+                )
+                SENT_CREATE.save()
 
         return redirect('apply_check')
     #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
@@ -339,7 +418,7 @@ def pro_check_call(request, apply_id):
 def manager_page_main(request):
     if request.user.is_staff:
         try:
-            companys =  CompanyInfo.objects.all()
+            companys =  CompanyInfo.objects.all().order_by("-count")
             id = request.POST.get('pk')
             return render(
                 request,
@@ -355,7 +434,6 @@ def manager_page_main(request):
 
 
 ##박스 요청중 페이지 함수
-
 def manage_box_req(request):
     if request.user.is_staff:
         try:
@@ -406,22 +484,42 @@ def manage_pic_req(request):
         return redirect('/')
 
 
-def manage_pic_req_edit(request):
+def manage_pic_req_download(request):
     if request.user.is_staff:
         try:
             # POST 요청에서 선택된 apply 객체들의 ID 목록을 가져옵니다.
             apply_ids = request.POST.getlist('apply_ids')
             if apply_ids:
                 # 선택된 apply 객체들의 progress를 3으로 업데이트합니다.
-                Apply.objects.filter(pk__in=apply_ids).update(progress=3)
-            return redirect("ma_picreq")
+                saving_datas = Apply.objects.filter(pk__in=apply_ids)
+                data = {
+                    '요청 pk': [apply.pk for apply in saving_datas],
+                    '신청 시간': [apply.apply_at for apply in saving_datas],
+                    '회사 정보': [apply.company for apply in saving_datas],
+                    '신청자': [apply.applicant for apply in saving_datas],
+                    '우편번호': [apply.address_num for apply in saving_datas],
+                    '주소': [f'{apply.address_info} {apply.address_detail}' for apply in saving_datas],
+                    '요청 사항': [apply.deli_request for apply in saving_datas],
+                    '송장번호': ['' for apply in saving_datas]
+                }
+                saving_df = pd.DataFrame(data)
+                
+                # Apply 객체들의 progress를 3으로 업데이트합니다.
+                Apply.objects.filter(pk__in=apply_ids).update(progress=4)
+                
+                # CSV 파일을 반환합니다.
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="apply_data.csv"'
+                saving_df.to_csv(response, index=False, encoding='utf-8-sig')
+                
+                return response
+            else:
+                return redirect("ma_picreq")
         except Exception as e:
-            # 예외 처리 및 디버깅 메시지
             print(f"Error: {e}")
             return redirect("ma_main")
     else:
         return redirect('/')
-
 
 ## 수거중 페이지 함수
 def manage_pic_ing(request):

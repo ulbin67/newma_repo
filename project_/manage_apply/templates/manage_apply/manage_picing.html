@@ -45,14 +45,10 @@
                           <td>{{apply.applicant}}</td>
                           <td>{{apply.apcan_phone}}</td>
                           <td>
-                            {% if apply.box_num is not none and apply.sent_box_num is not none %}
-                              {{ box_num|add:sent_box_num }}
-                            {% elif apply.box_num is not none %}
+                            {% if apply.sent_box_num ==  0 %}
                               {{ apply.box_num }}
-                            {% elif apply.sent_box_num is not none %}
-                              {{ apply.sent_box_num }}
                             {% else %}
-                              0  <!-- 두 값이 모두 없을 경우 출력할 기본값 -->
+                              {{ apply.sent_box_num }}
                             {% endif %}
                           </td>
                           <td>{{apply.invoice_num}}</td>
