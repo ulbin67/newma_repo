@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.http import FileResponse
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
@@ -486,7 +487,6 @@ def manage_pic_req(request):
     else:
         return redirect('/')
 
-
 def manage_pic_req_edit(request):
     if request.user.is_staff:
         try:
@@ -497,7 +497,6 @@ def manage_pic_req_edit(request):
                 saving_datas = Apply.objects.filter(pk__in=apply_ids)
                 data = {
                     '요청 pk': [apply.pk for apply in saving_datas],
-                    '신청 시간': [apply.apply_at for apply in saving_datas],
                     '회사 정보': [apply.company for apply in saving_datas],
                     '신청자': [apply.applicant for apply in saving_datas],
                     '우편번호': [apply.address_num for apply in saving_datas],
@@ -506,16 +505,24 @@ def manage_pic_req_edit(request):
                     '송장번호': ['' for apply in saving_datas]  # 송장번호 필드 추가
                 }
                 saving_df = pd.DataFrame(data)
-                
+
                 # 선택된 Apply 객체들의 progress를 4로 업데이트합니다.
                 Apply.objects.filter(pk__in=apply_ids).update(progress=4)
-                
-                # CSV 파일을 반환합니다.
-                response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="apply_data.csv"'
-                saving_df.to_csv(response, index=False, encoding='UTF-8')
-                
-                return response
+
+                file_name = 'apply_data.xlsx'
+                file_path = os.path.join(settings.MEDIA_ROOT, 'exports', file_name)
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+                # Save DataFrame to an Excel file
+                with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+                    saving_df.to_excel(writer, index=False, sheet_name='ApplyData')
+
+                # Verify file creation
+                if not os.path.exists(file_path):
+                    raise FileNotFoundError(f"File was not created: {file_path}")
+
+                # 파일 다운로드를 위한 응답 반환
+                return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
             else:
                 return redirect("ma_picreq")
         except Exception as e:
@@ -523,6 +530,7 @@ def manage_pic_req_edit(request):
             return redirect("ma_main")
     else:
         return redirect('/')
+
 
 def upload_file_page(request):
     if request.user.is_staff:
@@ -533,31 +541,52 @@ def upload_file_page(request):
     else:
         return redirect('/')
 
-def upload_csv(request):
-    if request.method == 'POST' and request.FILES.get('csv_file'):
-        csv_file = request.FILES['csv_file']
+def upload_xl(request):
+    if request.method == 'POST' and request.FILES.get('xl_file'):
+        xl_file = request.FILES['xl_file']
+        file_name = xl_file.name
+        file_extension = os.path.splitext(file_name)[1].lower()
+
+        # 지원되는 파일 확장자 확인
+        if file_extension not in ['.xlsx', '.xls']:
+            return render(request, 'manage_apply/manage_파일업로드.html', {'error': '업로드된 파일이 지원되지 않는 형식입니다. (Excel 파일만 허용됩니다.)'})
 
         # 파일 저장 경로 설정
         fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'uploads'))
-        filename = fs.save(csv_file.name, csv_file)
+        filename = fs.save(file_name, xl_file)
         file_path = fs.path(filename)
 
         try:
-            # CSV 파일을 pandas DataFrame으로 읽어들이기
-            df = pd.read_csv(file_path)
+            # Excel 파일을 pandas DataFrame으로 읽어들이기
+            if file_extension == '.xlsx':
+                df = pd.read_excel(file_path, engine='openpyxl')
+            else:
+                df = pd.read_excel(file_path, engine='xlrd')
+
+            # 로그: 읽어들인 데이터 확인
+            print("DataFrame head:\n", df.head())
 
             # Apply 모델의 데이터를 업데이트
             for index, row in df.iterrows():
                 try:
-                    # CSV 파일의 '요청 pk'와 일치하는 Apply 객체를 가져옵니다.
-                    apply_instance = Apply.objects.get(pk=row['요청 pk'])
+                    # Excel 파일의 '요청 pk'와 일치하는 Apply 객체를 가져옵니다.
+                    apply_instance = Apply.objects.get(pk=int(row['요청 pk']))
+                    
+                    # 송장번호 필드가 비어 있는지 확인
+                    if pd.notna(row['송장번호']):
+                        tracking_number = int(row['송장번호'])
+                    else:
+                        tracking_number = None
                     
                     # progress를 3으로 업데이트하고 송장번호를 설정합니다.
                     apply_instance.progress = 3
-                    apply_instance.tracking_number = row['송장번호']  # 송장번호 필드가 있다고 가정
+                    apply_instance.invoice_num= tracking_number  # 송장번호 필드가 있다고 가정
 
                     # 변경된 내용을 저장합니다.
                     apply_instance.save()
+
+                    # 로그: 성공적으로 업데이트된 데이터 확인
+                    print(f"Updated Apply instance: pk={apply_instance.pk}, tracking_number={apply_instance.tracking_number}")
 
                 except Apply.DoesNotExist:
                     # 만약 pk에 해당하는 Apply 객체가 없으면 로그를 남깁니다.
@@ -567,16 +596,16 @@ def upload_csv(request):
             os.remove(file_path)
 
             # 완료 후 리다이렉트
-            return redirect('/')
+            return redirect('ma_picing')
 
         except Exception as e:
             # 예외 처리 및 디버깅 메시지
             print(f"Error: {e}")
             if os.path.exists(file_path):
                 os.remove(file_path)  # 예외 발생 시에도 파일 삭제
-            return render(request, 'upload_csv.html', {'error': '파일 처리 중 오류가 발생했습니다.'})
+            return render(request, 'manage_apply/manage_파일업로드.html', {'error': '파일 처리 중 오류가 발생했습니다.'})
 
-    return render(request, 'upload_csv.html')
+    return render(request, 'manage_apply/manage_파일업로드.html')
 
 ## 수거중 페이지 함수
 def manage_pic_ing(request):
