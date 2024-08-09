@@ -1,9 +1,12 @@
 from django.http import HttpResponse
+from django.conf import settings
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
+from django.core.files.storage import FileSystemStorage
 import re
 import pandas as pd
 from .query import 이번년도_달별박스수계산, 상자_개수_추가_학습,상자_개수_예측
+import os
 
 # Create your views here.
 
@@ -484,13 +487,13 @@ def manage_pic_req(request):
         return redirect('/')
 
 
-def manage_pic_req_download(request):
+def manage_pic_req_edit(request):
     if request.user.is_staff:
         try:
             # POST 요청에서 선택된 apply 객체들의 ID 목록을 가져옵니다.
             apply_ids = request.POST.getlist('apply_ids')
             if apply_ids:
-                # 선택된 apply 객체들의 progress를 3으로 업데이트합니다.
+                # 선택된 apply 객체들의 데이터를 가져옵니다.
                 saving_datas = Apply.objects.filter(pk__in=apply_ids)
                 data = {
                     '요청 pk': [apply.pk for apply in saving_datas],
@@ -500,17 +503,17 @@ def manage_pic_req_download(request):
                     '우편번호': [apply.address_num for apply in saving_datas],
                     '주소': [f'{apply.address_info} {apply.address_detail}' for apply in saving_datas],
                     '요청 사항': [apply.deli_request for apply in saving_datas],
-                    '송장번호': ['' for apply in saving_datas]
+                    '송장번호': ['' for apply in saving_datas]  # 송장번호 필드 추가
                 }
                 saving_df = pd.DataFrame(data)
                 
-                # Apply 객체들의 progress를 3으로 업데이트합니다.
+                # 선택된 Apply 객체들의 progress를 4로 업데이트합니다.
                 Apply.objects.filter(pk__in=apply_ids).update(progress=4)
                 
                 # CSV 파일을 반환합니다.
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename="apply_data.csv"'
-                saving_df.to_csv(response, index=False, encoding='utf-8-sig')
+                saving_df.to_csv(response, index=False, encoding='UTF-8')
                 
                 return response
             else:
@@ -520,6 +523,60 @@ def manage_pic_req_download(request):
             return redirect("ma_main")
     else:
         return redirect('/')
+
+def upload_file_page(request):
+    if request.user.is_staff:
+        return render(
+            request,
+                'manage_apply/manage_파일업로드.html',
+        )
+    else:
+        return redirect('/')
+
+def upload_csv(request):
+    if request.method == 'POST' and request.FILES.get('csv_file'):
+        csv_file = request.FILES['csv_file']
+
+        # 파일 저장 경로 설정
+        fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'uploads'))
+        filename = fs.save(csv_file.name, csv_file)
+        file_path = fs.path(filename)
+
+        try:
+            # CSV 파일을 pandas DataFrame으로 읽어들이기
+            df = pd.read_csv(file_path)
+
+            # Apply 모델의 데이터를 업데이트
+            for index, row in df.iterrows():
+                try:
+                    # CSV 파일의 '요청 pk'와 일치하는 Apply 객체를 가져옵니다.
+                    apply_instance = Apply.objects.get(pk=row['요청 pk'])
+                    
+                    # progress를 3으로 업데이트하고 송장번호를 설정합니다.
+                    apply_instance.progress = 3
+                    apply_instance.tracking_number = row['송장번호']  # 송장번호 필드가 있다고 가정
+
+                    # 변경된 내용을 저장합니다.
+                    apply_instance.save()
+
+                except Apply.DoesNotExist:
+                    # 만약 pk에 해당하는 Apply 객체가 없으면 로그를 남깁니다.
+                    print(f"Apply 객체를 찾을 수 없습니다: pk={row['요청 pk']}")
+
+            # 파일 삭제
+            os.remove(file_path)
+
+            # 완료 후 리다이렉트
+            return redirect('/')
+
+        except Exception as e:
+            # 예외 처리 및 디버깅 메시지
+            print(f"Error: {e}")
+            if os.path.exists(file_path):
+                os.remove(file_path)  # 예외 발생 시에도 파일 삭제
+            return render(request, 'upload_csv.html', {'error': '파일 처리 중 오류가 발생했습니다.'})
+
+    return render(request, 'upload_csv.html')
 
 ## 수거중 페이지 함수
 def manage_pic_ing(request):
