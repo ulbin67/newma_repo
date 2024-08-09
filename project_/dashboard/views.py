@@ -7,6 +7,7 @@ from django.db import models
 from .models import ManageApplyCompanyInfo
 import requests
 from django.db import transaction
+from django.db.models import Sum
 
 # 네이버 API 설정
 # 박가현 개인 키입니다.. 나중에 사업자 아이디 키로 바꾸죠..
@@ -84,7 +85,10 @@ def dashboard_home(request):
                 popup=popup
             ).add_to(m)
 
+     # 총 이용자 수 계산
+    total_users = ManageApplyCompanyInfo.objects.aggregate(total_users=Sum('count'))['total_users']
+
     # 지도를 HTML 문자열로 변환
     map_html = m._repr_html_()
 
-    return render(request, 'dashboard/home.html', {'map_html': map_html})
+    return render(request, 'dashboard/home.html', {'map_html': map_html, 'total_users': total_users})
