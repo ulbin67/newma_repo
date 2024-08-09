@@ -78,7 +78,7 @@
 <body>
     <div class="chat-container">
         <div class="chat-box" id="chat-box">
-            <!-- Messages will be appended here -->
+            <!-- {{response}} -->
         </div>
         <div class="chat-input">
             <textarea id="message-input" rows="2" placeholder="Type your message..."></textarea>
@@ -88,7 +88,7 @@
 
     <script>
         function appendMessage(text, sender) {
-            const chatBox = document.getElementById('chat-box');
+            const chatBox = document.getElementById('chat-box'); //
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender);
             messageDiv.innerHTML = `<p>${text}</p>`;
@@ -126,7 +126,7 @@
             .then(data => {
                 const botResponse = data.response;
                 // Append the bot response to the chat box
-                appendMessage(botResponse, 'bot');
+                appendMessage(botResponse, 'bot');// 응답 봇에 추가
             })
             .catch(error => {
                 console.error('Error:', error);
