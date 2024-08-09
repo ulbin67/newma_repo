@@ -109,9 +109,17 @@ def new_post(request):
 def remove_post(request, pk):
     post = Post.objects.get(pk=pk)
     if request.method == 'POST':
-        post.delete()
+        if request.method == 'POST':
+            if post.mainphoto:
+                post.mainphoto.delete()
+            post.delete()
+
         return redirect('/qna/')
     return render(request, 'qna/remove_post.html',{'Post':post})
+
+
+
+
 
 
 
