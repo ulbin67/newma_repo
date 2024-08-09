@@ -14,7 +14,8 @@ from django.db import transaction
 NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
 NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'  # 네이버 클라이언트 시크릿
 
-def get_naver_geocode(address):
+
+def get_naver_geocode(address, company_name):
     url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode"
     headers = {
         "X-NCP-APIGW-API-KEY-ID": NAVER_CLIENT_ID,
@@ -26,9 +27,7 @@ def get_naver_geocode(address):
 
     try:
         response = requests.get(url, headers=headers, params=params)
-        #API 응답에 대한 내용 출력 확인용
-        #print(f"API Response Status: {response.status_code}, Content: {response.text}")
-
+        
         if response.status_code == 200:
             data = response.json()
             if 'addresses' in data and data['addresses']:
@@ -36,15 +35,11 @@ def get_naver_geocode(address):
                 longitude = data['addresses'][0]['x']
                 return float(latitude), float(longitude)
             else:
-                #지오코딩 데이터 못찾았을때
-                print(f"No geocode data found for {address}")
+                # 지오코딩 데이터를 못찾았을 때
+                print(f"[Error] No geocode data found for {company_name} at {address}")
                 return None, None
-        # else:
-        #     #에러났을 때
-        #     print(f"Error {response.status_code}: {response.text}")
-        #     return None, None
     except requests.exceptions.RequestException as e:
-        print(f"Request exception: {e}")
+        print(f"[Request Error] {company_name} at {address}: {e}")
         return None, None
 
 def dashboard_home(request):
@@ -60,42 +55,34 @@ def dashboard_home(request):
     with transaction.atomic():
         for company in companies_to_geocode:
             address = company.address_info  # 도로명주소
-            print(f"Geocoding address: {address}")  # 주소 출력
+            company_name = company.company  # 회사 이름
+            
             if not address:
-                print("주소란이 비었습니다.")
+                print(f"[Warning] Address is empty for {company_name}")
                 continue
 
             try:
-                latitude, longitude = get_naver_geocode(address)
+                latitude, longitude = get_naver_geocode(address, company_name)
                 if latitude is not None and longitude is not None:
-                    # 데이터베이스 업데이트 전 로그 출력
-                    #print(f"Updating {company.company} with Latitude: {latitude}, Longitude: {longitude}")
-                    
                     # 모델 필드 업데이트
                     company.latitude = latitude
                     company.longitude = longitude
                     company.save()  # 업데이트 저장
-
-                    # 저장 후 로그 출력
-                    print(f"Updated {company.company}: Latitude {company.latitude}, Longitude {company.longitude}")
+                    print(f"[Updated] {company_name}: Latitude {company.latitude}, Longitude {company.longitude}")
                 else:
-                    print(f"Geocode failed for {address}")
+                    print(f"[Geocode Failed] {company_name} at {address}")
             except Exception as e:
-                print(f"Error geocoding {address}: {e}")
+                print(f"[Geocode Error] {company_name} at {address}: {e}")
 
     # 모든 회사 정보를 가져와 지도에 마커 추가
     all_companies = ManageApplyCompanyInfo.objects.all()
     for company in all_companies:
         if company.latitude is not None and company.longitude is not None:
             popup = folium.Popup(f"{company.company}", max_width=150)
-
             folium.Marker(
                 [company.latitude, company.longitude],
-                popup=popup  # 마커 위치
-                #tooltip=company.company  # 마커 위 마우스 올릴 때 나타나는 툴팁
+                popup=popup
             ).add_to(m)
-            
-            #print(f"Marker added: {company.company} at {company.latitude}, {company.longitude}")
 
     # 지도를 HTML 문자열로 변환
     map_html = m._repr_html_()
