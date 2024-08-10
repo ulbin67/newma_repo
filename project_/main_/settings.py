@@ -94,7 +94,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": 'newmaDB',
         'USER': 'root',
-        'PASSWORD':'0000',
+        'PASSWORD':'00701',
         'HOST': '127.0.0.1',
         'PORT':'3306',                   # 머지할때 포트번호 -> 3306으로 바꿔야함
     }
