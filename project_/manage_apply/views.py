@@ -599,8 +599,7 @@ def upload_xl(request):
         os.remove(file_path)
         print("파일 삭제 성공")
 
-        str = "파일 읽기에 성공했습니다."
-        return redirect('upload_file_page',str)
+        return redirect('upload_file_page')
 
     except Exception as e:
         print(f"Error 발생: {e}")
