@@ -542,13 +542,22 @@ def upload_file_page(request):
         return redirect('/')
 
 def upload_xl(request):
-    if request.method == 'POST' and request.FILES.get('xl_file'):
+    if not request.user.is_staff:
+        return redirect('/')
+
+    if request.method != 'POST' or not request.FILES.get('xl_file'):
+        return render(request, 'manage_apply/manage_파일업로드.html')
+
+    try:
         xl_file = request.FILES['xl_file']
         file_name = xl_file.name
         file_extension = os.path.splitext(file_name)[1].lower()
 
+        print(f"파일 업로드 시도: {file_name} ({file_extension})")
+
         # 지원되는 파일 확장자 확인
         if file_extension not in ['.xlsx', '.xls']:
+            print("파일 형식 오류: 지원되지 않는 파일 형식입니다.")
             return render(request, 'manage_apply/manage_파일업로드.html', {'error': '업로드된 파일이 지원되지 않는 형식입니다. (Excel 파일만 허용됩니다.)'})
 
         # 파일 저장 경로 설정
@@ -556,56 +565,50 @@ def upload_xl(request):
         filename = fs.save(file_name, xl_file)
         file_path = fs.path(filename)
 
-        try:
-            # Excel 파일을 pandas DataFrame으로 읽어들이기
-            if file_extension == '.xlsx':
-                df = pd.read_excel(file_path, engine='openpyxl')
-            else:
-                df = pd.read_excel(file_path, engine='xlrd')
+        print(f"파일 저장 성공: {file_path}")
 
-            # 로그: 읽어들인 데이터 확인
-            print("DataFrame head:\n", df.head())
+        # Excel 파일을 pandas DataFrame으로 읽어들이기
+        read_engine = 'openpyxl' if file_extension == '.xlsx' else 'xlrd'
+        df = pd.read_excel(file_path, engine=read_engine)
 
-            # Apply 모델의 데이터를 업데이트
-            for index, row in df.iterrows():
-                try:
-                    # Excel 파일의 '요청 pk'와 일치하는 Apply 객체를 가져옵니다.
-                    apply_instance = Apply.objects.get(pk=int(row['요청 pk']))
-                    
-                    # 송장번호 필드가 비어 있는지 확인
-                    if pd.notna(row['송장번호']):
-                        tracking_number = int(row['송장번호'])
-                    else:
-                        tracking_number = None
-                    
-                    # progress를 3으로 업데이트하고 송장번호를 설정합니다.
-                    apply_instance.progress = 3
-                    apply_instance.invoice_num= tracking_number  # 송장번호 필드가 있다고 가정
+        print("Excel 파일 읽기 성공")
+        print("DataFrame head:\n", df.head())
 
-                    # 변경된 내용을 저장합니다.
-                    apply_instance.save()
+        # Apply 모델의 데이터를 업데이트
+        for index, row in df.iterrows():
+            try:
+                apply_instance = Apply.objects.get(pk=int(row['요청 pk']))
 
-                    # 로그: 성공적으로 업데이트된 데이터 확인
-                    print(f"Updated Apply instance: pk={apply_instance.pk}, tracking_number={apply_instance.tracking_number}")
+                print(f"Apply 객체 가져오기 성공: pk={apply_instance.pk}")
 
-                except Apply.DoesNotExist:
-                    # 만약 pk에 해당하는 Apply 객체가 없으면 로그를 남깁니다.
-                    print(f"Apply 객체를 찾을 수 없습니다: pk={row['요청 pk']}")
+                # 송장번호 필드가 비어 있는지 확인
+                tracking_number = int(row['송장번호']) if pd.notna(row['송장번호']) else None
 
-            # 파일 삭제
+                # progress를 3으로 업데이트하고 송장번호를 설정합니다.
+                apply_instance.progress = 3
+                apply_instance.sent_box_num = 1
+                apply_instance.invoice_num = tracking_number
+
+                apply_instance.save()
+
+                print(f"Apply 객체 업데이트 성공: pk={apply_instance.pk}, invoice_num={apply_instance.invoice_num}")
+
+            except Apply.DoesNotExist:
+                print(f"Apply 객체를 찾을 수 없습니다: pk={row['요청 pk']}")
+
+        os.remove(file_path)
+        print("파일 삭제 성공")
+
+        str = "파일 읽기에 성공했습니다."
+        return redirect('upload_file_page',str)
+
+    except Exception as e:
+        print(f"Error 발생: {e}")
+        if os.path.exists(file_path):
             os.remove(file_path)
+        return render(request, 'manage_apply/manage_파일업로드.html', {'error': '파일 처리 중 오류가 발생했습니다.'})
 
-            # 완료 후 리다이렉트
-            return redirect('ma_picing')
 
-        except Exception as e:
-            # 예외 처리 및 디버깅 메시지
-            print(f"Error: {e}")
-            if os.path.exists(file_path):
-                os.remove(file_path)  # 예외 발생 시에도 파일 삭제
-            return render(request, 'manage_apply/manage_파일업로드.html', {'error': '파일 처리 중 오류가 발생했습니다.'})
-
-    return render(request, 'manage_apply/manage_파일업로드.html')
 
 ## 수거중 페이지 함수
 def manage_pic_ing(request):
