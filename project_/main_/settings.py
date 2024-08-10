@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "single_page",
     "manage_apply",
     "qna",
-    "chatbot"
+    "chatbot",
+    "dashboard", #정보요약추가 -240805
 ]
 
 AUTH_USER_MODEL = 'single_page.User'
@@ -150,6 +151,8 @@ MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
+
+
 
 import os
 
