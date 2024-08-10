@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 # Create your views here.
 
 
-def blog(request):
+def blog(request):#e
     # 모든 post를 가져와 postlist에 저장
     page = request.GET.get("page","1") #페이지 번호
 
