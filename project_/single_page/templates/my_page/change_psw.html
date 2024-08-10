@@ -33,7 +33,7 @@
 
 {% block main_area %}
     <form class="border col-6 mx-auto" action="." method="post"> {% csrf_token %}
-        {% if form.errors %}                                                                # 비밀번호 오류시 출력
+        {% if form.errors %}
         <div class="alert alert-danger">
             <p><strong>비밀번호를 확인해주세요</strong></p>
             {% for field in form %}

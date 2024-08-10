@@ -30,11 +30,11 @@ urlpatterns = [
     # 이메일 발송 완료
     path("accounts/password_reset_done/", views.UserPasswordResetDoneView.as_view(), name="password_reset_done"),
 
-    # 비밀번호 입력(메일에서)
-    path("accounts/password_reset_confirm/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    # 비밀번호 초기화(메일에서)
+    path("accounts/password_reset_confirm/<uidb64>/<token>/", views.UserPasswordResetConfirmView.as_view(), name="password_reset_confirm"),
 
-    # 비밀번호 입력하면
-    path("password_reset_complete/", auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+    # 비밀번호 초기화 성공
+    path("accounts/password_reset_complete/", views.UserPasswordResetCompleteView.as_view(), name="password_reset_complete"),
 
     # localhost/accounts/my_page/   : 마이페이지
     path("accounts/my_page/", views.MyPageView.as_view(), name='my_page'),

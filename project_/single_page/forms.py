@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, SetPasswordForm
 from .models import User
 from django.core.exceptions import ValidationError
 import re
@@ -174,5 +174,15 @@ class UpdateMyInfoForm(forms.ModelForm):
         fields = ['username', 'company_name', 'name', 'email', 'address_num', 'address_info', 'address_detail',
                   'deli_request', 'phone_num', 'phone_telecom',]
 
+class UserSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(widget=forms.PasswordInput, label='새 비밀번호')
+    new_password2 = forms.CharField(widget=forms.PasswordInput, label='비밀번호 확인')
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password1 = cleaned_data.get("new_password1")
 
+        if new_password1 and re.search('\s', new_password1):
+            self.add_error('new_password1', '비밀번호에 공백이 포함되어 있습니다.')
+
+        return cleaned_data
 

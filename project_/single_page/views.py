@@ -1,9 +1,10 @@
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, TemplateView, FormView, UpdateView, DeleteView             # 제너릭 뷰 상속(장고 기본 제공)
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView, \
-    PasswordResetView, PasswordResetDoneView  # 패스워드 변경 뷰(장고 기본 제공)
+from django.contrib.auth.views import (PasswordChangeView, PasswordResetDoneView,
+                                       PasswordResetConfirmView, PasswordResetCompleteView)  # 패스워드 변경 뷰(장고 기본 제공)
 from .forms import (CustomUserCreationForm, CheckForm, SearchIdForm,
-                    PasswordResetForm, Confirm_infoForm, UpdateMyInfoForm, CustomPasswordChangeForm)     # 작성한 폼 가져오기
+                    PasswordResetForm, Confirm_infoForm, UpdateMyInfoForm, CustomPasswordChangeForm, UserSetPasswordForm)     # 작성한 폼 가져오기
 from django.urls import reverse_lazy
 from .models import User
 from django.contrib.auth.mixins import LoginRequiredMixin   # 로그인된 사용자만 접근 가능
@@ -13,6 +14,7 @@ from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import logout
 
 # 메인 화면 및 로그인을 수행하는 View
 def maincall(request):
@@ -115,11 +117,19 @@ class UserPasswordResetView(FormView):
             for user in user_info:
                 # Create email subject and body
                 subject = '[주식회사 뉴마] 비밀번호 재설정 요청'
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
+                link = self.request.build_absolute_uri(
+                    reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+                )
+
                 context = {
                     'user': user,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': default_token_generator.make_token(user),
+                    'uid': uid,
+                    'token': token,
+                    'link' : link,
                 }
+
                 html_message = render_to_string('registration/password_email.html', context)
                 plain_message = strip_tags(html_message)
 
@@ -136,8 +146,24 @@ class UserPasswordResetView(FormView):
         else:
             form.add_error(None, '일치하는 정보가 없습니다. 입력을 다시 확인해 주세요.')
             return self.render_to_response(self.get_context_data(form=form))
+
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'registration/email_send_done.html'
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+    form_class = UserSetPasswordForm
+    invalid_template_name = 'registration/password_reset_invalid.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
+class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'registration/reset_success.html'
 
 class MyPageView(LoginRequiredMixin, FormView):
     template_name = 'my_page/my_page.html'
@@ -170,7 +196,6 @@ class ChangePswView(LoginRequiredMixin, PasswordChangeView):
     success_url = reverse_lazy('my_page')
 
 
-
 class DeleteBefore(LoginRequiredMixin, FormView):
     template_name = 'my_page/delete_before.html'
     form_class = Confirm_infoForm
@@ -188,6 +213,12 @@ class DeleteMyInfoView(LoginRequiredMixin, DeleteView):
     template_name = 'my_page/delete_info.html'
     model = User
     success_url = reverse_lazy('login')
+
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            logout(request)
+        return response
 
 
 
