@@ -10,11 +10,70 @@
         padding: 5px;
         border-radius: 4px;
     }
+
+    .title {
+        font-size: 25px;
+        color: royalblue;
+        font-weight: 600;
+        letter-spacing: -1px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding-left: 30px;
+    }
+
+    .title::before, .title::after {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        left: 0;
+        background-color: royalblue;
+    }
+
+    .title::before {
+        width: 18px;
+        height: 18px;
+        background-color: royalblue;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1); /* 원래 크기 */
+            opacity: 0.7; /* 완전히 불투명 */
+        }
+        30% {
+            transform: scale(1.3); /* 크기 120% */
+            opacity: 0.6; /* 반투명 */
+        }
+        50% {
+            transform: scale(1.5); /* 크기 120% */
+            opacity: 0.5; /* 반투명 */
+        }
+        70% {
+            transform: scale(1.3); /* 크기 120% */
+            opacity: 0.6; /* 반투명 */
+        }
+        100% {
+            transform: scale(1); /* 원래 크기로 복귀 */
+            opacity: 0.7; /* 완전히 불투명 */
+        }
+    }
+
+    .title::after {
+        width: 18px;
+        height: 18px;
+        background-color: royalblue;
+        animation: pulse 1s linear infinite;
+    }
+    
 </style>
 {% endblock %}
 
 {% block main_area %}
     <div class="container">
+        <h3 class="title">상자 신청</h3>
         <div class="row">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 {% if user.is_authenticated %}
@@ -24,7 +83,6 @@
                 <a class="btn btn-outline-btn btn-outline-danger" href="{% url 'research_call' %}" role="button">상자는 이미 받았고, 다시 수거해주세요</a>
                 {% endif %}
             </div>
-            <h3>상자 신청 </h3>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">상자 신청 시 주의사항</label>
                 <div class="card">

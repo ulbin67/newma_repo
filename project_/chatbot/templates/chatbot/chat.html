@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .chat-box {
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input textarea {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .chat-input button {
+            margin-left: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background: #0056b3;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message.user {
+            text-align: right;
+        }
+        .message.bot {
+            text-align: left;
+        }
+        .message p {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 80%;
+        }
+        .message.user p {
+            background: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <!-- {{response}} -->
+        </div>
+        <div class="chat-input">
+            <textarea id="message-input" rows="2" placeholder="Type your message..."></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function appendMessage(text, sender) {
+            const chatBox = document.getElementById('chat-box'); //
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.innerHTML = `<p>${text}</p>`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const userMessage = messageInput.value.trim();
+
+            if (userMessage === '') return;
+
+            // Append the user message to the chat box
+            appendMessage(userMessage, 'user');
+
+            // Clear the input field
+            messageInput.value = '';
+
+            // Send the user message to the server
+            fetch('/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message: userMessage })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const botResponse = data.response;
+                // Append the bot response to the chat box
+                appendMessage(botResponse, 'bot');// 응답 봇에 추가
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

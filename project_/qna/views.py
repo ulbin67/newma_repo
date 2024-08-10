@@ -57,7 +57,7 @@ def new_post(request):
         mainphoto = request.FILES.get('mainphoto')
         answer = request.POST.get('answer')
         password = request.POST.get('password')
-
+        is_faq = request.POST.get('is_faq') == 'True'
         # 제목과 내용 유효성 검사
         if not postname:
             return render(request, 'qna/new_post.html', {
@@ -90,6 +90,7 @@ def new_post(request):
             mainphoto=mainphoto,
             answer=answer,
             password=password,
+            is_faq = is_faq,
         )
 
         # 모델 유효성 검사
@@ -108,9 +109,17 @@ def new_post(request):
 def remove_post(request, pk):
     post = Post.objects.get(pk=pk)
     if request.method == 'POST':
-        post.delete()
+        if request.method == 'POST':
+            if post.mainphoto:
+                post.mainphoto.delete()
+            post.delete()
+
         return redirect('/qna/')
     return render(request, 'qna/remove_post.html',{'Post':post})
+
+
+
+
 
 
 
