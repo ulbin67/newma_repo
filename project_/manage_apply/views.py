@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Apply, CompanyInfo, DoneApply
 import re
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -339,13 +340,16 @@ def pro_check_call(request, apply_id):
 def manager_page_main(request):
     if request.user.is_staff:
         try:
+            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
             companys =  CompanyInfo.objects.all()
-            id = request.POST.get('pk')
+            paginator = Paginator(companys, 10)  # 페이지당 10개로 페이지네이션 설정
+            page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
+           
             return render(
                 request,
                 'manage_apply/manage_page.html',
                 {
-                    'companys':companys
+                    'page_obj':page_obj
                 }
             )
         except Apply.DoesNotExist:
@@ -359,19 +363,23 @@ def manager_page_main(request):
 def manage_box_req(request):
     if request.user.is_staff:
         try:
-            applys = Apply.objects.filter(progress=0)
+            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
+            applys = Apply.objects.filter(progress=0)  # progress=0 인 Apply 객체 필터링
+            paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
+            page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
+            
             return render(
                 request,
                 'manage_apply/manage_box_req.html',
                 {
-                    'applys': applys
+                    'page_obj': page_obj  # 페이지네이션 객체를 컨텍스트에 추가
                 }
             )
         except Apply.DoesNotExist:
-            return redirect("ma_boxreq")
+            return redirect('/')
     else:
-        return redirect('/')
-
+            return redirect('/')
+    
 def manage_box_req_edit(request):
     if request.user.is_staff:
         try:
@@ -392,12 +400,16 @@ def manage_box_req_edit(request):
 def manage_pic_req(request):
     if request.user.is_staff:
         try:
-            applys = Apply.objects.filter(progress=2)
+            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
+            applys = Apply.objects.filter(progress=2)  # progress=0 인 Apply 객체 필터링
+            paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
+            page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
+            
             return render(
                 request,
                 'manage_apply/manage_picreq.html',
                 {
-                    'applys': applys
+                    'page_obj': page_obj
                 }
             )
         except Apply.DoesNotExist:
@@ -427,12 +439,16 @@ def manage_pic_req_edit(request):
 def manage_pic_ing(request):
     if request.user.is_staff:
         try:
-            applys = Apply.objects.filter(progress=3)
+            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
+            applys = Apply.objects.filter(progress=3)  # progress=0 인 Apply 객체 필터링
+            paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
+            page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
+            
             return render(
                 request,
                 'manage_apply/manage_picing.html',
                 {
-                    'applys': applys
+                    'page_obj': page_obj
                 }
             )
         except Apply.DoesNotExist:
@@ -472,13 +488,17 @@ def manage_pic_ing_edit(request):
 def manage_done(request):
     if request.user.is_staff:
         try:
+            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
             dones =  DoneApply.objects.all()
+            paginator = Paginator(dones, 10)  # 페이지당 10개로 페이지네이션 설정
+            page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
+            
             id = request.POST.get('pk')
             return render(
                 request,
                 'manage_apply/manage_done.html',
                 {
-                    'dones':dones
+                    'page_obj':page_obj
                 }
             )
         except Apply.DoesNotExist:

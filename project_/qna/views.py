@@ -238,6 +238,11 @@ def chatbot_response(request):
 
 
 
+def chatbot(request):
+    return render(request, 'chatbot/chatbot.html')
+
+
+
 
 
 
