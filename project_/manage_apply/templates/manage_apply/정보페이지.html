@@ -18,7 +18,7 @@
                             <h4 id="list-item-1">지역별 거래 확인</h4>
                             <div class="container">
                                 <div class="row">
-                                   <a type="button" class="btn btn-danger" href="/dashboard/"
+                                   <a type="button" class="btn btn-outline-success" href="/dashboard/"
                                     style="--bs-btn-padding-y: .60rem; --bs-btn-padding-x: .9rem; --bs-btn-font-size: $font-size-base * 5;">
                                     거래 위치 정보 보기!
                                     </a> 
@@ -81,9 +81,12 @@
                                       {% endfor %}
                                     </tbody>
                                   </table>
-                                  <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                                    <a class="btn btn-primary" type="button" href="{% url 'predict_call' %}" >다음달 상자개수 예측</a>
-                                </div>
+                                  <div class="row">
+                                    <a type="button" class="btn btn-outline-danger" href="{% url 'predict_call' %}"
+                                     style="--bs-btn-padding-y: .60rem; --bs-btn-padding-x: .9rem; --bs-btn-font-size: $font-size-base * 5;">
+                                     다음달 상자개수 예측
+                                     </a> 
+                                 </div>
                                 </div>
                         </div>
                     </div>
