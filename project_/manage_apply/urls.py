@@ -2,7 +2,7 @@ from django.urls import path,include
 from . import views
 
 urlpatterns = [
-    path("", views.applycall),
+    path("", views.applycall, name='apply_page'),
     path("apply_box/", views.box_apply_call, name='box_apply_main'),
     path("create_apply/", views.box_apply_create, name='box_apply_create'),
     path("apply_check/", views.box_checkcall, name='apply_check'),
