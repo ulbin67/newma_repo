@@ -93,7 +93,8 @@ def box_apply_create(request):
             )
             #만든 row를 table에 추가
             BOX_CREATE.save()
-            return redirect('apply_check')
+        
+        return redirect('apply_check')
     #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
