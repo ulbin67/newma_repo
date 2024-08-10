@@ -100,7 +100,7 @@
 import folium
 from django.shortcuts import render
 from django.db import models
-from .models import ManageApplyCompanyInfo
+from manage_apply.models import CompanyInfo
 import requests
 from django.db import transaction
 from django.db.models import Sum
@@ -240,7 +240,7 @@ def dashboard_home(request):
     m = folium.Map(location=[36.5, 127.5], zoom_start=7, tiles='CartoDB positron')
 
     # 지오코딩이 필요한 데이터 가져오기
-    companies_to_geocode = ManageApplyCompanyInfo.objects.filter(
+    companies_to_geocode = CompanyInfo.objects.filter(
         models.Q(latitude__isnull=True) | models.Q(longitude__isnull=True) | models.Q(latitude=0.0) | models.Q(longitude=0.0)
     )
 
@@ -268,7 +268,7 @@ def dashboard_home(request):
                 print(f"[Geocode Error] {company_name} at {address}: {e}")
 
     # 모든 회사 정보를 가져와 지도에 마커 추가
-    all_companies = ManageApplyCompanyInfo.objects.all()
+    all_companies = CompanyInfo.objects.all()
     for company in all_companies:
         if company.latitude is not None and company.longitude is not None:
             popup = folium.Popup(f"{company.company}", max_width=150)
@@ -278,7 +278,7 @@ def dashboard_home(request):
             ).add_to(m)
 
     # 총 이용자 수 계산
-    total_users = ManageApplyCompanyInfo.objects.aggregate(total_users=Sum('count'))['total_users']
+    total_users = CompanyInfo.objects.aggregate(total_users=Sum('count'))['total_users']
 
     # 도별 이용 분포 계산
     region_counts = {}

@@ -84,6 +84,12 @@ class CompanyInfo(models.Model):
     recent_apply = models.DateTimeField(auto_now = True,null=True)
     recent_employee = models.CharField(max_length=10, null=True, blank=False)
 
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return self.company
+
 class DoneApply(models.Model):
     #모델 생성 시 오류를 없애기 위해 null=True로 지정 (값이 null이어도 됨, 추후 추가된 칼럼의 경우 자동으로 null값이 생겨서 오류 발생..)
 
