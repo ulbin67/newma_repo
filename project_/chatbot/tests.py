@@ -9,7 +9,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
-    api_key = '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'  # 여기에 직접 API 키를 입력합니다
+    api_key = 'API키 넣어주세요'  # 여기에 직접 API 키를 입력합니다
 
     # PDF 로딩 및 임베딩 준비 (초기화 시 한 번만 실행)
     loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
