@@ -119,6 +119,11 @@ def remove_post(request, pk):
 
 
 
+def chatbot(request):
+    return render(request, 'chatbot/chatbot.html')
+
+
+
 
 
 
