@@ -7,14 +7,15 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import PyPDFLoader
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
-    api_key = ''  # 여기에 직접 API 키를 입력합니다
+    api_key = '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'  # 여기에 직접 API 키를 입력합니다
 
     # PDF 로딩 및 임베딩 준비 (초기화 시 한 번만 실행)
-    loader = PyPDFLoader('C:/Users/Hong_i/Desktop/Kaggle/newma_repo/project_chatbot.pdf')
+    loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
     documents = loader.load_and_split() # pdf 파일에서 문서 내용을 로딩하고 분할
 
     # OpenAIEmbeddings 객체 생성
