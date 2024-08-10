@@ -17,7 +17,12 @@
                         <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
                             <h4 id="list-item-1">지역별 거래 확인</h4>
                             <div class="container">
-                                {% include 'dashboard/home.html' %}
+                                <div class="row">
+                                   <a type="button" class="btn btn-danger" href="/dashboard/"
+                                    style="--bs-btn-padding-y: .60rem; --bs-btn-padding-x: .9rem; --bs-btn-font-size: $font-size-base * 5;">
+                                    거래 위치 정보 보기!
+                                    </a> 
+                                </div>
                               </div>
                             <hr>
                             <h4 id="list-item-2">회사별 거래 확인</h4>
