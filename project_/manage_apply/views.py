@@ -38,7 +38,7 @@ def box_apply_create(request):
     try:
         ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
         # 정규표현식으로 공백 제거
-        company = re.sub(r'[\s]', '', request.POST.get('company', ''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         # 숫자만 저장
         com_num = re.sub(r'[^0-9]', '', request.POST.get('com_num', ''))
         # 공백 제거
@@ -123,7 +123,7 @@ def sent_apply_create(request):
 
         invoice_num = re.sub(r'[^0-9]', '', request.POST.get('invoice_num', ''))
 
-        company = re.sub(r'[\s]','',request.POST.get('company',''))
+        company = re.sub(r'[\s]|기공소','',request.POST.get('company',''))
         com_num = re.sub(r'[^0-9]','',request.POST.get('com_num',''))
 
         applicant =re.sub(r'[\s]','',request.POST.get('applicant',''))
@@ -291,7 +291,7 @@ def research_page_call(request):
 def research_apply(request):
     try:
         # HTML에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]', '', request.POST.get('company', ''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
@@ -366,7 +366,7 @@ def pro_done_call(request):
 def research_apply2(request):
     try:
         # HTML에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]', '', request.POST.get('company', ''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 

@@ -1,20 +1,18 @@
-
-
 import json
 from langchain.chains import RetrievalQA
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.chat_models import ChatOpenAI
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
-    api_key = ''  # 여기에 직접 API 키를 입력합니다
+    api_key = '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'  # 여기에 직접 API 키를 입력합니다
 
     # PDF 로딩 및 임베딩 준비 (초기화 시 한 번만 실행)
-    loader = PyPDFLoader('C:/Users/Hong_i/Desktop/Kaggle/newma_repo/project_chatbot.pdf')
+    loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
     documents = loader.load_and_split() # pdf 파일에서 문서 내용을 로딩하고 분할
 
     # OpenAIEmbeddings 객체 생성
@@ -35,11 +33,10 @@ def chatbot(user_input):
         return_source_documents=True
     ) #QA체인을 생성해 질문 - 응답 기능을 설정
 
-
     response = qa_chain({"query": user_input}) # 사용자 입력에 대해 답변 생성
     print(response['result'])
 
 
 if __name__=='__main__':
-    print("뉴마 담당자 전화번호 알려줘")
-    chatbot("뉴마 담당자 전화번호 알려줘")
+    print("뉴마는 어떤 회사야?")
+    chatbot("뉴마는 어떤 회사야?")
