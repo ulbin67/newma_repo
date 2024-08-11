@@ -455,7 +455,7 @@ def manager_page_main(request):
 def manage_box_req(request):
     if request.user.is_staff:
         try:
-            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
+            page_number = request.GET.get('page', '1').order_by('-created_at')  # 현재 페이지 번호를 GET 요청에서 가져옴
             applys = Apply.objects.filter(progress=0)  # progress=0 인 Apply 객체 필터링
             paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
@@ -492,7 +492,7 @@ def manage_box_req_edit(request):
 def manage_pic_req(request):
     if request.user.is_staff:
         try:
-            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
+            page_number = request.GET.get('page', '1').order_by('-created_at')  # 현재 페이지 번호를 GET 요청에서 가져옴
             applys = Apply.objects.filter(progress=2)  # progress=0 인 Apply 객체 필터링
             paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
@@ -635,7 +635,7 @@ def upload_xl(request):
 def manage_pic_ing(request):
     if request.user.is_staff:
         try:
-            page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
+            page_number = request.GET.get('page', '1').order_by('-created_at')  # 현재 페이지 번호를 GET 요청에서 가져옴
             applys = Apply.objects.filter(progress=3)  # progress=0 인 Apply 객체 필터링
             paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
@@ -684,7 +684,7 @@ def manage_pic_ing_edit(request):
 def manage_done(request):
     if request.user.is_staff:
         try:
-            dones = DoneApply.objects.all()
+            dones = DoneApply.objects.all().order_by('-created_at')
             page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
             paginator = Paginator(dones, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
