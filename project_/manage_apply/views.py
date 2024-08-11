@@ -836,21 +836,3 @@ def 정보페이지_call(request):
         return render(request,'manage_apply/정보페이지.html', context)
     else:
         return redirect("/")
-
-def 상자예측_call(request):
-    if request.user.is_staff:
-        ym, predict = 상자_개수_예측()
-
-        if ym is None or predict is None:
-            return HttpResponse("예측 오류 발생", status=500)
-
-        return render(
-            request,
-            'manage_apply/상자예측.html',
-            {
-                'YM': ym,
-                'predict': predict,
-            }
-        )
-    else:
-        return redirect("/")

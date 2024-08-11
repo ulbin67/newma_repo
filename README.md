@@ -57,3 +57,29 @@ mysql 연결 하셔야합니다!
 
 + python manage.py collectstatic
 + 서버 업로드시 static 파일을 생성해주는 명령어
+
+    pip install django
+    pip3 install django-widget-tweaks
+    pip3 install Pillow
+    pip3 install Jinja2
+    pip3 install numpy
+    pip3 install pandas
+    pip3 install scikit-learn
+    pip3 install joblib
+    pip3 install xlsxwriter
+    pip3 install openpyxl
+    pip3 install folium
+    pip3 install geopy
+    pip3 install crispy_bootstrap4
+    pip3 install matplotlib
+    pip3 install seaborn
+    pip3 install -U langchain-community
+    pip3 install -U langchain-openai
+    pip3 install langchain
+    pip3 install pypdf
+    pip3 install openai
+    pip3 install chromadb
+    pip3 install tiktoken
+
+
+    pip3 install tensorflow
