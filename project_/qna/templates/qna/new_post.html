@@ -73,6 +73,13 @@
             </div>
         </div>
         {% if user.is_staff %}
+        <div class="mb-3">
+            <label for="post_type" class="form-label">게시물 유형</label>
+            <select id="post_type" class="form-select" name="is_faq">
+                <option value="True">자주 묻는 질문</option>
+                <option value="False">일반 게시물</option>
+            </select>
+        </div>
         <div class="container">
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">댓글</label>

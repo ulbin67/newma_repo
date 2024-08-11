@@ -42,12 +42,12 @@
 
 <div class="container d-flex justify-content-center">
     <div class="border col-10">
-        <form class="col-10 mx-auto" action="." method="post"> {% csrf_token %}
+        <form name="update" class="col-10 mx-auto" action="." method="post"> {% csrf_token %}
             <h4 class="mb-3">회원 정보 수정</h4><br>
             <div class="row mb-3 d-flex align-items-center">
                 <label class="col-2 col-form-label">아이디</label>
                 <div class="col-7">
-                    {{form.username|add_class:"form-control"|attr:"placeholder=아이디"}}
+                    {{form.username|add_class:"form-control bg-light"|attr:"readonly=readonly placeholder=아이디"}}
                 </div>
                 <div class="col-3">
                     <button type="button" id="check_id_button" onclick="check_id()" class="btn btn-custom">아이디 중복체크</button>
@@ -81,7 +81,7 @@
                 <div class="col-10">
                     <div class="row mb-2 d-flex align-items-center">
                         <div class="col-6">
-                            {{ form.address_num | add_class:"form-control"|attr:"id=sample6_postcode placeholder=우편번호 readonly='readonly'" }}
+                            {{ form.address_num | add_class:"form-control bg-light"|attr:"id=sample6_postcode placeholder=우편번호 readonly='readonly'" }}
                         </div>
                         <div class="col-6">
                             <button type="button" onclick="sample6_execDaumPostcode()" class="btn btn-custom">우편번호 찾기</button>
@@ -89,7 +89,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            {{ form.address_info | add_class:"form-control form-control-custom "|attr:"id=sample6_address placeholder=도로명주소 readonly='readonly'" }}
+                            {{ form.address_info | add_class:"form-control form-control-custom bg-light"|attr:"id=sample6_address placeholder=도로명주소 readonly='readonly'" }}
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -108,27 +108,26 @@
             <div class="row mb-3">
                 <label for="phone_telecom" class="col-sm-2 col-form-label">휴대폰</label>
                 <div class="col">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-3">
-                            <select class="form-select" id="phone_telecom" name="phone_telecom">
-                                <option value="0" selected>통신사 선택</option>
-                                <option value="SKT">SKT</option>
-                                <option value="KT">KT</option>
-                                <option value="LGU">LGU+</option>
-                                <option value="SKT_bp">SKT알뜰폰</option>
-                                <option value="KT_bp">KT알뜰폰</option>
-                                <option value="LGU_bp">LGU알뜰폰</option>
-                            </select>
+                    <div class="row d-flex align-items-center mb-3">
+                        <div class="col-2 me-2">
+                            {{form.phone_telecom}}
                         </div>
                         <div class="col-6">
                             {{form.phone_num|add_class:"form-control"|attr:"placeholder=010"}}
                         </div>
                         <div class="col-3">
-                            <button type="button" onclick="" class="btn btn-custom">휴대폰 인증</button>
+                            <button type="button" onclick="verify()" class="btn btn-custom">휴대폰 인증</button>
+                        </div>
+                    </div>
+                    <div class="row d-flex align-items-center mb-3">
+                        <div class="col-3">
+                            {{form.verify_code|add_class:"form-control"}}
+                        </div>
+                        <div class="col-9">
+                            <p class="text-danger mb-0">휴대폰으로 받으신 인증번호를 입력해주세요</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
             <div class="row mb-3">
                 <label class="col-2 col-form-label">개인정보 동의</label>
@@ -190,6 +189,38 @@ function sample6_execDaumPostcode() {
         }
     }).open();
 }
+
+// 휴대폰 번호 유효성 검사 양식
+function checkNumber(value) {
+    return (/^\d{2,3}-\d{3,4}-\d{4}$/.test(value)) || (/^[0-9]{10,11}$/.test(value));
+}
+
+// 통신사 선택여부 확인
+function check_telecom(value) {
+    if(value === '0'){
+        return false;
+    }
+    return true;
+}
+
+function verify(){
+    phone = document.update.phone_num.value;
+    telecome = document.update.phone_telecom.value
+
+    // 휴대폰 번호 유효성 검사
+    if(!checkNumber(phone))
+    {
+        document.update.phone_num.focus();
+        alert('휴대폰 번호를 형식에 맞게 작성해 주세요');
+    }
+
+    if(!check_telecom(telecome))
+    {
+        document.update.phone_telecom.focus();
+        alert('통신사를 선택해주세요');
+    }
+}
+
 </script>
 
 {% endblock %}

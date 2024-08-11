@@ -8,7 +8,8 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Input, LSTM, Dropout
 import joblib
-from .models import DoneApply
+from .models import DoneApply, Apply
+from django.conf import settings
 
 def 이번년도_달별박스수계산():
     current_year = datetime.now().year
@@ -110,3 +111,4 @@ def 상자_개수_예측():
 
     # 결과 출력
     return f"{next_year}-{next_month:02}", prediction_next[0][0]
+

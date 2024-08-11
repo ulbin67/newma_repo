@@ -29,6 +29,7 @@ class Apply(models.Model):
         (1, '박스 전송중'),
         (2, '박스 수거 요청중'),
         (3, '수거진행중'),
+        (4, '송장 입력 전'),
     )
 
     #진행상황
@@ -82,6 +83,12 @@ class CompanyInfo(models.Model):
     #회사 최근 거래자 & 거래 시각 파악
     recent_apply = models.DateTimeField(auto_now = True,null=True)
     recent_employee = models.CharField(max_length=10, null=True, blank=False)
+
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return self.company
 
 class DoneApply(models.Model):
     #모델 생성 시 오류를 없애기 위해 null=True로 지정 (값이 null이어도 됨, 추후 추가된 칼럼의 경우 자동으로 null값이 생겨서 오류 발생..)

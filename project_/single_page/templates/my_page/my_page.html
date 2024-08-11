@@ -34,7 +34,7 @@
 {% block main_area %}
 {% if form.errors %}
     <script>
-        alert("비밀번호를 확인해주세요");
+        alert("비밀번호가 일치하지 않습니다.");
     </script>
 {% endif %}
 <div class="container mt-2">
@@ -42,7 +42,7 @@
     <div class="menu-bar d-flex justify-content-start">
         <a href="#content1" class="nav-link p-2" onclick="showContent('content1')">거래조회</a>
         <a href="#content2" class="nav-link p-2" onclick="showContent('content2')">문의사항</a>
-        <a href="#content3" class="nav-link p-2" onclick="showContent('content3')">회원정보 수정</a>
+        <a href="#content3" class="nav-link p-2" onclick="showContent('content3')">회원정보 관리</a>
         <a href="#content4" class="nav-link p-2" onclick="showContent('content4')">비밀번호 수정</a>
         <a href="#content5" class="nav-link p-2" onclick="show_warning()">회원 탈퇴</a>
     </div>
@@ -63,7 +63,7 @@
     <div id="content3" class="border" style="display: none;">
         <div class ="col-6 mx-auto">
             <div class="row text-center mb-3">
-                <h4>회원정보 수정</h4>
+                <h4>회원정보 관리</h4>
             </div>
             <p class="text-center mb-3">개인정보 보호를 위해 비밀번호를 입력해주세요</p>
             <form class="border2" action="." method="post"> {% csrf_token %}

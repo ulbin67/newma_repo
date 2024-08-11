@@ -2,7 +2,7 @@ from django.urls import path,include
 from . import views
 
 urlpatterns = [
-    path("", views.applycall),
+    path("", views.applycall, name='apply_page'),
     path("apply_box/", views.box_apply_call, name='box_apply_main'),
     path("create_apply/", views.box_apply_create, name='box_apply_create'),
     path("apply_check/", views.box_checkcall, name='apply_check'),
@@ -25,6 +25,8 @@ urlpatterns = [
     path("manager_box_edit/", views.manage_box_req_edit, name='ma_boxreq_edit'),
     path("manager_pic_req/", views.manage_pic_req, name='ma_picreq'),
     path("manager_picreq_edit/", views.manage_pic_req_edit, name='ma_picreq_edit'),
+    path('upload-xl/', views.upload_file_page, name='upload_file_page'),
+    path('upload-x1_repl/', views.upload_xl, name='upload_xl'),
     path("manager_pic_ing/", views.manage_pic_ing, name='ma_picing'),
     path("manager_picing_edit/", views.manage_pic_ing_edit, name='ma_picing_edit'),
     path("manager_done/", views.manage_done, name='ma_done'),
