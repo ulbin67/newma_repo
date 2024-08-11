@@ -563,6 +563,7 @@ def upload_file_page(request):
     else:
         return redirect('/')
 
+
 def upload_xl(request):
     if not request.user.is_staff:
         return redirect('/')
