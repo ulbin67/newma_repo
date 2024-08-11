@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.maincall, name='home'),
-    path("introdue_newma/", views.introcall),
+    path("introduce_newma/", views.introcall),
     path("information_newma/",views.infocall),
 
     path("accounts/", include('django.contrib.auth.urls')),
