@@ -35,7 +35,7 @@
                                 <h5>상자 수거 요청 확인 전입니다.</h5>
                                 <hr>
                                 <p>확인을 기다려주세요.</p>
-                            {% else %}
+                            {% elif apply.progress == 3 %}
                                 <h5>수거중입니다.</h5>
                                 <hr>
                                 <p>
@@ -45,6 +45,12 @@
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                                     <a class="btn btn-dark" type="button" href="https://mdm.alps.llogis.com:18200/openui/mdm/pages/mo/MoBef?inv={{apply.invoice_num}}&empno=31705947" >배송 조회하기</a>
                                 </div>
+                            {% else %}
+                                <h5>송장 출력 전입니다.</h5>
+                                <hr>
+                                <p>
+                                    확인을 기다려주세요.
+                                </p>
                             {% endif %}
                         </div>
                         
