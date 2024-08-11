@@ -1,5 +1,5 @@
-from django.urls import path,include
-from django.contrib.auth.views import LogoutView
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
@@ -8,9 +8,6 @@ urlpatterns = [
     path("information_newma/",views.infocall),
 
     path("accounts/", include('django.contrib.auth.urls')),
-
-    # localhost/accounts/custom_logout/  : 로그아웃 완료
-    path('accounts/custom_logout/', LogoutView.as_view(template_name='registration/custom_logged_out.html'), name='logout'),
 
     # localhost/accounts/register : 회원가입
     path("accounts/register/",views.UserCreateView.as_view(), name="register"),
@@ -27,14 +24,17 @@ urlpatterns = [
     # localhost/accounts/search_id/success/  : 아이디 찾기 성공
     path("accounts/search_id/success/", views.SearchIdDoneTV.as_view(), name='search_id_done'),
 
-    # localhost/accounts/search_psw/  : 비밀번호 찾기 메인
-    path("accounts/search_psw/", views.SearchPswView.as_view(), name='search_psw'),
+    # 이메일 입력
+    path("accounts/reset_password/", views.UserPasswordResetView.as_view(), name="reset_password"),
 
-    # localhost/accounts/search_psw/update/  : 비밀번호 재설정
-    path("accounts/search_psw/update", views.UpdatePswView.as_view(), name='update_psw'),
+    # 이메일 발송 완료
+    path("accounts/password_reset_done/", views.UserPasswordResetDoneView.as_view(), name="password_reset_done"),
 
-    # localhost/accounts/search_psw/success/  : 비밀번호 재설정 성공
-    path("accounts/search_psw/success/", views.UpdatePswDoneTV.as_view(), name='update_psw_done'),
+    # 비밀번호 초기화(메일에서)
+    path("accounts/password_reset_confirm/<uidb64>/<token>/", views.UserPasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+
+    # 비밀번호 초기화 성공
+    path("accounts/password_reset_complete/", views.UserPasswordResetCompleteView.as_view(), name="password_reset_complete"),
 
     # localhost/accounts/my_page/   : 마이페이지
     path("accounts/my_page/", views.MyPageView.as_view(), name='my_page'),

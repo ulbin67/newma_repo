@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-+&4-u7z-s(ctpn+98m8nxmv2a$w#3ab4u6^ss12@f&!ilj2ax#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -42,9 +42,12 @@ INSTALLED_APPS = [
     "single_page",
     "manage_apply",
     "qna",
+    "crispy_forms",
+    "crispy_bootstrap4",
     "chatbot",
     "dashboard", #정보요약추가 -240805
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'single_page.User'
 
@@ -63,7 +66,7 @@ ROOT_URLCONF = "main_.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -149,7 +152,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#로그인 성공시 리다이랙트 주소
 LOGIN_REDIRECT_URL = '/'
+
+#로그아웃 성공시 리다이랙트 주소
+LOGOUT_REDIRECT_URL = '/'
+
+# 비밀번호 찾기(초기화)에 사용
+
+# 메일을 호스트하는 서버
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'                                      # gmail과의 통신하는 포트
+EMAIL_HOST_USER = 'lka111617@gmail.com'                 # 발신할 이메일
+EMAIL_HOST_PASSWORD = ''                      # 발신할 메일의 비밀번호
+EMAIL_USE_TLS = True                                    # TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER                    # 사이트와 관련한 자동응답을 받을 이메일 주소
+
 LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
 
 
