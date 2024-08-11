@@ -3,14 +3,13 @@ from .models import Post
 from django.core.exceptions import ValidationError
 import re, json, os
 from django.core.paginator import Paginator
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from django.http import JsonResponse
 from django.conf import settings
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import Chroma
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.chains import RetrievalQA
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import PyPDFLoader
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 # Create your views here.
 
 

@@ -29,7 +29,6 @@ mysql 연결 하셔야합니다!
 * 지금까지 install 해야하는 라이브러리
 [
     pip install django
-    pip install mysqlclient
     pip install django-widget-tweaks
     pip install Pillow
     pip install Jinja2
@@ -45,6 +44,7 @@ mysql 연결 하셔야합니다!
     pip install matplotlib
     pip install seaborn
     pip install -U langchain-community
+    pip install -U langchain-openai
     pip install langchain
     pip install pypdf
     pip install openai
