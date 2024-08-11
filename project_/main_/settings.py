@@ -30,12 +30,15 @@ def get_secret(setting, secrets=secrets):
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
 
+# Secret key
 SECRET_KEY = get_secret("SECRET_KEY")
 
-NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
-NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'
+# OpenAI API Key
+OPENAI_API_KEY = get_secret("OPENAI_API_KEY")
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# NAVER API Credentials
+NAVER_CLIENT_ID = get_secret('NAVER_CLIENT_ID')  # 네이버 클라이언트 ID
+NAVER_CLIENT_SECRET = get_secret('NAVER_CLIENT_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

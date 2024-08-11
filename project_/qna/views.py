@@ -121,7 +121,7 @@ def remove_post(request, pk):
 # Chatbot 초기화 함수 (애플리케이션 시작 시 한 번만 호출)
 def initialize_chatbot():
     # OpenAI API 키
-    api_key = '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'  # 환경 변수에서 API 키 읽기
+    api_key = settings.OPENAI_API_KEY
 
     # PDF 로딩 및 임베딩 준비
     loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')

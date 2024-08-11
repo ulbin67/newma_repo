@@ -7,6 +7,7 @@ from django.db import transaction
 from django.db.models import Sum
 from django.conf import settings
 
+
 def extract_region_name(address_info):
     """
     주어진 도로명 주소에서 광역지방자치단체명을 추출하여 정규화된 이름을 반환합니다.
@@ -94,7 +95,7 @@ NORMALIZATION_DICT = {
 # 네이버 클라이언트 시크릿
 
 NAVER_CLIENT_ID = settings.NAVER_CLIENT_ID
-NAVER_CLIENT_ID = settings.NAVER_CLIENT_SECRET
+NAVER_CLIENT_SECRET = settings.NAVER_CLIENT_SECRET
 
 def get_naver_geocode(address, company_name):
     url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode"

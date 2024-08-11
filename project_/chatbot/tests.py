@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
-    api_key = 'API키 넣어주세요'  # 여기에 직접 API 키를 입력합니다
+    api_key = ""
 
     # PDF 로딩 및 임베딩 준비 (초기화 시 한 번만 실행)
     loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
