@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from django.core.exceptions import ValidationError
-import re
+import re, json, os
 from django.core.paginator import Paginator
-
+from django.http import JsonResponse
+from django.conf import settings
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import Chroma
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.chains import RetrievalQA
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 # Create your views here.
 
 
@@ -27,7 +33,7 @@ def blog(request):#e
     return render(request, 'qna/blog.html', context)
 def password(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    if post.is_faq:
+    if post.is_faq or request.user.is_staff:
         return render(request, 'qna/posting.html', {'post':post})
     
     if request.method == 'POST':
@@ -43,12 +49,6 @@ def password(request, pk):
 # def posting(request, pk):
 #     post = Post.objects.get(pk=pk)
 #     return render(request, 'qna/posting.html', {'post': post})
-
-
-from django.shortcuts import render, redirect
-from django.core.exceptions import ValidationError
-from .models import Post
-import re
 
 def new_post(request):
     if request.method == 'POST':
@@ -121,34 +121,21 @@ def remove_post(request, pk):
 
 
 
-# from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-
-
-
-
-import json
-import os
-from django.http import JsonResponse
-from django.conf import settings
-from langchain.chains import RetrievalQA
-from langchain_community.chat_models import ChatOpenAI
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
-
-
 
 # Chatbot 초기화 함수 (애플리케이션 시작 시 한 번만 호출)
 def initialize_chatbot():
     # OpenAI API 키
-    api_key = ''  # 환경 변수에서 API 키 읽기
+    api_key = settings.OPENAI_API_KEY  # 환경 변수에서 API 키 읽기
 
     if not api_key:
         print ("API 키가 설정되지 않았습니다. 챗봇 기능 비활성화")
         return None
     try:
+        base_dir = settings.BASE_DIR
+        pdf_path = os.path.join(base_dir,'chatbot.pdf')
+
         # PDF 로딩 및 임베딩 준비
-        loader = PyPDFLoader('C:/Users/Hong_i/Desktop/Kaggle/newma_repo/project_/chatbot.pdf')
+        loader = PyPDFLoader(pdf_path)
         documents = loader.load_and_split()
 
         # OpenAIEmbeddings 객체 생성
@@ -197,22 +184,5 @@ def chatbot_response(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-
-
-
 def chatbot(request):
         return render(request, 'chatbot/chatbot.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
