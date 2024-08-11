@@ -44,8 +44,8 @@ mysql 연결 하셔야합니다!
     pip install crispy_bootstrap4
     pip install matplotlib
     pip install seaborn
-    pip install langchain
     pip install -U langchain-community
+    pip install langchain
     pip install pypdf
     pip install openai
     pip install chromadb

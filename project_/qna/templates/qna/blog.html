@@ -27,75 +27,127 @@
         font-weight: 700;
     }
   
+    
+
+    
+    /* 기본 숨김 설정 */
     #chatbot-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 300px;
-        z-index: 1000;
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 400px;
+                height: 600px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                border-radius: 30px;
+                overflow: hidden;
     }
 
-    #chatbot {
-        background-color: #f8f9fa;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    /* 챗봇 헤더 스타일 */
+    #chat-header {
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        background-color: #fcb715;
+        color: #fff;
+        padding: 10px;
         display: flex;
-        flex-direction: column;
-        height: 300px;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
     }
 
-    #chatbot-header {
+  
+
+    /* 챗봇 트리거 버튼 */
+    #open-chatbot-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 40px;
+        width : 80px;
+        height: 80px;
+        padding: 10px 20px;
         background-color: #007bff;
-        color: white;
-        padding: 10px;
-        border-radius: 10px 10px 0 0;
-        text-align: center;
+        color: #fff;
+        font-weight: 900;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 7px 9px 7px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        z-index: 100;
+        font-size: 30px;
     }
 
-    #chatbot-body {
-        flex: 1;
-        padding: 10px;
-        overflow-y: auto;
-        border-bottom: 1px solid #ccc;
+
+    #open-chatbot-btn:hover {
+        background-color: #0056b3;
     }
 
-    #chatbot-messages {
-        margin-bottom: 10px;
+    /* 챗봇 닫기 버튼 */
+    #close-chatbot-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    /* 챗 내용 박스 */
+    #chat-box {
+        padding: 10px;
+        height: 481px;
+        overflow-y: scroll;
+        background-color: #f9f9f9;
+    }
+
+    /* 챗 메시지 스타일 */
+    .user, .bot {
+        padding: 8px;
+        margin: 5px 0;
     }
 
     .user {
+        background-color: #d1e7dd;
         text-align: right;
-        color: #007bff;
     }
 
     .bot {
+        background-color: #f8d7da;
         text-align: left;
-        color: #333;
     }
 
-    #chatbot-form {
+    /* 입력 필드 및 버튼 스타일 */
+    #chat-form {
         display: flex;
-        padding: 10px;
-        border-top: 1px solid #ccc;
+        justify-content: space-between;
+        padding: 13px;
+        background-color: #f1f1f1;
+        
     }
 
-    #user-input {
-        flex: 1;
-        padding: 5px;
+    #user_input {
+        width: 80%;
+        padding: 8px;
+        margin-left: 20x;
         border: 1px solid #ccc;
-        border-radius: 5px;
+        border-radius: 30px;
     }
 
-    #chatbot-send {
-        padding: 5px 10px;
+    #chat-form button {
+        padding: 8px 15px;
         background-color: #007bff;
-        color: white;
+        color: #fff;
         border: none;
-        border-radius: 5px;
+        border-radius: 30px;
         cursor: pointer;
-        margin-left: 10px;
     }
+
+    #chat-form button:hover {
+        background-color: #0056b3;
+    }
+
 
 </style>
 
@@ -196,20 +248,30 @@
         </div>
     </div>
 </form>
-
+<button id="open-chatbot-btn">?</button>
 <!-- 챗봇 팝업 추가 -->
 <div id="chatbot-container">
+    <div id="chat-header">
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;🤖&nbsp;newma chatbot</span>
+        <button id="close-chatbot-btn">&times;</button>
+    </div>
     <div id="chat-box">
     </div>
     
     <form id="chat-form" method="post">
-        <input type="text" id="user_input" name="user_input" placeholder="Type your message here" style="width: 80%;">
+        <input type="text" id="user_input" name="user_input" placeholder="Type your message here">
         <button type="submit">Send</button>
     </form>
 </div>
 
 
 <script>
+    document.getElementById('open-chatbot-btn').addEventListener('click', function() {
+    document.getElementById('chatbot-container').style.display = 'block';});
+
+    document.getElementById('close-chatbot-btn').addEventListener('click', function() {
+    document.getElementById('chatbot-container').style.display = 'none';});
+
     document.getElementById('chat-form').onsubmit = function(e) {
         e.preventDefault();
         const userInput = document.getElementById('user_input').value;

@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from django.core.exceptions import ValidationError
-import re
+import re, json, os
 from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-import os
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from django.http import JsonResponse
 from django.conf import settings
 from langchain.chains import RetrievalQA
@@ -14,6 +11,7 @@ from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import PyPDFLoader
+# Create your views here.
 
 
 def blog(request):#e
@@ -48,6 +46,10 @@ def password(request, pk):
     
     return render(request, 'qna/password_form.html', {'post': post})
 
+# 게시글 부르기
+# def posting(request, pk):
+#     post = Post.objects.get(pk=pk)
+#     return render(request, 'qna/posting.html', {'post': post})
 
 def new_post(request):
     if request.method == 'POST':
@@ -118,32 +120,45 @@ def remove_post(request, pk):
 
 
 
+
+
+
 # Chatbot 초기화 함수 (애플리케이션 시작 시 한 번만 호출)
 def initialize_chatbot():
     # OpenAI API 키
-    api_key = settings.OPENAI_API_KEY
+    api_key = settings.OPENAI_API_KEY  # 환경 변수에서 API 키 읽기
 
-    # PDF 로딩 및 임베딩 준비
-    loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
-    documents = loader.load_and_split()
+    if not api_key:
+        print ("API 키가 설정되지 않았습니다. 챗봇 기능 비활성화")
+        return None
+    try:
+        base_dir = settings.BASE_DIR
+        pdf_path = os.path.join(base_dir,'chatbot.pdf')
 
-    # OpenAIEmbeddings 객체 생성
-    embedding = OpenAIEmbeddings(openai_api_key=api_key)
+        # PDF 로딩 및 임베딩 준비
+        loader = PyPDFLoader(pdf_path)
+        documents = loader.load_and_split()
 
-    # 벡터 데이터베이스 생성 및 리트리버 설정
-    vectordb = Chroma.from_documents(documents=documents, embedding=embedding)
-    retriever = vectordb.as_retriever(search_kwargs={'k': 1})
+        # OpenAIEmbeddings 객체 생성
+        embedding = OpenAIEmbeddings(openai_api_key=api_key)
 
-    # ChatGPT 모델 설정
-    llm = ChatOpenAI(model_name='gpt-4', streaming=True, temperature=0, openai_api_key=api_key)
+        # 벡터 데이터베이스 생성 및 리트리버 설정
+        vectordb = Chroma.from_documents(documents=documents, embedding=embedding)
+        retriever = vectordb.as_retriever(search_kwargs={'k': 1})
 
-    # RetrievalQA 체인 생성
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type='stuff',
-        retriever=retriever,
-        return_source_documents=True
-    )
+        # ChatGPT 모델 설정
+        llm = ChatOpenAI(model_name='gpt-4', streaming=True, temperature=0, openai_api_key=api_key)
+
+        # RetrievalQA 체인 생성
+        qa_chain = RetrievalQA.from_chain_type(
+            llm=llm,
+            chain_type='stuff',
+            retriever=retriever,
+            return_source_documents=True
+        )
+    except Exception as e:
+        print(f"챗봇 초기화 중 오류 발생: {e}")
+        return None
 
     return qa_chain
 
@@ -152,35 +167,23 @@ qa_chain = initialize_chatbot()
 
 def chatbot_response(request):
     if request.method == 'POST':
+        if qa_chain is None:
+            return JsonResponse({'error': '챗봇 기능 비활성화'}, status=503)
         try:
             user_input = request.POST.get('user_input')
             print(user_input)
             # 사용자 입력에 대한 응답 생성
             response = qa_chain({"query": user_input})
-        except:
+            result = response['result']
+        except Exception as e:
+            
             print(f"user_input : {user_input}")
+            print(f"챗봇 응답 처리 중 오류 발생 :{e}")
 
-        return JsonResponse({'result': response['result']})
+        return JsonResponse({'result': result})
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-
-
-
 def chatbot(request):
-    return render(request, 'chatbot/chatbot.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return render(request, 'chatbot/chatbot.html')
