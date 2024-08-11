@@ -162,5 +162,3 @@ EMAIL_HOST_USER = 'lka111617@gmail.com'                 # 발신할 이메일
 EMAIL_HOST_PASSWORD = 'zruk ydku fdsy fsrs'                       # 발신할 메일의 비밀번호
 EMAIL_USE_TLS = True                                    # TLS 보안 방법
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER                    # 사이트와 관련한 자동응답을 받을 이메일 주소
-
-LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
