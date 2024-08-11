@@ -2,19 +2,12 @@ import os
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from sklearn.preprocessing import OneHotEncoder, StandardScaler, MinMaxScaler
-from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, Input, LSTM, Dropout
 import joblib
 from .models import DoneApply, Apply
 from django.conf import settings
 
-def 이번년도_달별박스수계산():
-    current_year = datetime.now().year
-
-    done_applies = DoneApply.objects.filter(done_at__year=current_year)
+def 달별박스수계산():
+    done_applies = DoneApply.objects.all
 
     monthly_box_counts = {}
 

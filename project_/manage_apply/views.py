@@ -13,7 +13,7 @@ import pandas as pd
 from django.db.models import Q
 from django.utils import timezone
 import pandas as pd
-from .query import 이번년도_달별박스수계산, 상자_개수_추가_학습,상자_개수_예측
+from .query import 달별박스수계산
 import os
 from django.core.paginator import Paginator
 
@@ -712,7 +712,8 @@ def 정보페이지_call(request):
     user_df = None
     search_form = ApplySearchForm(request.POST or None)
     company_info_form = ApplyForm(request.POST or None)
-    dones = DoneApply.objects.all()
+    dates,dones = 달별박스수계산
+    month_box_data = [{'label': date, 'box_num': done} for date, done in zip(dates, dones)]
 
     if request.user.is_staff:
         current_datetime = timezone.now()
@@ -831,7 +832,7 @@ def 정보페이지_call(request):
                     'apply_df' : apply_df,
                     'chart' : chart,
                     'user_df' : user_df,
-                    'dones' : dones,
+                    'month_box_data': month_box_data,
                    }
         return render(request,'manage_apply/정보페이지.html', context)
     else:
