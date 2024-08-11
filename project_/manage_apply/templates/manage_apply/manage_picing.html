@@ -41,7 +41,7 @@
                 </tr>
               </thead>
               <tbody>
-                  {% for apply in applys %}
+                  {% for apply in page_obj %}
                       <tr>
                           <th scope="row">{{apply.apply_at}}</th>
                           <td>{{apply.company}}</td>
@@ -64,6 +64,47 @@
                   {% endfor %}
               </tbody>
           </table>
+          <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <!-- 이전페이지 -->
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">이전</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                </li>
+                {% endif %}
+                
+                <!-- 페이지 번호 -->
+                {% for page_number in page_obj.paginator.page_range %}
+                    {% if page_number >= page_obj.number|add:-5 and page_number <= page_obj.number|add:5 %}
+                        {% if page_number == page_obj.number %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+    
+                <!-- 다음페이지 -->
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">다음</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                </li>
+                {% endif %}
+            </ul>
+            <!-- 페이징처리 끝 -->
+        </div>         
       </div>
       <div class="mb-5">
         <div class="mt-4">

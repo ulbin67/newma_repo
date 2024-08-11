@@ -18,13 +18,20 @@
                         <i class="fas fa-user"></i>&ensp;{{request.user.name}}님
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();">로그아웃</a>
+                        <a class="dropdown-item" href="#" onclick="out(event)">로그아웃</a>
                         <a class="dropdown-item" href="{% url 'my_page'%}">마이페이지</a>
                     </div>
-                    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                    <form name="logout_form" action="{% url 'logout' %}" method="post" style="display: none;">
                       {% csrf_token %}
-                      <button type="submit">Logout</button>
                     </form>
+                    <script>
+                        function out(event) {
+                            event.preventDefault(); // 링크 클릭의 기본 동작을 막습니다.
+                            if (confirm("로그아웃 하시겠습니까?")) {
+                                document.forms['logout_form'].submit();
+                            }
+                        }
+                    </script>
                 </li>
                 <!--비 로그인시 메뉴바-->
                 {% else %}
@@ -42,3 +49,4 @@
         </div>
     </div>
 </nav>
+
