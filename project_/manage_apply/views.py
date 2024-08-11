@@ -61,6 +61,7 @@ def box_apply_create(request):
         box_num = int(request.POST.get('box_num', ''))
 
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
+        # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
             company_already.recent_employee = applicant
@@ -68,10 +69,7 @@ def box_apply_create(request):
             company_already.address_info = address_info
             company_already.address_detail = address_detail
             company_already.count = int(company_already.count) + 1
-            if com_num:
-                company_already.com_num = com_num
-            else:
-                company_already.com_num = apcan_phone
+            company_already.com_num = com_num if com_num else apcan_phone
             company_already.save()
         else:
             COMPANY_NEW = CompanyInfo(
@@ -143,11 +141,8 @@ def sent_apply_create(request):
                 company_already.address_num = address_num
                 company_already.address_info = address_info
                 company_already.address_detail = address_detail
-                company_already.count = int(company_already.count) + 1
-            if com_num:
-                company_already.com_num = com_num
-            else:
-                company_already.com_num = apcan_phone
+            company_already.count = int(company_already.count) + 1
+            company_already.com_num = com_num if com_num else apcan_phone
             company_already.save()
         else:
             COMPANY_NEW = CompanyInfo(
