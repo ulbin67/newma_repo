@@ -50,6 +50,7 @@ def password(request, pk):
 #     post = Post.objects.get(pk=pk)
 #     return render(request, 'qna/posting.html', {'post': post})
 
+
 def new_post(request):
     if request.method == 'POST':
         postname = request.POST.get('postname')
@@ -80,6 +81,12 @@ def new_post(request):
         except ValueError:
             return render(request, 'qna/new_post.html', {
                 'error_message': "비밀번호는 숫자 4자리로 입력해주세요. (예: 1234)"
+            })
+        
+        # 이미지 크기 유효성 검사 (500KB 제한)
+        if mainphoto and mainphoto.size > 500 * 1024:
+            return render(request, 'qna/new_post.html', {
+                'error_message': "이미지 파일이 너무 큽니다. 500KB 이하로 업로드 해주세요."
             })
 
 
