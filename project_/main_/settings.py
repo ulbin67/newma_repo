@@ -23,6 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-+&4-u7z-s(ctpn+98m8nxmv2a$w#3ab4u6^ss12@f&!ilj2ax#"
 
+NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
+NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -172,7 +175,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER                    # 사이트와 관련한
 LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
 
 
-
-import os
+NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
+NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

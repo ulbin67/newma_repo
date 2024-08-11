@@ -5,6 +5,7 @@ from manage_apply.models import CompanyInfo
 import requests
 from django.db import transaction
 from django.db.models import Sum
+from django.conf import settings
 
 def extract_region_name(address_info):
     """
@@ -90,9 +91,10 @@ NORMALIZATION_DICT = {
 # 네이버 API 설정
 # 박가현 개인 키입니다.. 나중에 사업자 아이디 키로 바꾸죠..
 # 테이블에 저장해서 쓰는거라 사용량 괜찮을듯..
-NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
-NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'  # 네이버 클라이언트 시크릿
+# 네이버 클라이언트 시크릿
 
+NAVER_CLIENT_ID = settings.NAVER_CLIENT_ID
+NAVER_CLIENT_ID = settings.NAVER_CLIENT_SECRET
 
 def get_naver_geocode(address, company_name):
     url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode"
