@@ -2,13 +2,13 @@
 {% block extra-style %}
 <style>
     .date-field {
-        margin-bottom: 5px;  /* 예시: 하단 마진 조정 */
-        padding: 5px;  /* 예시: 패딩 조정 */
+        margin-bottom: 5px;  /* 하단 마진 조정 */
+        padding: 5px;  /* 패딩 조정 */
     }
 
     .chart-field {
-        margin-bottom: 5px; /* 예시: 하단 마진 조정 */
-        padding: 5px; /* 예시: 패딩 조정 */
+        margin-bottom: 5px; /* 하단 마진 조정 */
+        padding: 5px; /* 패딩 조정 */
     }
 
     .table-responsive {
@@ -32,54 +32,57 @@
 
 </style>
 {% endblock %}
+
 {% load crispy_forms_tags %}
-    {% block main_area %}
-    {% if user.is_staff %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-3">
-                <div id="list-example" class="list-group">
-                    <a class="list-group-item list-group-item-action" href="#list-item-1">회사별 거래 횟수</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-2">박스 수 정보</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-3">거래 회사 검색</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-4">박스 수 정보</a>
-                </div>
+
+{% block main_area %}
+{% if user.is_staff %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <div id="list-example" class="list-group">
+                <a class="list-group-item list-group-item-action" href="#list-item-1">회사별 거래 횟수</a>
+                <a class="list-group-item list-group-item-action" href="#list-item-2">박스 수 정보</a>
+                <a class="list-group-item list-group-item-action" href="#list-item-3">거래 회사 검색</a>
+                <a class="list-group-item list-group-item-action" href="#list-item-4">박스 수 정보</a>
             </div>
-            <div class="col-9">
-                <div class="card">
-                    <div class="card-body">
-                        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
-                            <h4 id="list-item-1">지역별 거래 확인</h4>
-                            <div class="container">
-                                <div class="row">
-                                    <a type="button" class="btn btn-outline-success" href="/dashboard/"
-                                     style="--bs-btn-padding-y: .60rem; --bs-btn-padding-x: .9rem; --bs-btn-font-size: $font-size-base * 5;">
-                                     거래 위치 정보 보기!
-                                     </a> 
-                                 </div>
+        </div>
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+                        <!-- 회사별 거래 횟수 -->
+                        <h4 id="list-item-1">지역별 거래 확인</h4>
+                        <div class="container">
+                            <div class="row">
+                                <a type="button" class="btn btn-outline-success" href="/dashboard/"
+                                style="--bs-btn-padding-y: .60rem; --bs-btn-padding-x: .9rem; --bs-btn-font-size: $font-size-base * 5;">
+                                거래 위치 정보 보기!
+                                </a> 
+                            </div>
                             <hr>
+                            <!-- 회사별 거래 확인 -->
                             <h4 id="list-item-2">회사별 거래 확인</h4>
                             <div class="container">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <canvas id="PieChart1"></canvas>
                                     </div>
-                                {% endfor %}
-                                <form class="col-3" action="" method="post">
-                                    {% csrf_token %}
-                                    {{ search_form|crispy }}
-                                    <button class="btn btn-primary mt-3" type="submit" name="search_submit">Search</button>
-                                </form>
-                                {% if apply_df %}
-                                    <hr>
-                                    <b>Chart</b>
-                                    <img src="data:image/png;base64, {{ chart|safe }}" alt="" id="img">
-                                {% endif %}<br>
-                        </div>
-                        <hr>
-                        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
-                            <h4 id="list-item-2">거래 회사 정보 검색</h4>
+                                    <form class="col-3" action="" method="post">
+                                        {% csrf_token %}
+                                        {{ search_form|crispy }}
+                                        <button class="btn btn-primary mt-3" type="submit" name="search_submit">Search</button>
+                                    </form>
+                                    {% if apply_df %}
+                                        <hr>
+                                        <b>Chart</b>
+                                        <img src="data:image/png;base64, {{ chart|safe }}" alt="" id="img">
+                                    {% endif %}
+                                </div>
+                                <hr>
+                                <!-- 거래 회사 정보 검색 -->
+                                <h4 id="list-item-3">거래 회사 정보 검색</h4>
                                 <form class="col-3" action="" method="post">
                                     {% csrf_token %}
                                     {{ company_info_form|crispy }}
@@ -88,19 +91,21 @@
                                 {% if company_df %}
                                     <hr>
                                     <b>거래 정보</b>
-                                <div class="table-responsive">
-                                    {{ company_df|safe }}
-                                </div>
-                                {% endif %}<br>
+                                    <div class="table-responsive">
+                                        {{ company_df|safe }}
+                                    </div>
+                                {% endif %}
                                 {% if user_df %}
                                     <b>회원 정보</b>
-                                <div class="table-responsive">
-                                    {{ user_df|safe }}
-                                </div>
-                                <hr>
+                                    <div class="table-responsive">
+                                        {{ user_df|safe }}
+                                    </div>
+                                    <hr>
                                 {% endif %}
                                 <br>
+                            </div>
                             <hr>
+                            <!-- 박스 수 예측 -->
                             <h4 id="list-item-4">박스 수 예측</h4>
                             <div class="container">
                                 <h5>이번년도만 포함됩니다.</h5>
@@ -118,7 +123,7 @@
                                         <td>{{ item.box_num }}</td>
                                     </tr>
                                     {% endfor %}
-                                </tbody>
+                                  </tbody>
                                 </table>
                             </div>
                         </div>
@@ -127,5 +132,6 @@
             </div>
         </div>
     </div>
-    {% endif %}
-    {% endblock %}
+</div>
+{% endif %}
+{% endblock %}

@@ -712,7 +712,7 @@ def 정보페이지_call(request):
     user_df = None
     search_form = ApplySearchForm(request.POST or None)
     company_info_form = ApplyForm(request.POST or None)
-    dates, dones = 달별박스수계산
+    dates, dones = 달별박스수계산()
     month_box_data = [{'label': date, 'box_num': done} for date, done in zip(dates, dones)]
 
     if request.user.is_staff:

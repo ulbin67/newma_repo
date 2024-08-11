@@ -8,24 +8,25 @@ from django.conf import settings
 from django.db.models import Sum
 
 def 달별박스수계산():
-    # 현재 연도를 가져옵니다.
-    current_year = datetime.now().year
+    done_applies = DoneApply.objects.all()
 
-    # DoneApply 모델에서 월별로 box_num의 합계를 계산합니다.
-    monthly_box_counts = DoneApply.objects.filter(
-        done_at__year=current_year
-    ).values('done_at__month').annotate(
-        total_box=Sum('box_num')
-    ).order_by('done_at__month')
+    monthly_box_counts = {}
 
-    # 월별 상자 수 데이터를 준비합니다.
+    for apply in done_applies:
+        month = apply.done_at.month
+        if month not in monthly_box_counts:
+            monthly_box_counts[month] = 0
+
+        box_num = apply.box_num if apply.box_num is not None else 0
+        monthly_box_counts[month] += box_num
+
     monthly_done_box_count = [
-        {'month': entry['done_at__month'], 'total_box': entry['total_box'] or 0}
-        for entry in monthly_box_counts
+        {'month': month, 'total_box': total_box}
+        for month, total_box in monthly_box_counts.items()
     ]
 
-    # 레이블과 상자 수를 추출합니다.
-    labels = [f"{current_year}-{item['month']:02}" for item in monthly_done_box_count]
-    box_nums = [item['total_box'] for item in monthly_done_box_count]
-    
+    data = monthly_done_box_count
+
+    labels = [f"{datetime.now().year}-{item['month']:02}" for item in data]
+    box_nums = [item['total_box'] for item in data]
     return labels, box_nums
