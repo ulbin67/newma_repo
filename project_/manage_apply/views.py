@@ -712,7 +712,7 @@ def 정보페이지_call(request):
     user_df = None
     search_form = ApplySearchForm(request.POST or None)
     company_info_form = ApplyForm(request.POST or None)
-    dates,dones = 달별박스수계산
+    dates, dones = 달별박스수계산
     month_box_data = [{'label': date, 'box_num': done} for date, done in zip(dates, dones)]
 
     if request.user.is_staff:
@@ -720,54 +720,13 @@ def 정보페이지_call(request):
         default_start_date = current_datetime - timezone.timedelta(days=30)
         default_end_date = current_datetime
 
-        apply_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)
-        if apply_qs.exists():
-            apply_df = pd.DataFrame(apply_qs.values())
-            chart = get_chart('#1', apply_df)  # 예시: 기본 차트 타입으로 'line' 사용
-            apply_df = apply_df.to_html()
-
-        company_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)  # 예시: 기본으로 표시할 회사 관련 데이터
-        if company_qs.exists():
-            company_df = pd.DataFrame(company_qs.values())
-            selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress',
-                                'invoice_num',
-                                'box_num', 'zir_block_count', 'zir_powder_count', 'round_bar_count', 'tool_count']
-            company_df['apply_at'] = company_df['apply_at'].apply(lambda x: x.strftime('%Y/%m/%d'))
-            company_df = company_df[selected_columns]
-            company_df.rename({'apply_at': '일자', 'company': '회사명', 'address_num': '우편번호', 'applicant': '신청인',
-                               'apcan_phone': '연락처', 'progress': '진행상황', 'invoice_num': '송장번호',
-                               'box_num': '상자 수', 'zir_block_count': '지르코니아 블록',
-                               'zir_powder_count': '지르코니아 분말', 'round_bar_count': '환봉', 'tool_count': '밀링툴'},
-                              axis=1, inplace=True)
-            company_df = company_df.to_html()
-
-        user_qs = User.objects.exclude(is_staff=True)  # 예시: 기본으로 표시할 유저 관련 데이터
-        if user_qs.exists():
-            user_df = pd.DataFrame(user_qs.values())
-            selected_columns = ['name', 'company_name', 'phone_num', 'last_login', 'is_active', 'date_joined',
-                                'address_num',
-                                'address_info', 'address_detail']
-            user_df['date_joined'] = user_df['date_joined'].apply(lambda x: x.strftime('%Y/%m/%d'))
-            user_df['last_login'] = user_df['last_login'].apply(lambda x: x.strftime('%Y/%m/%d'))
-            user_df = user_df[selected_columns]
-            user_df.rename({'name': '이름', 'company_name': '회사명', 'last_login': '마지막 로그인',
-                            'is_active': '활성 여부', 'date_joined': '등록일', 'address_num': '우편번호',
-                            'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호',
-                            }, axis=1, inplace=True)
-            if len(user_df) < 2:
-                user_df = user_df.T
-            user_df = user_df.to_html()
-
         if request.method == 'POST':
             if 'search_submit' in request.POST and search_form.is_valid():
-                apply_df = None
-                chart = None
                 date_from = request.POST.get('date_from')
                 date_to = request.POST.get('date_to')
                 chart_type = request.POST.get('chart_type')
-                print(date_from, date_to, chart_type)
                 apply_qs = Apply.objects.filter(apply_at__lte=date_to, apply_at__gte=date_from)
-                if len(apply_qs) > 0:
+                if apply_qs.exists():
                     apply_df = pd.DataFrame(apply_qs.values())
                     chart = get_chart(chart_type, apply_df)
                     apply_df = apply_df.to_html()
@@ -775,41 +734,39 @@ def 정보페이지_call(request):
                     messages.warning(request, "해당 날짜의 거래 데이터가 없습니다.")
 
             if 'company_info_submit' in request.POST and company_info_form.is_valid():
-                company_df = None
-                user_df = None
                 company_info = request.POST.get('company_info')
                 date_from2 = request.POST.get('date_from2')
                 date_to2 = request.POST.get('date_to2')
-                if company_info is not None:
+                if company_info:
                     company_qs = Apply.objects.filter(
                         Q(company__icontains=company_info) | Q(applicant__icontains=company_info),
                         apply_at__lte=date_to2,
                         apply_at__gte=date_from2
                     )
+                    User_qs = User.objects.filter(Q(company_name__icontains=company_info) | Q(name__icontains=company_info))
                 else:
                     company_qs = Apply.objects.filter(
                         apply_at__lte=date_to2,
                         apply_at__gte=date_from2
                     )
-                if company_info is not None:
-                    User_qs = User.objects.filter(Q(company_name__icontains=company_info) | Q(name__icontains=company_info))
-                else:
-                    User_qs = User.objects.exclude(is_staff=True)  # 예시: 기본으로 표시할 유저 관련 데이터
-                if len(company_qs) > 0:
-                    company_df = pd.DataFrame(company_qs.values())
+                    User_qs = User.objects.exclude(is_staff=True)
 
-                    selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress','invoice_num',
+                if company_qs.exists():
+                    company_df = pd.DataFrame(company_qs.values())
+                    selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress', 'invoice_num',
                                         'box_num', 'zir_block_count', 'zir_powder_count', 'round_bar_count', 'tool_count']
                     company_df['apply_at'] = company_df['apply_at'].apply(lambda x: x.strftime('%Y/%m/%d'))
                     company_df = company_df[selected_columns]
-                    company_df.rename({'apply_at': '일자',  'company':'회사명', 'address_num': '우편번호', 'applicant':'신청인',
-                                       'apcan_phone':'연락처', 'progress':'진행상황','invoice_num' :'송장번호',
-                                        'box_num': '상자 수', 'zir_block_count' : '지르코니아 블록',
-                                       'zir_powder_count':'지르코니아 분말', 'round_bar_count':'환봉', 'tool_count':'밀링툴'},
+                    company_df.rename({'apply_at': '일자', 'company': '회사명', 'address_num': '우편번호', 'applicant': '신청인',
+                                       'apcan_phone': '연락처', 'progress': '진행상황', 'invoice_num': '송장번호',
+                                       'box_num': '상자 수', 'zir_block_count': '지르코니아 블록',
+                                       'zir_powder_count': '지르코니아 분말', 'round_bar_count': '환봉', 'tool_count': '밀링툴'},
                                       axis=1, inplace=True)
                     company_df = company_df.to_html()
+                else:
+                    messages.warning(request, "해당 회사에 대한 거래 데이터가 없습니다.")
 
-                if len(User_qs) > 0:
+                if User_qs.exists():
                     user_df = pd.DataFrame(User_qs.values())
                     selected_columns = ['name', 'company_name', 'phone_num', 'last_login', 'is_active', 'date_joined', 'address_num',
                                         'address_info', 'address_detail']
@@ -818,22 +775,60 @@ def 정보페이지_call(request):
                     user_df = user_df[selected_columns]
                     user_df.rename({'name': '이름', 'company_name': '회사명', 'last_login': '마지막 로그인',
                                     'is_active': '활성 여부', 'date_joined': '등록일', 'address_num': '우편번호',
-                                    'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호',
-                                    }, axis=1, inplace=True)
+                                    'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호'},
+                                   axis=1, inplace=True)
                     if len(user_df) < 2:
                         user_df = user_df.T
                     user_df = user_df.to_html()
                 else:
-                    messages.warning(request, "해당 회사, 담당자에 대한 데이터가 없습니다.")
+                    messages.warning(request, "해당 유저에 대한 데이터가 없습니다.")
 
-        context = {'company_df': company_df,
-                    'search_form' : search_form,
-                    'company_info_form': company_info_form,
-                    'apply_df' : apply_df,
-                    'chart' : chart,
-                    'user_df' : user_df,
-                    'month_box_data': month_box_data,
-                   }
-        return render(request,'manage_apply/정보페이지.html', context)
+        else:  # GET 요청일 경우
+            apply_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)
+            if apply_qs.exists():
+                apply_df = pd.DataFrame(apply_qs.values())
+                chart = get_chart('#1', apply_df)  # 예시: 기본 차트 타입으로 'line' 사용
+                apply_df = apply_df.to_html()
+
+            company_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)
+            if company_qs.exists():
+                company_df = pd.DataFrame(company_qs.values())
+                selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress',
+                                    'invoice_num', 'box_num', 'zir_block_count', 'zir_powder_count', 'round_bar_count', 'tool_count']
+                company_df['apply_at'] = company_df['apply_at'].apply(lambda x: x.strftime('%Y/%m/%d'))
+                company_df = company_df[selected_columns]
+                company_df.rename({'apply_at': '일자', 'company': '회사명', 'address_num': '우편번호', 'applicant': '신청인',
+                                   'apcan_phone': '연락처', 'progress': '진행상황', 'invoice_num': '송장번호',
+                                   'box_num': '상자 수', 'zir_block_count': '지르코니아 블록',
+                                   'zir_powder_count': '지르코니아 분말', 'round_bar_count': '환봉', 'tool_count': '밀링툴'},
+                                  axis=1, inplace=True)
+                company_df = company_df.to_html()
+
+            user_qs = User.objects.exclude(is_staff=True)
+            if user_qs.exists():
+                user_df = pd.DataFrame(user_qs.values())
+                selected_columns = ['name', 'company_name', 'phone_num', 'last_login', 'is_active', 'date_joined', 'address_num',
+                                    'address_info', 'address_detail']
+                user_df['date_joined'] = user_df['date_joined'].apply(lambda x: x.strftime('%Y/%m/%d'))
+                user_df['last_login'] = user_df['last_login'].apply(lambda x: x.strftime('%Y/%m/%d'))
+                user_df = user_df[selected_columns]
+                user_df.rename({'name': '이름', 'company_name': '회사명', 'last_login': '마지막 로그인',
+                                'is_active': '활성 여부', 'date_joined': '등록일', 'address_num': '우편번호',
+                                'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호'},
+                               axis=1, inplace=True)
+                if len(user_df) < 2:
+                    user_df = user_df.T
+                user_df = user_df.to_html()
+
+        context = {
+            'company_df': company_df if company_df is not None else "정보가 없습니다.",
+            'search_form': search_form,
+            'company_info_form': company_info_form,
+            'apply_df': apply_df if apply_df is not None else "정보가 없습니다.",
+            'chart': chart if chart is not None else None,
+            'user_df': user_df if user_df is not None else "정보가 없습니다.",
+            'month_box_data': month_box_data,
+        }
+        return render(request, 'manage_apply/정보페이지.html', context)
     else:
         return redirect("/")
