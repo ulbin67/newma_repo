@@ -712,6 +712,7 @@ def 정보페이지_call(request):
     user_df = None
     search_form = ApplySearchForm(request.POST or None)
     company_info_form = ApplyForm(request.POST or None)
+    dones = DoneApply.objects.all()
 
     if request.user.is_staff:
         current_datetime = timezone.now()
@@ -830,48 +831,11 @@ def 정보페이지_call(request):
                     'apply_df' : apply_df,
                     'chart' : chart,
                     'user_df' : user_df,
+                    'dones' : dones,
                    }
         return render(request,'manage_apply/정보페이지.html', context)
-        try:
-            #DB 불러오기
-            #만약 특정 DB만 불러오고 싶다면 Apply.objects.filter(조건)으로 불러오기
-            #DB를 특정 조건으로 합쳐서 불러오고 싶다면 query.py에서 함수로 합쳐서 불러오기
-            applys = Apply.objects.all()
-            dones = DoneApply.objects.all()
-            companys = CompanyInfo.objects.all()
-
-            상자_개수_추가_학습()
-            labels, box_nums = 이번년도_달별박스수계산()
-            month_box_data = [{'label': label, 'box_num': box_num} for label, box_num in zip(labels, box_nums)]
-
-            return render(
-                request,
-                'manage_apply/정보페이지.html',
-                {
-                    'applys': applys,
-                    'dones' : dones,
-                    'companys' : companys,
-
-                    'month_box_data': month_box_data,
-
-                }
-            )
-        except Apply.DoesNotExist:
-            return redirect('info_call')
-        except DoneApply.DoesNotExist:
-            return redirect('info_call')
-        except CompanyInfo.DoesNotExist:
-            return redirect('info_call')
     else:
         return redirect("/")
-
-    # try:
-    # except Apply.DoesNotExist:
-    #     return redirect('info_call')
-    # except DoneApply.DoesNotExist:
-    #     return redirect('info_call')
-    # except CompanyInfo.DoesNotExist:
-    #     return redirect('info_call')
 
 def 상자예측_call(request):
     if request.user.is_staff:

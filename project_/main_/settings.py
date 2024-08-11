@@ -10,21 +10,32 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import os
+import os, json
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-+&4-u7z-s(ctpn+98m8nxmv2a$w#3ab4u6^ss12@f&!ilj2ax#"
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_secret("SECRET_KEY")
 
 NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
 NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -175,7 +186,3 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER                    # 사이트와 관련한
 LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
 
 
-NAVER_CLIENT_ID = 'ahkymw2inp'  # 네이버 클라이언트 ID
-NAVER_CLIENT_SECRET = 'NTm1ZKbQNC6ZeJS55NqRrLj2rKQuGGMgS9REvpD4'
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
