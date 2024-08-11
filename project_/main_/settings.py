@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "single_page",
     "manage_apply",
     "qna",
-    "chatbot"
+
 ]
 
 AUTH_USER_MODEL = 'single_page.User'
@@ -86,7 +86,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": 'newmaDB',
         'USER': 'root',
-        'PASSWORD':'00701',
+        'PASSWORD':'0000',
         'HOST': '127.0.0.1',
         'PORT':'3306'                   # 머지할때 포트번호 -> 3306으로 바꿔야함
     }
