@@ -41,19 +41,17 @@ def box_checkcall(request):
     )
 
 
-#신청 내용을 model로 저장하는 함수
+import re
+from django.shortcuts import redirect, render
+
+# 신청 내용을 model로 저장하는 함수
 def box_apply_create(request):
     try:
-        ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
-        # 정규표현식으로 공백 제거
-        company = re.sub(r'[\s]'|r'기공소', '', request.POST.get('company', ''))
-        # 숫자만 저장
+        # Post.get을 통해 HTML에서 내용을 읽어들인 후 변수에 저장
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         com_num = re.sub(r'[^0-9]', '', request.POST.get('com_num', ''))
-        # 공백 제거
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
-        # 숫자만 저장
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
-
 
         address_num = request.POST.get('sample6_postcode', '')
         address_info = request.POST.get('sample6_address', '')
@@ -71,9 +69,9 @@ def box_apply_create(request):
             company_already.address_detail = address_detail
             company_already.count = int(company_already.count) + 1
             if com_num:
-                company_already.com_num = apcan_phone
-            else:
                 company_already.com_num = com_num
+            else:
+                company_already.com_num = apcan_phone
             company_already.save()
         else:
             COMPANY_NEW = CompanyInfo(
@@ -87,7 +85,7 @@ def box_apply_create(request):
             COMPANY_NEW.save()
 
         for i in range(box_num):
-            #모델 양식에 맞게 새로운 row 만들기
+            # 모델 양식에 맞게 새로운 row 만들기
             BOX_CREATE = Apply(
                 company=company,
                 com_num=com_num if com_num else apcan_phone,
@@ -99,43 +97,37 @@ def box_apply_create(request):
                 deli_request=deli_request,
                 box_num=1
             )
-            #만든 row를 table에 추가
+            # 만든 row를 table에 추가
             BOX_CREATE.save()
         
         return redirect('apply_check')
-    #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
+
+    # 만약 저장 실패 시, 에러 메시지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('failed')
 
 
-#직접 택배로 보내는 신청페이지를 부르는 함수
+# 직접 택배로 보내는 신청 페이지를 부르는 함수
 def sent_page(request):
-    return render(
-        request,
-        'manage_apply/sent_box.html',
-    )
+    return render(request, 'manage_apply/sent_box.html')
 
-#택배로 보내는 신청페이지 내용을 model로 저장하는 함수
+
+# 택배로 보내는 신청 페이지 내용을 model로 저장하는 함수
 def sent_apply_create(request):
     try:
-        ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
-        zir_block_count = int(request.POST.get("z_b_num",''))
-
-        zir_powder_count = int(request.POST.get("z_p_num",''))
-
-        round_bar_count = int(request.POST.get("r_b_num",''))
-
-        tool_count = int(request.POST.get("tool_num",''))   
-
+        # Post.get을 통해 HTML에서 내용을 읽어들인 후 변수에 저장
+        zir_block_count = int(request.POST.get("z_b_num", ''))
+        zir_powder_count = int(request.POST.get("z_p_num", ''))
+        round_bar_count = int(request.POST.get("r_b_num", ''))
+        tool_count = int(request.POST.get("tool_num", ''))
         invoice_num = re.sub(r'[^0-9]', '', request.POST.get('invoice_num', ''))
 
-        company = re.sub(r'[\s]'|r'기공소','',request.POST.get('company',''))
-        com_num = re.sub(r'[^0-9]','',request.POST.get('com_num',''))
-
-        applicant =re.sub(r'[\s]','',request.POST.get('applicant',''))
-        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone',''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
+        com_num = re.sub(r'[^0-9]', '', request.POST.get('com_num', ''))
+        applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
+        apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
         address_num = request.POST.get('sample6_postcode', '')
         address_info = request.POST.get('sample6_address', '')
@@ -146,16 +138,16 @@ def sent_apply_create(request):
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
             company_already.recent_employee = applicant
-            #우편번호가 있으면 주소 저장
+            # 우편번호가 있으면 주소 저장
             if address_num:
                 company_already.address_num = address_num
                 company_already.address_info = address_info
                 company_already.address_detail = address_detail
                 company_already.count = int(company_already.count) + 1
             if com_num:
-                company_already.com_num = apcan_phone
-            else:
                 company_already.com_num = com_num
+            else:
+                company_already.com_num = apcan_phone
             company_already.save()
         else:
             COMPANY_NEW = CompanyInfo(
@@ -167,21 +159,22 @@ def sent_apply_create(request):
                 com_num=com_num if com_num else apcan_phone
             )
             COMPANY_NEW.save()
-        
+
+        # 송장 번호가 있을 경우
         if invoice_num:
             sent_box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
             SENT_CREATE = Apply(
-                zir_block_count = zir_block_count,
-                zir_powder_count = zir_powder_count,
-                round_bar_count = round_bar_count,
-                tool_count = tool_count,
-                sent_box_num = sent_box_num,
-                box_num = 0,
-                progress = 3,
-                company = company,
-                com_num = com_num,
-                applicant = applicant,
-                apcan_phone = apcan_phone,
+                zir_block_count=zir_block_count,
+                zir_powder_count=zir_powder_count,
+                round_bar_count=round_bar_count,
+                tool_count=tool_count,
+                sent_box_num=sent_box_num,
+                box_num=0,
+                progress=3,
+                company=company,
+                com_num=com_num,
+                applicant=applicant,
+                apcan_phone=apcan_phone,
                 address_num=address_num,
                 address_info=address_info,
                 address_detail=address_detail,
@@ -192,18 +185,20 @@ def sent_apply_create(request):
         else:
             box_num = 1
             progress = 2
+
+            # 지르코니아 블록
             for i in range(zir_block_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 1,
-                    zir_powder_count = 0,
-                    round_bar_count = 0,
-                    tool_count = 0,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=1,
+                    zir_powder_count=0,
+                    round_bar_count=0,
+                    tool_count=0,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -211,18 +206,19 @@ def sent_apply_create(request):
                 )
                 SENT_CREATE.save()
 
+            # 지르코니아 파우더
             for i in range(zir_powder_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 0,
-                    zir_powder_count = 1,
-                    round_bar_count = 0,
-                    tool_count = 0,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=0,
+                    zir_powder_count=1,
+                    round_bar_count=0,
+                    tool_count=0,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -230,18 +226,19 @@ def sent_apply_create(request):
                 )
                 SENT_CREATE.save()
 
-            for  i in range(round_bar_count):
+            # 라운드 바
+            for i in range(round_bar_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 0,
-                    zir_powder_count = 0,
-                    round_bar_count = 1,
-                    tool_count = 0,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=0,
+                    zir_powder_count=0,
+                    round_bar_count=1,
+                    tool_count=0,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -249,18 +246,19 @@ def sent_apply_create(request):
                 )
                 SENT_CREATE.save()
 
+            # 공구
             for i in range(tool_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 0,
-                    zir_powder_count = 0,
-                    round_bar_count = 0,
-                    tool_count = 1,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=0,
+                    zir_powder_count=0,
+                    round_bar_count=0,
+                    tool_count=1,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -269,11 +267,13 @@ def sent_apply_create(request):
                 SENT_CREATE.save()
 
         return redirect('apply_check')
-    #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
+
+    # 만약 저장 실패 시, 에러 메시지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('failed')
+
 
 #실패 페이지를 불러오는 함수
 def save_failed(request):
