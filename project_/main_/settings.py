@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
     # 사용 DNS 설정
     ".ap-northeast-2.compute.amazonaws.com",
     ".newmatestul.store",
+    ".newmakorea.com"
 ]
 
 
