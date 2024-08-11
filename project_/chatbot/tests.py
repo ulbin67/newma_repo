@@ -5,8 +5,9 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt
 def chatbot(user_input):
     # OpenAI API 키를 직접 코드에 삽입
     api_key = 'API키 넣어주세요'  # 여기에 직접 API 키를 입력합니다

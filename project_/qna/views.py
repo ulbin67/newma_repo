@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 # Create your views here.
 
 
-def blog(request):
+def blog(request):#e
     # 모든 post를 가져와 postlist에 저장
     page = request.GET.get("page","1") #페이지 번호
 
@@ -116,6 +116,130 @@ def remove_post(request, pk):
 
         return redirect('/qna/')
     return render(request, 'qna/remove_post.html',{'Post':post})
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
+
+import json
+from langchain.chains import RetrievalQA
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.document_loaders import PyPDFLoader
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from langchain.chains import RetrievalQA
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.document_loaders import PyPDFLoader
+from langchain.chat_models import ChatOpenAI
+
+# # 챗봇 함수
+# def chatbot_response(request):
+#     if request.method == 'POST':
+#         user_input = request.POST.get('user_input')
+        
+#         print(user_input)
+
+#         # OpenAI API 키
+#         api_key = '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'  # 여기에 API 키를 입력하세요
+
+#         # PDF 로딩 및 임베딩 준비
+#         loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
+#         documents = loader.load_and_split()
+
+#         # OpenAIEmbeddings 객체 생성
+#         embedding = OpenAIEmbeddings(openai_api_key=api_key)
+
+#         # 벡터 데이터베이스 생성 및 리트리버 설정
+#         vectordb = Chroma.from_documents(documents=documents, embedding=embedding)
+#         retriever = vectordb.as_retriever(search_kwargs={'k': 1})
+
+#         # ChatGPT 모델 설정
+#         llm = ChatOpenAI(model_name='gpt-4', streaming=True, temperature=0, openai_api_key=api_key)
+
+#         # RetrievalQA 체인 생성
+#         qa_chain = RetrievalQA.from_chain_type(
+#             llm=llm,
+#             chain_type='stuff',
+#             retriever=retriever,
+#             return_source_documents=True
+#         )
+
+#         # 사용자 입력에 대한 응답 생성
+#         response = qa_chain({"query": user_input})
+#         print(response)
+#         return JsonResponse({'result': response['result']})
+
+#     return render(request, 'blog.html')
+    
+import json
+import os
+from django.http import JsonResponse
+from django.conf import settings
+from langchain.chains import RetrievalQA
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.document_loaders import PyPDFLoader
+
+# Chatbot 초기화 함수 (애플리케이션 시작 시 한 번만 호출)
+def initialize_chatbot():
+    # OpenAI API 키
+    api_key = ''  # 환경 변수에서 API 키 읽기
+
+    # PDF 로딩 및 임베딩 준비
+    loader = PyPDFLoader('C:/newma/newma_repo/project_/chatbot.pdf')
+    documents = loader.load_and_split()
+
+    # OpenAIEmbeddings 객체 생성
+    embedding = OpenAIEmbeddings(openai_api_key=api_key)
+
+    # 벡터 데이터베이스 생성 및 리트리버 설정
+    vectordb = Chroma.from_documents(documents=documents, embedding=embedding)
+    retriever = vectordb.as_retriever(search_kwargs={'k': 1})
+
+    # ChatGPT 모델 설정
+    llm = ChatOpenAI(model_name='gpt-4', streaming=True, temperature=0, openai_api_key=api_key)
+
+    # RetrievalQA 체인 생성
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type='stuff',
+        retriever=retriever,
+        return_source_documents=True
+    )
+
+    return qa_chain
+
+# Chatbot 객체를 애플리케이션의 시작 시 한 번만 초기화
+qa_chain = initialize_chatbot()
+
+def chatbot_response(request):
+    if request.method == 'POST':
+        try:
+            user_input = request.POST.get('user_input')
+            print(user_input)
+            # 사용자 입력에 대한 응답 생성
+            response = qa_chain({"query": user_input})
+        except:
+            print(f"user_input : {user_input}")
+
+        return JsonResponse({'result': response['result']})
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+
+
+def chatbot(request):
+    return render(request, 'chatbot/chatbot.html')
 
 
 

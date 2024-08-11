@@ -14,6 +14,7 @@ urlpatterns = [
     path('password/<int:pk>/', views.password, name="password"),
     path('new_post/', views.new_post),
     path('<int:pk>/remove/', views.remove_post, name='remove'),
+    path('chatbot_response/', views.chatbot_response, name='chatbot_response'),
 ]
 
 # 이미지 URL 설정
