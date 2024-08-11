@@ -28,9 +28,6 @@
                                 <hr>
                                 <p>상자 수거를 원하시면 상자 신청 페이지 오른쪽 위 버튼을 눌러주세요.</p>
                                 <p>배송 현황을 확인하시려면 아래 버튼을 눌러주세요.</p>
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                                    <a class="btn btn-dark" type="button" href="https://mdm.alps.llogis.com:18200/openui/mdm/pages/mo/MoBef?inv={{apply.invoice_num}}&empno=31705947" >배송 조회하기</a>
-                                </div>
                             {% elif apply.progress == 2 %}
                                 <h5>상자 수거 요청 확인 전입니다.</h5>
                                 <hr>
@@ -40,11 +37,16 @@
                                 <hr>
                                 <p>
                                     배송 현황을 확인하시려면 아래 버튼을 눌러주세요.
+                                    아래 버튼 클릭 시, 송장 번호가 입력되지 않았다고 뜰 경우, 사장님께 문의해주세요.
                                 </p>
-                                <!-- 롯데만 확인가능 -->
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                                    <a class="btn btn-dark" type="button" href="https://mdm.alps.llogis.com:18200/openui/mdm/pages/mo/MoBef?inv={{apply.invoice_num}}&empno=31705947" >배송 조회하기</a>
+                                    <button class="btn btn-dark" onclick="openNewWindow()">배송 조회하기</button>
                                 </div>
+                                <script>
+                                    function openNewWindow() {
+                                        window.open("https://mdm.alps.llogis.com:18200/openui/mdm/pages/mo/MoBef?inv={{apply.invoice_num}}&empno=31705947", '_blank', 'width=800,height=600');
+                                    }
+                                </script>
                             {% else %}
                                 <h5>송장 출력 전입니다.</h5>
                                 <hr>
