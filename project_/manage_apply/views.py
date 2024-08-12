@@ -294,7 +294,7 @@ def research_page_call(request):
 def research_apply(request):
     try:
         # HTML에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]'|r'기공소', '', request.POST.get('company', ''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
