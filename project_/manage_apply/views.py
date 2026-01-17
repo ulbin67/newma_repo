@@ -13,7 +13,7 @@ import pandas as pd
 from django.db.models import Q
 from django.utils import timezone
 import pandas as pd
-from .query import 이번년도_달별박스수계산, 상자_개수_추가_학습,상자_개수_예측
+from .query import 달별박스수계산
 import os
 from django.core.paginator import Paginator
 
@@ -41,19 +41,17 @@ def box_checkcall(request):
     )
 
 
-#신청 내용을 model로 저장하는 함수
+import re
+from django.shortcuts import redirect, render
+
+# 신청 내용을 model로 저장하는 함수
 def box_apply_create(request):
     try:
-        ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
-        # 정규표현식으로 공백 제거
-        company = re.sub(r'[\s]'|r'기공소', '', request.POST.get('company', ''))
-        # 숫자만 저장
+        # Post.get을 통해 HTML에서 내용을 읽어들인 후 변수에 저장
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         com_num = re.sub(r'[^0-9]', '', request.POST.get('com_num', ''))
-        # 공백 제거
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
-        # 숫자만 저장
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
-
 
         address_num = request.POST.get('sample6_postcode', '')
         address_info = request.POST.get('sample6_address', '')
@@ -63,6 +61,7 @@ def box_apply_create(request):
         box_num = int(request.POST.get('box_num', ''))
 
         # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
+        # 회사 정보가 이미 존재하는지 확인하여 있으면 정보 갱신, 없으면 회사 추가
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
             company_already.recent_employee = applicant
@@ -70,10 +69,7 @@ def box_apply_create(request):
             company_already.address_info = address_info
             company_already.address_detail = address_detail
             company_already.count = int(company_already.count) + 1
-            if com_num:
-                company_already.com_num = apcan_phone
-            else:
-                company_already.com_num = com_num
+            company_already.com_num = com_num if com_num else apcan_phone
             company_already.save()
         else:
             COMPANY_NEW = CompanyInfo(
@@ -87,7 +83,7 @@ def box_apply_create(request):
             COMPANY_NEW.save()
 
         for i in range(box_num):
-            #모델 양식에 맞게 새로운 row 만들기
+            # 모델 양식에 맞게 새로운 row 만들기
             BOX_CREATE = Apply(
                 company=company,
                 com_num=com_num if com_num else apcan_phone,
@@ -99,43 +95,37 @@ def box_apply_create(request):
                 deli_request=deli_request,
                 box_num=1
             )
-            #만든 row를 table에 추가
+            # 만든 row를 table에 추가
             BOX_CREATE.save()
         
         return redirect('apply_check')
-    #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
+
+    # 만약 저장 실패 시, 에러 메시지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('failed')
 
 
-#직접 택배로 보내는 신청페이지를 부르는 함수
+# 직접 택배로 보내는 신청 페이지를 부르는 함수
 def sent_page(request):
-    return render(
-        request,
-        'manage_apply/sent_box.html',
-    )
+    return render(request, 'manage_apply/sent_box.html')
 
-#택배로 보내는 신청페이지 내용을 model로 저장하는 함수
+
+# 택배로 보내는 신청 페이지 내용을 model로 저장하는 함수
 def sent_apply_create(request):
     try:
-        ## Post.get을 통해 html에서 내용을 읽어들인 후 변수에 저장
-        zir_block_count = int(request.POST.get("z_b_num",''))
-
-        zir_powder_count = int(request.POST.get("z_p_num",''))
-
-        round_bar_count = int(request.POST.get("r_b_num",''))
-
-        tool_count = int(request.POST.get("tool_num",''))   
-
+        # Post.get을 통해 HTML에서 내용을 읽어들인 후 변수에 저장
+        zir_block_count = int(request.POST.get("z_b_num", ''))
+        zir_powder_count = int(request.POST.get("z_p_num", ''))
+        round_bar_count = int(request.POST.get("r_b_num", ''))
+        tool_count = int(request.POST.get("tool_num", ''))
         invoice_num = re.sub(r'[^0-9]', '', request.POST.get('invoice_num', ''))
 
-        company = re.sub(r'[\s]'|r'기공소','',request.POST.get('company',''))
-        com_num = re.sub(r'[^0-9]','',request.POST.get('com_num',''))
-
-        applicant =re.sub(r'[\s]','',request.POST.get('applicant',''))
-        apcan_phone = re.sub(r'[^0-9]','',request.POST.get('apcan_phone',''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
+        com_num = re.sub(r'[^0-9]', '', request.POST.get('com_num', ''))
+        applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
+        apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
         address_num = request.POST.get('sample6_postcode', '')
         address_info = request.POST.get('sample6_address', '')
@@ -146,16 +136,13 @@ def sent_apply_create(request):
         if CompanyInfo.objects.filter(company=company).exists():
             company_already = CompanyInfo.objects.get(company=company)
             company_already.recent_employee = applicant
-            #우편번호가 있으면 주소 저장
+            # 우편번호가 있으면 주소 저장
             if address_num:
                 company_already.address_num = address_num
                 company_already.address_info = address_info
                 company_already.address_detail = address_detail
-                company_already.count = int(company_already.count) + 1
-            if com_num:
-                company_already.com_num = apcan_phone
-            else:
-                company_already.com_num = com_num
+            company_already.count = int(company_already.count) + 1
+            company_already.com_num = com_num if com_num else apcan_phone
             company_already.save()
         else:
             COMPANY_NEW = CompanyInfo(
@@ -167,21 +154,22 @@ def sent_apply_create(request):
                 com_num=com_num if com_num else apcan_phone
             )
             COMPANY_NEW.save()
-        
+
+        # 송장 번호가 있을 경우
         if invoice_num:
             sent_box_num = zir_block_count + zir_powder_count + round_bar_count + tool_count
             SENT_CREATE = Apply(
-                zir_block_count = zir_block_count,
-                zir_powder_count = zir_powder_count,
-                round_bar_count = round_bar_count,
-                tool_count = tool_count,
-                sent_box_num = sent_box_num,
-                box_num = 0,
-                progress = 3,
-                company = company,
-                com_num = com_num,
-                applicant = applicant,
-                apcan_phone = apcan_phone,
+                zir_block_count=zir_block_count,
+                zir_powder_count=zir_powder_count,
+                round_bar_count=round_bar_count,
+                tool_count=tool_count,
+                sent_box_num=sent_box_num,
+                box_num=0,
+                progress=3,
+                company=company,
+                com_num=com_num,
+                applicant=applicant,
+                apcan_phone=apcan_phone,
                 address_num=address_num,
                 address_info=address_info,
                 address_detail=address_detail,
@@ -192,18 +180,20 @@ def sent_apply_create(request):
         else:
             box_num = 1
             progress = 2
+
+            # 지르코니아 블록
             for i in range(zir_block_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 1,
-                    zir_powder_count = 0,
-                    round_bar_count = 0,
-                    tool_count = 0,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=1,
+                    zir_powder_count=0,
+                    round_bar_count=0,
+                    tool_count=0,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -211,18 +201,19 @@ def sent_apply_create(request):
                 )
                 SENT_CREATE.save()
 
+            # 지르코니아 파우더
             for i in range(zir_powder_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 0,
-                    zir_powder_count = 1,
-                    round_bar_count = 0,
-                    tool_count = 0,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=0,
+                    zir_powder_count=1,
+                    round_bar_count=0,
+                    tool_count=0,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -230,18 +221,19 @@ def sent_apply_create(request):
                 )
                 SENT_CREATE.save()
 
-            for  i in range(round_bar_count):
+            # 라운드 바
+            for i in range(round_bar_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 0,
-                    zir_powder_count = 0,
-                    round_bar_count = 1,
-                    tool_count = 0,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=0,
+                    zir_powder_count=0,
+                    round_bar_count=1,
+                    tool_count=0,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -249,18 +241,19 @@ def sent_apply_create(request):
                 )
                 SENT_CREATE.save()
 
+            # 공구
             for i in range(tool_count):
                 SENT_CREATE = Apply(
-                    zir_block_count = 0,
-                    zir_powder_count = 0,
-                    round_bar_count = 0,
-                    tool_count = 1,
-                    box_num = box_num,
-                    progress = progress,
-                    company = company,
-                    com_num = com_num,
-                    applicant = applicant,
-                    apcan_phone = apcan_phone,
+                    zir_block_count=0,
+                    zir_powder_count=0,
+                    round_bar_count=0,
+                    tool_count=1,
+                    box_num=box_num,
+                    progress=progress,
+                    company=company,
+                    com_num=com_num,
+                    applicant=applicant,
+                    apcan_phone=apcan_phone,
                     address_num=address_num,
                     address_info=address_info,
                     address_detail=address_detail,
@@ -269,11 +262,13 @@ def sent_apply_create(request):
                 SENT_CREATE.save()
 
         return redirect('apply_check')
-    #만약 저장 실패 시, 에러 메세지를 터미널에 반환하고 에러 페이지를 띄움
+
+    # 만약 저장 실패 시, 에러 메시지를 터미널에 반환하고 에러 페이지를 띄움
     except Exception as e:
         # 로그를 남기거나 디버깅을 위해 예외 메시지를 출력할 수 있음
         print(f"Error: {e}")
         return redirect('failed')
+
 
 #실패 페이지를 불러오는 함수
 def save_failed(request):
@@ -299,7 +294,7 @@ def research_page_call(request):
 def research_apply(request):
     try:
         # HTML에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]'|r'기공소', '', request.POST.get('company', ''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
@@ -374,7 +369,7 @@ def pro_done_call(request):
 def research_apply2(request):
     try:
         # HTML에 사용자가 입력한 값 불러오기
-        company = re.sub(r'[\s]'|r'기공소', '', request.POST.get('company', ''))
+        company = re.sub(r'[\s]|기공소', '', request.POST.get('company', ''))
         applicant = re.sub(r'[\s]', '', request.POST.get('applicant', ''))
         apcan_phone = re.sub(r'[^0-9]', '', request.POST.get('apcan_phone', ''))
 
@@ -456,7 +451,7 @@ def manage_box_req(request):
     if request.user.is_staff:
         try:
             page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
-            applys = Apply.objects.filter(progress=0)  # progress=0 인 Apply 객체 필터링
+            applys = Apply.objects.filter(progress=0).order_by('-apply_at')  # progress=0 인 Apply 객체 필터링
             paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
             
@@ -493,7 +488,7 @@ def manage_pic_req(request):
     if request.user.is_staff:
         try:
             page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
-            applys = Apply.objects.filter(progress=2)  # progress=0 인 Apply 객체 필터링
+            applys = Apply.objects.filter(progress=2).order_by('-apply_at')  # progress=0 인 Apply 객체 필터링
             paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
             
@@ -562,6 +557,7 @@ def upload_file_page(request):
         )
     else:
         return redirect('/')
+
 
 def upload_xl(request):
     if not request.user.is_staff:
@@ -636,7 +632,7 @@ def manage_pic_ing(request):
     if request.user.is_staff:
         try:
             page_number = request.GET.get('page', '1')  # 현재 페이지 번호를 GET 요청에서 가져옴
-            applys = Apply.objects.filter(progress=3)  # progress=0 인 Apply 객체 필터링
+            applys = Apply.objects.filter(progress=3).order_by('-apply_at')  # progress=0 인 Apply 객체 필터링
             paginator = Paginator(applys, 10)  # 페이지당 10개로 페이지네이션 설정
             page_obj = paginator.get_page(page_number)  # 페이지 객체를 가져옴
             
@@ -712,61 +708,21 @@ def 정보페이지_call(request):
     user_df = None
     search_form = ApplySearchForm(request.POST or None)
     company_info_form = ApplyForm(request.POST or None)
-    dones = DoneApply.objects.all()
+    dates, dones = 달별박스수계산()
+    month_box_data = [{'label': date, 'box_num': done} for date, done in zip(dates, dones)]
 
     if request.user.is_staff:
         current_datetime = timezone.now()
         default_start_date = current_datetime - timezone.timedelta(days=30)
         default_end_date = current_datetime
 
-        apply_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)
-        if apply_qs.exists():
-            apply_df = pd.DataFrame(apply_qs.values())
-            chart = get_chart('#1', apply_df)  # 예시: 기본 차트 타입으로 'line' 사용
-            apply_df = apply_df.to_html()
-
-        company_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)  # 예시: 기본으로 표시할 회사 관련 데이터
-        if company_qs.exists():
-            company_df = pd.DataFrame(company_qs.values())
-            selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress',
-                                'invoice_num',
-                                'box_num', 'zir_block_count', 'zir_powder_count', 'round_bar_count', 'tool_count']
-            company_df['apply_at'] = company_df['apply_at'].apply(lambda x: x.strftime('%Y/%m/%d'))
-            company_df = company_df[selected_columns]
-            company_df.rename({'apply_at': '일자', 'company': '회사명', 'address_num': '우편번호', 'applicant': '신청인',
-                               'apcan_phone': '연락처', 'progress': '진행상황', 'invoice_num': '송장번호',
-                               'box_num': '상자 수', 'zir_block_count': '지르코니아 블록',
-                               'zir_powder_count': '지르코니아 분말', 'round_bar_count': '환봉', 'tool_count': '밀링툴'},
-                              axis=1, inplace=True)
-            company_df = company_df.to_html()
-
-        user_qs = User.objects.exclude(is_staff=True)  # 예시: 기본으로 표시할 유저 관련 데이터
-        if user_qs.exists():
-            user_df = pd.DataFrame(user_qs.values())
-            selected_columns = ['name', 'company_name', 'phone_num', 'last_login', 'is_active', 'date_joined',
-                                'address_num',
-                                'address_info', 'address_detail']
-            user_df['date_joined'] = user_df['date_joined'].apply(lambda x: x.strftime('%Y/%m/%d'))
-            user_df['last_login'] = user_df['last_login'].apply(lambda x: x.strftime('%Y/%m/%d'))
-            user_df = user_df[selected_columns]
-            user_df.rename({'name': '이름', 'company_name': '회사명', 'last_login': '마지막 로그인',
-                            'is_active': '활성 여부', 'date_joined': '등록일', 'address_num': '우편번호',
-                            'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호',
-                            }, axis=1, inplace=True)
-            if len(user_df) < 2:
-                user_df = user_df.T
-            user_df = user_df.to_html()
-
         if request.method == 'POST':
             if 'search_submit' in request.POST and search_form.is_valid():
-                apply_df = None
-                chart = None
                 date_from = request.POST.get('date_from')
                 date_to = request.POST.get('date_to')
                 chart_type = request.POST.get('chart_type')
-                print(date_from, date_to, chart_type)
                 apply_qs = Apply.objects.filter(apply_at__lte=date_to, apply_at__gte=date_from)
-                if len(apply_qs) > 0:
+                if apply_qs.exists():
                     apply_df = pd.DataFrame(apply_qs.values())
                     chart = get_chart(chart_type, apply_df)
                     apply_df = apply_df.to_html()
@@ -774,41 +730,39 @@ def 정보페이지_call(request):
                     messages.warning(request, "해당 날짜의 거래 데이터가 없습니다.")
 
             if 'company_info_submit' in request.POST and company_info_form.is_valid():
-                company_df = None
-                user_df = None
                 company_info = request.POST.get('company_info')
                 date_from2 = request.POST.get('date_from2')
                 date_to2 = request.POST.get('date_to2')
-                if company_info is not None:
+                if company_info:
                     company_qs = Apply.objects.filter(
                         Q(company__icontains=company_info) | Q(applicant__icontains=company_info),
                         apply_at__lte=date_to2,
                         apply_at__gte=date_from2
                     )
+                    User_qs = User.objects.filter(Q(company_name__icontains=company_info) | Q(name__icontains=company_info))
                 else:
                     company_qs = Apply.objects.filter(
                         apply_at__lte=date_to2,
                         apply_at__gte=date_from2
                     )
-                if company_info is not None:
-                    User_qs = User.objects.filter(Q(company_name__icontains=company_info) | Q(name__icontains=company_info))
-                else:
-                    User_qs = User.objects.exclude(is_staff=True)  # 예시: 기본으로 표시할 유저 관련 데이터
-                if len(company_qs) > 0:
-                    company_df = pd.DataFrame(company_qs.values())
+                    User_qs = User.objects.exclude(is_staff=True)
 
-                    selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress','invoice_num',
+                if company_qs.exists():
+                    company_df = pd.DataFrame(company_qs.values())
+                    selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress', 'invoice_num',
                                         'box_num', 'zir_block_count', 'zir_powder_count', 'round_bar_count', 'tool_count']
                     company_df['apply_at'] = company_df['apply_at'].apply(lambda x: x.strftime('%Y/%m/%d'))
                     company_df = company_df[selected_columns]
-                    company_df.rename({'apply_at': '일자',  'company':'회사명', 'address_num': '우편번호', 'applicant':'신청인',
-                                       'apcan_phone':'연락처', 'progress':'진행상황','invoice_num' :'송장번호',
-                                        'box_num': '상자 수', 'zir_block_count' : '지르코니아 블록',
-                                       'zir_powder_count':'지르코니아 분말', 'round_bar_count':'환봉', 'tool_count':'밀링툴'},
+                    company_df.rename({'apply_at': '일자', 'company': '회사명', 'address_num': '우편번호', 'applicant': '신청인',
+                                       'apcan_phone': '연락처', 'progress': '진행상황', 'invoice_num': '송장번호',
+                                       'box_num': '상자 수', 'zir_block_count': '지르코니아 블록',
+                                       'zir_powder_count': '지르코니아 분말', 'round_bar_count': '환봉', 'tool_count': '밀링툴'},
                                       axis=1, inplace=True)
                     company_df = company_df.to_html()
+                else:
+                    messages.warning(request, "해당 회사에 대한 거래 데이터가 없습니다.")
 
-                if len(User_qs) > 0:
+                if User_qs.exists():
                     user_df = pd.DataFrame(User_qs.values())
                     selected_columns = ['name', 'company_name', 'phone_num', 'last_login', 'is_active', 'date_joined', 'address_num',
                                         'address_info', 'address_detail']
@@ -817,40 +771,60 @@ def 정보페이지_call(request):
                     user_df = user_df[selected_columns]
                     user_df.rename({'name': '이름', 'company_name': '회사명', 'last_login': '마지막 로그인',
                                     'is_active': '활성 여부', 'date_joined': '등록일', 'address_num': '우편번호',
-                                    'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호',
-                                    }, axis=1, inplace=True)
+                                    'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호'},
+                                   axis=1, inplace=True)
                     if len(user_df) < 2:
                         user_df = user_df.T
                     user_df = user_df.to_html()
                 else:
-                    messages.warning(request, "해당 회사, 담당자에 대한 데이터가 없습니다.")
+                    messages.warning(request, "해당 유저에 대한 데이터가 없습니다.")
 
-        context = {'company_df': company_df,
-                    'search_form' : search_form,
-                    'company_info_form': company_info_form,
-                    'apply_df' : apply_df,
-                    'chart' : chart,
-                    'user_df' : user_df,
-                    'dones' : dones,
-                   }
-        return render(request,'manage_apply/정보페이지.html', context)
-    else:
-        return redirect("/")
+        else:  # GET 요청일 경우
+            apply_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)
+            if apply_qs.exists():
+                apply_df = pd.DataFrame(apply_qs.values())
+                chart = get_chart('#1', apply_df)  # 예시: 기본 차트 타입으로 'line' 사용
+                apply_df = apply_df.to_html()
 
-def 상자예측_call(request):
-    if request.user.is_staff:
-        ym, predict = 상자_개수_예측()
+            company_qs = Apply.objects.filter(apply_at__gte=default_start_date, apply_at__lte=default_end_date)
+            if company_qs.exists():
+                company_df = pd.DataFrame(company_qs.values())
+                selected_columns = ['apply_at', 'company', 'address_num', 'applicant', 'apcan_phone', 'progress',
+                                    'invoice_num', 'box_num', 'zir_block_count', 'zir_powder_count', 'round_bar_count', 'tool_count']
+                company_df['apply_at'] = company_df['apply_at'].apply(lambda x: x.strftime('%Y/%m/%d'))
+                company_df = company_df[selected_columns]
+                company_df.rename({'apply_at': '일자', 'company': '회사명', 'address_num': '우편번호', 'applicant': '신청인',
+                                   'apcan_phone': '연락처', 'progress': '진행상황', 'invoice_num': '송장번호',
+                                   'box_num': '상자 수', 'zir_block_count': '지르코니아 블록',
+                                   'zir_powder_count': '지르코니아 분말', 'round_bar_count': '환봉', 'tool_count': '밀링툴'},
+                                  axis=1, inplace=True)
+                company_df = company_df.to_html()
 
-        if ym is None or predict is None:
-            return HttpResponse("예측 오류 발생", status=500)
+            user_qs = User.objects.exclude(is_staff=True)
+            if user_qs.exists():
+                user_df = pd.DataFrame(user_qs.values())
+                selected_columns = ['name', 'company_name', 'phone_num', 'last_login', 'is_active', 'date_joined', 'address_num',
+                                    'address_info', 'address_detail']
+                user_df['date_joined'] = user_df['date_joined'].apply(lambda x: x.strftime('%Y/%m/%d'))
+                user_df['last_login'] = user_df['last_login'].apply(lambda x: x.strftime('%Y/%m/%d'))
+                user_df = user_df[selected_columns]
+                user_df.rename({'name': '이름', 'company_name': '회사명', 'last_login': '마지막 로그인',
+                                'is_active': '활성 여부', 'date_joined': '등록일', 'address_num': '우편번호',
+                                'address_info': '주소', 'address_detail': '상세주소', 'phone_num': '휴대폰 번호'},
+                               axis=1, inplace=True)
+                if len(user_df) < 2:
+                    user_df = user_df.T
+                user_df = user_df.to_html()
 
-        return render(
-            request,
-            'manage_apply/상자예측.html',
-            {
-                'YM': ym,
-                'predict': predict,
-            }
-        )
+        context = {
+            'company_df': company_df if company_df is not None else "정보가 없습니다.",
+            'search_form': search_form,
+            'company_info_form': company_info_form,
+            'apply_df': apply_df if apply_df is not None else "정보가 없습니다.",
+            'chart': chart if chart is not None else None,
+            'user_df': user_df if user_df is not None else "정보가 없습니다.",
+            'month_box_data': month_box_data,
+        }
+        return render(request, 'manage_apply/정보페이지.html', context)
     else:
         return redirect("/")

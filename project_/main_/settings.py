@@ -2,10 +2,13 @@ import os, json
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+#디렉토리 경로 설정
+#서버 열 때 static 폴더를 잘 불러오기 위해 이 경로가 필요
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+#보안 키를 숨기기 위해 json에 저장
+#깃허브에 업로드 시, 깃 이그노어에 secrets.json 추가 후 푸쉬
+#배포할 때, project_ 폴더 안에 secrets.json 을 만들어야 접근 가능
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
 
 with open(secret_file) as f:
@@ -28,13 +31,22 @@ OPENAI_API_KEY = get_secret("OPENAI_API_KEY")
 NAVER_CLIENT_ID = get_secret('NAVER_CLIENT_ID')  # 네이버 클라이언트 ID
 NAVER_CLIENT_SECRET = get_secret('NAVER_CLIENT_SECRET')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#디버그 비허용시 static 자동 연결 해제됨
+#서버 설정으로 다시 연결 필요
+DEBUG =False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    # 사용 DNS 설정
+    ".ap-northeast-2.compute.amazonaws.com",
+    ".newmatestul.store",
+    ".newmakorea.com",
+    'localhost',
+    '127.0.0.1',
+]
 
 
-# Application definition
+# 사용 앱, 위 django.~은 기본 앱으로 삭제 X
+# 앱 추가할 때마다 아래에 추가 필요
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -89,11 +101,9 @@ WSGI_APPLICATION = "main_.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'newmadb.sqlite3',
     }
 }
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -117,17 +127,28 @@ TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
+#시간존 사용을 허용할 것인지 설정 SQL과 장고 시간존이 일치 하지 않아 생긴 오류의 경우
+#아래 코드를 False로 바꿔보면 잘 돌아감
+#배포시 False 하지 않도록 주의!
+
 USE_TZ = True
 
-
 STATIC_URL = "/static/"
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+##static 파일들의 경로 설정
+#static을 읽어들일 경우, URL -> static 파일에 접근 시, 자동으로 붙는 URL
+#ex: http://example/static/이미지.jpg
+#root는 읽어들일 때의 경로... (중요함..)
+
+##media 파일들의 경로 설정
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -143,7 +164,3 @@ EMAIL_HOST_USER = 'lka111617@gmail.com'                 # 발신할 이메일
 EMAIL_HOST_PASSWORD = 'zruk ydku fdsy fsrs'                       # 발신할 메일의 비밀번호
 EMAIL_USE_TLS = True                                    # TLS 보안 방법
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER                    # 사이트와 관련한 자동응답을 받을 이메일 주소
-
-LOGOUT_REDIRECT_URL = '/accounts/custom_logout/'
-
-

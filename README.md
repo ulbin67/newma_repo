@@ -1,5 +1,6 @@
 # newma_repo
  뉴마 기본 서버 연결
+(상업용도로 사용되는 코드입니다. 출처를 밝히거나 학습용도로만 사용해주세요.)
 
 연결 시 주의사항, setting.py는 최대한 건드리지 마세요 경로가 저장되어있습니다.
 mysql 연결 하셔야합니다!
@@ -36,6 +37,7 @@ mysql 연결 하셔야합니다!
     pip install pandas
     pip install tensorflow
     pip install scikit-learn
+    pip install joblib
     pip install xlsxwriter
     pip install openpyxl
     pip install folium
@@ -53,3 +55,32 @@ mysql 연결 하셔야합니다!
 ]
 
 * 이외의 문제 발생 시, 제발!!! 오류 코드(웹 화면에서 뜬 오류와 터미널 or CMD, 프롬프트 창에서 뜬 오류) 함께! 보내주세요!
+
++ python manage.py collectstatic
++ 서버 업로드시 static 파일을 생성해주는 명령어
+
+    pip install django
+    pip3 install django-widget-tweaks
+    pip3 install Pillow
+    pip3 install Jinja2
+    pip3 install numpy
+    pip3 install pandas
+    pip3 install scikit-learn
+    pip3 install joblib
+    pip3 install xlsxwriter
+    pip3 install openpyxl
+    pip3 install folium
+    pip3 install geopy
+    pip3 install crispy_bootstrap4
+    pip3 install matplotlib
+    pip3 install seaborn
+    pip3 install -U langchain-community
+    pip3 install -U langchain-openai
+    pip3 install langchain
+    pip3 install pypdf
+    pip3 install openai
+    pip3 install chromadb
+    pip3 install tiktoken
+
+
+    pip3 install tensorflow
